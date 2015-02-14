@@ -1,0 +1,45 @@
+Новая папка для Q-meter
+
+- нaрисовать новую плату, на которой CS4272 и STM32F405
+	- USB --ok
+		PA11,PA12 + USB_ON
+	- LCD
+		SPI2 (PB13, PB14, PB15) 
+		4 GPIO пина (LED, RST, DC, CS)
+	- выводы для управления Rotary encoder (2 шт+2 кнопки) --ok
+		энкодеры PA0,PA1, PA6, PA7
+	- DAC OUT - PA4
+	- выводы для управления AD9959
+		6 пинов надо любых
+		пропробовать развести как в плате AD9959, чтобы шлейф воткнуть и не париться
+		PB0, PB1, PB2, PB10, PB11, PC5
+
+		AD_CSB - PB11
+		AD_IO_UPDATE - PB10
+		AD_SCLK - PB2
+		AD_SDIO_0 - PB1
+		AD_PWR_DWN - PB0
+		AD_RESET - PC5
+
+
+
+	- GPIO несколько для управления оставшимся оборудованием
+		штук 6 выведем с запасом!
+
+	- все коннекторы с одной стороны сделать!
+
+
+con-erni
+con-hirose = 0.5mm pitch connector
+con-leotronics 1.27 mm SMD
+досмотрели до con-omron
+
+Коннектор (слева - верхние, справа - нижние)
+PWR_DWN RESET
+GND		GND
+SDIO_3  SDIO_2
+SDIO_1	SDIO_0
+DVDD_IO	SCLK
+CSB		IO_UPDATE
+P3 		P2
+P1 		P0
