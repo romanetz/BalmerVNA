@@ -14420,6 +14420,25 @@ Grid 2.54 mm&lt;p&gt;
 <text x="-11.684" y="1.778" size="1.27" layer="25">&gt;NAME</text>
 <text x="-11.684" y="-3.048" size="1.27" layer="27">&gt;VALUE</text>
 </package>
+<package name="3POL254">
+<description>&lt;b&gt;PHOENIX CONNECTOR&lt;/b&gt;</description>
+<wire x1="-3.94" y1="-1.45" x2="3.94" y2="-1.45" width="0.254" layer="21"/>
+<wire x1="3.94" y1="-1.45" x2="3.94" y2="1.45" width="0.254" layer="21"/>
+<wire x1="3.94" y1="1.45" x2="-3.94" y2="1.45" width="0.254" layer="21"/>
+<wire x1="-3.94" y1="1.45" x2="-3.94" y2="-1.45" width="0.254" layer="21"/>
+<wire x1="-3.83" y1="1.1" x2="3.83" y2="1.1" width="0.1524" layer="21"/>
+<wire x1="-3.175" y1="-0.508" x2="-2.032" y2="0.635" width="0.1524" layer="51"/>
+<wire x1="-0.762" y1="-0.254" x2="0.762" y2="0.127" width="0.1524" layer="51"/>
+<wire x1="2.032" y1="0.635" x2="3.048" y2="-0.635" width="0.1524" layer="51"/>
+<circle x="-2.54" y="0" radius="0.889" width="0.1524" layer="51"/>
+<circle x="0" y="0" radius="0.889" width="0.1524" layer="51"/>
+<circle x="2.54" y="0" radius="0.889" width="0.1524" layer="51"/>
+<pad name="1" x="-2.54" y="0" drill="1.2" shape="long" rot="R90"/>
+<pad name="2" x="0" y="0" drill="1.2" shape="long" rot="R90"/>
+<pad name="3" x="2.54" y="0" drill="1.2" shape="long" rot="R90"/>
+<text x="-4.064" y="1.778" size="1.27" layer="25">&gt;NAME</text>
+<text x="-4.064" y="-3.048" size="1.27" layer="27">&gt;VALUE</text>
+</package>
 </packages>
 <symbols>
 <symbol name="SKB">
@@ -14580,6 +14599,31 @@ Grid 2.54 mm&lt;p&gt;
 <connect gate="-7" pin="1" pad="7"/>
 <connect gate="-8" pin="1" pad="8"/>
 <connect gate="-9" pin="1" pad="9"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="MF" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OC_FARNELL" value="unknown" constant="no"/>
+<attribute name="OC_NEWARK" value="unknown" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="MPT3" prefix="X" uservalue="yes">
+<description>&lt;b&gt;PHOENIX CONNECTOR&lt;/b&gt;</description>
+<gates>
+<gate name="-1" symbol="SKB" x="0" y="5.08" addlevel="always"/>
+<gate name="-2" symbol="SKB" x="0" y="0" addlevel="always"/>
+<gate name="-3" symbol="SKBV" x="0" y="-5.08" addlevel="always"/>
+</gates>
+<devices>
+<device name="" package="3POL254">
+<connects>
+<connect gate="-1" pin="1" pad="1"/>
+<connect gate="-2" pin="1" pad="2"/>
+<connect gate="-3" pin="1" pad="3"/>
 </connects>
 <technologies>
 <technology name="">
@@ -16121,7 +16165,6 @@ Source: 008-0260-0_E.pdf</description>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="+3V2" library="supply1" deviceset="+3V3" device=""/>
-<part name="X3" library="con-phoenix-254" deviceset="MPT4" device=""/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="R3" library="rcl" deviceset="R-EU_" device="R0603" value="56"/>
 <part name="R12" library="rcl" deviceset="R-EU_" device="R0603" value="56"/>
@@ -16156,6 +16199,7 @@ Source: 008-0260-0_E.pdf</description>
 <part name="R25" library="rcl" deviceset="R-EU_" device="R0603" value="1.5k"/>
 <part name="R26" library="rcl" deviceset="R-EU_" device="R0603" value="1.5k"/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
+<part name="USB" library="con-phoenix-254" deviceset="MPT3" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -16249,10 +16293,6 @@ Source: 008-0260-0_E.pdf</description>
 <instance part="GND5" gate="1" x="154.94" y="81.28"/>
 <instance part="GND6" gate="1" x="180.34" y="81.28"/>
 <instance part="+3V2" gate="G$1" x="185.42" y="71.12"/>
-<instance part="X3" gate="-1" x="167.64" y="124.46"/>
-<instance part="X3" gate="-2" x="167.64" y="119.38"/>
-<instance part="X3" gate="-3" x="167.64" y="114.3"/>
-<instance part="X3" gate="-4" x="167.64" y="109.22"/>
 <instance part="GND4" gate="1" x="165.1" y="106.68"/>
 <instance part="R3" gate="G$1" x="160.02" y="114.3"/>
 <instance part="R12" gate="G$1" x="149.86" y="119.38"/>
@@ -16307,6 +16347,9 @@ Source: 008-0260-0_E.pdf</description>
 <instance part="R25" gate="G$1" x="53.34" y="114.3"/>
 <instance part="R26" gate="G$1" x="60.96" y="109.22"/>
 <instance part="GND21" gate="1" x="33.02" y="93.98"/>
+<instance part="USB" gate="-1" x="167.64" y="119.38"/>
+<instance part="USB" gate="-2" x="167.64" y="114.3"/>
+<instance part="USB" gate="-3" x="167.64" y="109.22"/>
 </instances>
 <busses>
 </busses>
@@ -16415,10 +16458,6 @@ Source: 008-0260-0_E.pdf</description>
 <wire x1="180.34" y1="83.82" x2="177.8" y2="83.82" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="X3" gate="-4" pin="1"/>
-<pinref part="GND4" gate="1" pin="GND"/>
-</segment>
-<segment>
 <pinref part="PWR" gate="-2" pin="1"/>
 <pinref part="GND7" gate="1" pin="GND"/>
 </segment>
@@ -16455,6 +16494,10 @@ Source: 008-0260-0_E.pdf</description>
 <junction x="33.02" y="96.52"/>
 <junction x="40.64" y="96.52"/>
 <junction x="48.26" y="96.52"/>
+</segment>
+<segment>
+<pinref part="GND4" gate="1" pin="GND"/>
+<pinref part="USB" gate="-3" pin="1"/>
 </segment>
 </net>
 <net name="+3V3" class="0">
@@ -16982,20 +17025,14 @@ Source: 008-0260-0_E.pdf</description>
 <label x="132.08" y="119.38" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$3" class="0">
-<segment>
-<pinref part="X3" gate="-3" pin="1"/>
-<pinref part="R3" gate="G$1" pin="2"/>
-</segment>
-</net>
 <net name="N$16" class="0">
 <segment>
-<pinref part="X3" gate="-2" pin="1"/>
 <pinref part="R12" gate="G$1" pin="2"/>
 <wire x1="165.1" y1="119.38" x2="154.94" y2="119.38" width="0.1524" layer="91"/>
 <pinref part="R13" gate="G$1" pin="2"/>
 <wire x1="154.94" y1="127" x2="154.94" y2="119.38" width="0.1524" layer="91"/>
 <junction x="154.94" y="119.38"/>
+<pinref part="USB" gate="-1" pin="1"/>
 </segment>
 </net>
 <net name="PA10(USB_ON)" class="0">
@@ -17362,6 +17399,12 @@ Source: 008-0260-0_E.pdf</description>
 <pinref part="IC3" gate="PORTC_L" pin="PC0"/>
 <wire x1="25.4" y1="25.4" x2="17.78" y2="25.4" width="0.1524" layer="91"/>
 <label x="12.7" y="25.4" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$3" class="0">
+<segment>
+<pinref part="R3" gate="G$1" pin="2"/>
+<pinref part="USB" gate="-2" pin="1"/>
 </segment>
 </net>
 </nets>
