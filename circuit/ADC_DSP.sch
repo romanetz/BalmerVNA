@@ -16144,6 +16144,20 @@ Source: 008-0260-0_E.pdf</description>
 <part name="+3V1" library="supply1" deviceset="+3V3" device=""/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="R21" library="rcl" deviceset="R-EU_" device="R0603" value="33"/>
+<part name="DAC" library="con-phoenix-254" deviceset="MPT2" device=""/>
+<part name="R22" library="rcl" deviceset="R-EU_" device="R0603" value="22k"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="C0805" value="470p"/>
+<part name="GND20" library="supply1" deviceset="GND" device=""/>
+<part name="GPIO" library="con-phoenix-254" deviceset="MPT4" device=""/>
+<part name="C3" library="rcl" deviceset="C-EU" device="C0805" value="1n"/>
+<part name="C4" library="rcl" deviceset="C-EU" device="C0805" value="1n"/>
+<part name="C21" library="rcl" deviceset="C-EU" device="C0805" value="1n"/>
+<part name="C23" library="rcl" deviceset="C-EU" device="C0805" value="1n"/>
+<part name="R23" library="rcl" deviceset="R-EU_" device="R0603" value="1.5k"/>
+<part name="R24" library="rcl" deviceset="R-EU_" device="R0603" value="1.5k"/>
+<part name="R25" library="rcl" deviceset="R-EU_" device="R0603" value="1.5k"/>
+<part name="R26" library="rcl" deviceset="R-EU_" device="R0603" value="1.5k"/>
+<part name="GND21" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -16176,12 +16190,12 @@ Source: 008-0260-0_E.pdf</description>
 <instance part="GND12" gate="1" x="81.28" y="-10.16"/>
 <instance part="GND14" gate="1" x="99.06" y="66.04"/>
 <instance part="C14" gate="G$1" x="104.14" y="73.66"/>
-<instance part="SWD" gate="-1" x="-15.24" y="45.72"/>
-<instance part="SWD" gate="-2" x="-15.24" y="40.64"/>
-<instance part="SWD" gate="-3" x="-15.24" y="35.56"/>
-<instance part="SWD" gate="-4" x="-15.24" y="30.48"/>
-<instance part="GND3" gate="1" x="-20.32" y="25.4"/>
-<instance part="+3V31" gate="G$1" x="-20.32" y="50.8"/>
+<instance part="SWD" gate="-1" x="-45.72" y="48.26" rot="MR0"/>
+<instance part="SWD" gate="-2" x="-45.72" y="43.18" rot="MR0"/>
+<instance part="SWD" gate="-3" x="-45.72" y="38.1" rot="MR0"/>
+<instance part="SWD" gate="-4" x="-45.72" y="33.02" rot="MR0"/>
+<instance part="GND3" gate="1" x="-40.64" y="27.94" rot="MR0"/>
+<instance part="+3V31" gate="G$1" x="-40.64" y="53.34" rot="MR0"/>
 <instance part="Q1" gate="G$1" x="104.14" y="58.42" rot="R90"/>
 <instance part="C15" gate="G$1" x="109.22" y="60.96" rot="R90"/>
 <instance part="C16" gate="G$1" x="109.22" y="53.34" rot="R90"/>
@@ -16279,6 +16293,24 @@ Source: 008-0260-0_E.pdf</description>
 <instance part="+3V1" gate="G$1" x="226.06" y="93.98"/>
 <instance part="GND8" gate="1" x="215.9" y="93.98"/>
 <instance part="R21" gate="G$1" x="223.52" y="111.76"/>
+<instance part="DAC" gate="-1" x="0" y="60.96" rot="MR0"/>
+<instance part="DAC" gate="-2" x="0" y="55.88" rot="MR0"/>
+<instance part="R22" gate="G$1" x="10.16" y="66.04"/>
+<instance part="C2" gate="G$1" x="7.62" y="58.42"/>
+<instance part="GND20" gate="1" x="5.08" y="50.8"/>
+<instance part="GPIO" gate="-1" x="27.94" y="124.46" rot="MR0"/>
+<instance part="GPIO" gate="-2" x="27.94" y="119.38" rot="MR0"/>
+<instance part="GPIO" gate="-3" x="27.94" y="114.3" rot="MR0"/>
+<instance part="GPIO" gate="-4" x="27.94" y="109.22" rot="MR0"/>
+<instance part="C3" gate="G$1" x="33.02" y="101.6"/>
+<instance part="C4" gate="G$1" x="40.64" y="101.6"/>
+<instance part="C21" gate="G$1" x="48.26" y="101.6"/>
+<instance part="C23" gate="G$1" x="55.88" y="101.6"/>
+<instance part="R23" gate="G$1" x="38.1" y="124.46"/>
+<instance part="R24" gate="G$1" x="45.72" y="119.38"/>
+<instance part="R25" gate="G$1" x="53.34" y="114.3"/>
+<instance part="R26" gate="G$1" x="60.96" y="109.22"/>
+<instance part="GND21" gate="1" x="33.02" y="93.98"/>
 </instances>
 <busses>
 </busses>
@@ -16338,8 +16370,8 @@ Source: 008-0260-0_E.pdf</description>
 <segment>
 <pinref part="SWD" gate="-4" pin="1"/>
 <pinref part="GND3" gate="1" pin="GND"/>
-<wire x1="-17.78" y1="30.48" x2="-20.32" y2="30.48" width="0.1524" layer="91"/>
-<wire x1="-20.32" y1="30.48" x2="-20.32" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="33.02" x2="-40.64" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="-40.64" y1="33.02" x2="-40.64" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="C15" gate="G$1" pin="2"/>
@@ -16403,11 +16435,34 @@ Source: 008-0260-0_E.pdf</description>
 <pinref part="GND1" gate="1" pin="GND"/>
 <pinref part="BTN" gate="-7" pin="1"/>
 <wire x1="111.76" y1="91.44" x2="111.76" y2="96.52" width="0.1524" layer="91"/>
+<junction x="111.76" y="91.44"/>
 </segment>
 <segment>
 <pinref part="LCD" gate="-8" pin="1"/>
 <pinref part="GND8" gate="1" pin="GND"/>
 <wire x1="228.6" y1="96.52" x2="215.9" y2="96.52" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C2" gate="G$1" pin="2"/>
+<wire x1="7.62" y1="53.34" x2="5.08" y2="53.34" width="0.1524" layer="91"/>
+<pinref part="DAC" gate="-2" pin="1"/>
+<wire x1="5.08" y1="53.34" x2="2.54" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="2.54" y1="53.34" x2="2.54" y2="55.88" width="0.1524" layer="91"/>
+<pinref part="GND20" gate="1" pin="GND"/>
+<junction x="5.08" y="53.34"/>
+</segment>
+<segment>
+<pinref part="C3" gate="G$1" pin="2"/>
+<pinref part="GND21" gate="1" pin="GND"/>
+<pinref part="C23" gate="G$1" pin="2"/>
+<pinref part="C21" gate="G$1" pin="2"/>
+<wire x1="55.88" y1="96.52" x2="48.26" y2="96.52" width="0.1524" layer="91"/>
+<pinref part="C4" gate="G$1" pin="2"/>
+<wire x1="48.26" y1="96.52" x2="40.64" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="96.52" x2="33.02" y2="96.52" width="0.1524" layer="91"/>
+<junction x="33.02" y="96.52"/>
+<junction x="40.64" y="96.52"/>
+<junction x="48.26" y="96.52"/>
 </segment>
 </net>
 <net name="+3V3" class="0">
@@ -16452,8 +16507,8 @@ Source: 008-0260-0_E.pdf</description>
 <segment>
 <pinref part="SWD" gate="-1" pin="1"/>
 <pinref part="+3V31" gate="G$1" pin="+3V3"/>
-<wire x1="-17.78" y1="45.72" x2="-20.32" y2="45.72" width="0.1524" layer="91"/>
-<wire x1="-20.32" y1="45.72" x2="-20.32" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="48.26" x2="-40.64" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="-40.64" y1="48.26" x2="-40.64" y2="50.8" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC1" gate="G$1" pin="VOUT"/>
@@ -16521,8 +16576,8 @@ Source: 008-0260-0_E.pdf</description>
 </segment>
 <segment>
 <pinref part="SWD" gate="-2" pin="1"/>
-<wire x1="-17.78" y1="40.64" x2="-27.94" y2="40.64" width="0.1524" layer="91"/>
-<label x="-27.94" y="40.64" size="1.778" layer="95"/>
+<wire x1="-43.18" y1="43.18" x2="-33.02" y2="43.18" width="0.1524" layer="91"/>
+<label x="-33.02" y="43.18" size="1.778" layer="95" rot="MR0"/>
 </segment>
 </net>
 <net name="SWDCLK" class="0">
@@ -16533,8 +16588,8 @@ Source: 008-0260-0_E.pdf</description>
 </segment>
 <segment>
 <pinref part="SWD" gate="-3" pin="1"/>
-<wire x1="-17.78" y1="35.56" x2="-27.94" y2="35.56" width="0.1524" layer="91"/>
-<label x="-30.48" y="35.56" size="1.778" layer="95"/>
+<wire x1="-43.18" y1="38.1" x2="-33.02" y2="38.1" width="0.1524" layer="91"/>
+<label x="-30.48" y="38.1" size="1.778" layer="95" rot="MR0"/>
 </segment>
 </net>
 <net name="N$5" class="0">
@@ -16954,16 +17009,16 @@ Source: 008-0260-0_E.pdf</description>
 <junction x="154.94" y="119.38"/>
 </segment>
 </net>
-<net name="USB_ON" class="0">
+<net name="PA10(USB_ON)" class="0">
 <segment>
 <pinref part="R13" gate="G$1" pin="1"/>
 <wire x1="144.78" y1="127" x2="134.62" y2="127" width="0.1524" layer="91"/>
-<label x="132.08" y="127" size="1.778" layer="95"/>
+<label x="127" y="127" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="IC3" gate="PORTA_H" pin="PA10"/>
 <wire x1="25.4" y1="45.72" x2="15.24" y2="45.72" width="0.1524" layer="91"/>
-<label x="15.24" y="45.72" size="1.778" layer="95"/>
+<label x="7.62" y="45.72" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$14" class="0">
@@ -17212,6 +17267,112 @@ Source: 008-0260-0_E.pdf</description>
 <pinref part="IC3" gate="PORTC_L" pin="PC6"/>
 <wire x1="25.4" y1="10.16" x2="17.78" y2="10.16" width="0.1524" layer="91"/>
 <label x="5.08" y="10.16" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$36" class="0">
+<segment>
+<pinref part="IC3" gate="PORTA_L" pin="PA4"/>
+<pinref part="R22" gate="G$1" pin="2"/>
+<wire x1="25.4" y1="66.04" x2="15.24" y2="66.04" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$37" class="0">
+<segment>
+<pinref part="R22" gate="G$1" pin="1"/>
+<wire x1="5.08" y1="66.04" x2="5.08" y2="60.96" width="0.1524" layer="91"/>
+<pinref part="DAC" gate="-1" pin="1"/>
+<wire x1="5.08" y1="60.96" x2="2.54" y2="60.96" width="0.1524" layer="91"/>
+<pinref part="C2" gate="G$1" pin="1"/>
+<wire x1="5.08" y1="60.96" x2="7.62" y2="60.96" width="0.1524" layer="91"/>
+<junction x="5.08" y="60.96"/>
+</segment>
+</net>
+<net name="N$38" class="0">
+<segment>
+<pinref part="C3" gate="G$1" pin="1"/>
+<pinref part="R23" gate="G$1" pin="1"/>
+<wire x1="33.02" y1="104.14" x2="33.02" y2="124.46" width="0.1524" layer="91"/>
+<pinref part="GPIO" gate="-1" pin="1"/>
+<wire x1="33.02" y1="124.46" x2="30.48" y2="124.46" width="0.1524" layer="91"/>
+<junction x="33.02" y="124.46"/>
+</segment>
+</net>
+<net name="N$39" class="0">
+<segment>
+<pinref part="GPIO" gate="-2" pin="1"/>
+<pinref part="R24" gate="G$1" pin="1"/>
+<wire x1="30.48" y1="119.38" x2="40.64" y2="119.38" width="0.1524" layer="91"/>
+<pinref part="C4" gate="G$1" pin="1"/>
+<wire x1="40.64" y1="119.38" x2="40.64" y2="104.14" width="0.1524" layer="91"/>
+<junction x="40.64" y="119.38"/>
+</segment>
+</net>
+<net name="N$40" class="0">
+<segment>
+<pinref part="GPIO" gate="-3" pin="1"/>
+<pinref part="R25" gate="G$1" pin="1"/>
+<wire x1="30.48" y1="114.3" x2="48.26" y2="114.3" width="0.1524" layer="91"/>
+<pinref part="C21" gate="G$1" pin="1"/>
+<wire x1="48.26" y1="114.3" x2="48.26" y2="104.14" width="0.1524" layer="91"/>
+<junction x="48.26" y="114.3"/>
+</segment>
+</net>
+<net name="N$41" class="0">
+<segment>
+<pinref part="GPIO" gate="-4" pin="1"/>
+<pinref part="R26" gate="G$1" pin="1"/>
+<wire x1="30.48" y1="109.22" x2="55.88" y2="109.22" width="0.1524" layer="91"/>
+<pinref part="C23" gate="G$1" pin="1"/>
+<wire x1="55.88" y1="109.22" x2="55.88" y2="104.14" width="0.1524" layer="91"/>
+<junction x="55.88" y="109.22"/>
+</segment>
+</net>
+<net name="PC3(GPIO)" class="0">
+<segment>
+<pinref part="R26" gate="G$1" pin="2"/>
+<wire x1="66.04" y1="109.22" x2="68.58" y2="109.22" width="0.1524" layer="91"/>
+<label x="66.04" y="109.22" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="PORTC_L" pin="PC3"/>
+<wire x1="25.4" y1="17.78" x2="17.78" y2="17.78" width="0.1524" layer="91"/>
+<label x="12.7" y="17.78" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PC2(GPIO)" class="0">
+<segment>
+<pinref part="R25" gate="G$1" pin="2"/>
+<wire x1="58.42" y1="114.3" x2="68.58" y2="114.3" width="0.1524" layer="91"/>
+<label x="66.04" y="114.3" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="PORTC_L" pin="PC2"/>
+<wire x1="25.4" y1="20.32" x2="17.78" y2="20.32" width="0.1524" layer="91"/>
+<label x="12.7" y="20.32" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PC1(GPIO)" class="0">
+<segment>
+<pinref part="R24" gate="G$1" pin="2"/>
+<wire x1="50.8" y1="119.38" x2="68.58" y2="119.38" width="0.1524" layer="91"/>
+<label x="66.04" y="119.38" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="PORTC_L" pin="PC1"/>
+<wire x1="25.4" y1="22.86" x2="17.78" y2="22.86" width="0.1524" layer="91"/>
+<label x="12.7" y="22.86" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="PC0(GPIO)" class="0">
+<segment>
+<pinref part="R23" gate="G$1" pin="2"/>
+<wire x1="43.18" y1="124.46" x2="68.58" y2="124.46" width="0.1524" layer="91"/>
+<label x="66.04" y="124.46" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC3" gate="PORTC_L" pin="PC0"/>
+<wire x1="25.4" y1="25.4" x2="17.78" y2="25.4" width="0.1524" layer="91"/>
+<label x="12.7" y="25.4" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
