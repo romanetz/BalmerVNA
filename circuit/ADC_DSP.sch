@@ -16063,9 +16063,7 @@ Source: 008-0260-0_E.pdf</description>
 <part name="C10" library="rcl" deviceset="C-EU" device="C0603" value="2.2u"/>
 <part name="C6" library="rcl" deviceset="C-EU" device="C0603" value="2.2u"/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
-<part name="C13" library="rcl" deviceset="C-EU" device="C0603" value="0.1u"/>
 <part name="+3V33" library="supply1" deviceset="+3V3" device=""/>
-<part name="GND13" library="supply1" deviceset="GND" device=""/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="C14" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
@@ -16184,9 +16182,7 @@ Source: 008-0260-0_E.pdf</description>
 <instance part="C10" gate="G$1" x="68.58" y="-2.54"/>
 <instance part="C6" gate="G$1" x="53.34" y="-2.54"/>
 <instance part="GND10" gate="1" x="60.96" y="-10.16"/>
-<instance part="C13" gate="G$1" x="86.36" y="-20.32"/>
 <instance part="+3V33" gate="G$1" x="71.12" y="-10.16"/>
-<instance part="GND13" gate="1" x="86.36" y="-27.94"/>
 <instance part="GND12" gate="1" x="81.28" y="-10.16"/>
 <instance part="GND14" gate="1" x="99.06" y="66.04"/>
 <instance part="C14" gate="G$1" x="104.14" y="73.66"/>
@@ -16349,10 +16345,6 @@ Source: 008-0260-0_E.pdf</description>
 <wire x1="60.96" y1="-7.62" x2="68.58" y2="-7.62" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="C13" gate="G$1" pin="2"/>
-<pinref part="GND13" gate="1" pin="GND"/>
-</segment>
-<segment>
 <pinref part="IC3" gate="POWER" pin="VSSA"/>
 <wire x1="86.36" y1="-10.16" x2="86.36" y2="-7.62" width="0.1524" layer="91"/>
 <pinref part="GND12" gate="1" pin="GND"/>
@@ -16497,11 +16489,8 @@ Source: 008-0260-0_E.pdf</description>
 <wire x1="73.66" y1="-5.08" x2="73.66" y2="-12.7" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="-12.7" x2="71.12" y2="-12.7" width="0.1524" layer="91"/>
 <junction x="71.12" y="-12.7"/>
-<pinref part="C13" gate="G$1" pin="1"/>
 <pinref part="IC3" gate="POWER" pin="VDDA"/>
 <wire x1="86.36" y1="-15.24" x2="86.36" y2="-12.7" width="0.1524" layer="91"/>
-<wire x1="86.36" y1="-17.78" x2="86.36" y2="-15.24" width="0.1524" layer="91"/>
-<junction x="86.36" y="-15.24"/>
 <wire x1="71.12" y1="-15.24" x2="86.36" y2="-15.24" width="0.1524" layer="91"/>
 </segment>
 <segment>
