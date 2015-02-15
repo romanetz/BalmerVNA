@@ -3,9 +3,19 @@
 - нaрисовать новую плату, на которой CS4272 и STM32F405
 	- USB --ok
 		PA11,PA12 + USB_ON
-	- LCD
+	- LCD --ok
 		SPI2 (PB13, PB14, PB15) 
 		4 GPIO пина (LED, RST, DC, CS)
+		TFT_MISO - PB14
+		TFT_LED -  PC8
+		TFT_SCK - PB13
+		TFT_MOSI - PB15
+		TFT_D_C -  PC7
+		TFT_RESET - PC6
+		TFT_CS - PB12
+		GND
+		+3V3
+
 	- выводы для управления Rotary encoder (2 шт+2 кнопки) --ok
 		энкодеры PA0,PA1, PA6, PA7
 	- DAC OUT - PA4
