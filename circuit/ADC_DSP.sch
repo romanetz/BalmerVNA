@@ -16185,8 +16185,6 @@ Source: 008-0260-0_E.pdf</description>
 <part name="C35" library="rcl" deviceset="C-EU" device="C0603" value="2.2u"/>
 <part name="U$1" library="balmer" deviceset="SN74LVC1G3157DBVR" device=""/>
 <part name="U$2" library="balmer" deviceset="SN74LVC1G3157DBVR" device=""/>
-<part name="X1" library="con-phoenix-254" deviceset="MPT4" device=""/>
-<part name="X2" library="con-phoenix-254" deviceset="MPT4" device=""/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
 <part name="GND23" library="supply1" deviceset="GND" device=""/>
@@ -16194,6 +16192,9 @@ Source: 008-0260-0_E.pdf</description>
 <part name="GND25" library="supply1" deviceset="GND" device=""/>
 <part name="GND26" library="supply1" deviceset="GND" device=""/>
 <part name="GND27" library="supply1" deviceset="GND" device=""/>
+<part name="X1" library="con-phoenix-254" deviceset="MPT8" device=""/>
+<part name="C13" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
+<part name="GND28" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -16337,14 +16338,6 @@ Source: 008-0260-0_E.pdf</description>
 <instance part="C35" gate="G$1" x="236.22" y="-7.62" rot="R90"/>
 <instance part="U$1" gate="G$1" x="271.78" y="15.24"/>
 <instance part="U$2" gate="G$1" x="271.78" y="-12.7"/>
-<instance part="X1" gate="-1" x="297.18" y="25.4"/>
-<instance part="X1" gate="-2" x="297.18" y="20.32"/>
-<instance part="X1" gate="-3" x="297.18" y="15.24"/>
-<instance part="X1" gate="-4" x="297.18" y="10.16"/>
-<instance part="X2" gate="-1" x="297.18" y="-2.54"/>
-<instance part="X2" gate="-2" x="297.18" y="-7.62"/>
-<instance part="X2" gate="-3" x="297.18" y="-12.7"/>
-<instance part="X2" gate="-4" x="297.18" y="-17.78"/>
 <instance part="GND13" gate="1" x="200.66" y="5.08"/>
 <instance part="GND22" gate="1" x="269.24" y="-25.4"/>
 <instance part="GND23" gate="1" x="269.24" y="2.54"/>
@@ -16352,6 +16345,16 @@ Source: 008-0260-0_E.pdf</description>
 <instance part="GND25" gate="1" x="294.64" y="-5.08"/>
 <instance part="GND26" gate="1" x="294.64" y="7.62"/>
 <instance part="GND27" gate="1" x="294.64" y="22.86"/>
+<instance part="X1" gate="-1" x="297.18" y="25.4"/>
+<instance part="X1" gate="-2" x="297.18" y="20.32"/>
+<instance part="X1" gate="-3" x="297.18" y="15.24"/>
+<instance part="X1" gate="-4" x="297.18" y="10.16"/>
+<instance part="X1" gate="-5" x="297.18" y="-2.54"/>
+<instance part="X1" gate="-6" x="297.18" y="-7.62"/>
+<instance part="X1" gate="-7" x="297.18" y="-12.7"/>
+<instance part="X1" gate="-8" x="297.18" y="-17.78"/>
+<instance part="C13" gate="G$1" x="251.46" y="22.86"/>
+<instance part="GND28" gate="1" x="251.46" y="15.24"/>
 </instances>
 <busses>
 </busses>
@@ -16530,20 +16533,24 @@ Source: 008-0260-0_E.pdf</description>
 <pinref part="GND23" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="X2" gate="-4" pin="1"/>
-<pinref part="GND24" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="X2" gate="-1" pin="1"/>
-<pinref part="GND25" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="X1" gate="-4" pin="1"/>
-<pinref part="GND26" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="X1" gate="-1" pin="1"/>
 <pinref part="GND27" gate="1" pin="GND"/>
+<pinref part="X1" gate="-1" pin="1"/>
+</segment>
+<segment>
+<pinref part="GND26" gate="1" pin="GND"/>
+<pinref part="X1" gate="-4" pin="1"/>
+</segment>
+<segment>
+<pinref part="GND25" gate="1" pin="GND"/>
+<pinref part="X1" gate="-5" pin="1"/>
+</segment>
+<segment>
+<pinref part="GND24" gate="1" pin="GND"/>
+<pinref part="X1" gate="-8" pin="1"/>
+</segment>
+<segment>
+<pinref part="C13" gate="G$1" pin="2"/>
+<pinref part="GND28" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="+3V3" class="0">
@@ -16914,12 +16921,15 @@ Source: 008-0260-0_E.pdf</description>
 <pinref part="U$1" gate="G$1" pin="VCC"/>
 <wire x1="220.98" y1="25.4" x2="220.98" y2="15.24" width="0.1524" layer="91"/>
 <wire x1="269.24" y1="25.4" x2="259.08" y2="25.4" width="0.1524" layer="91"/>
-<wire x1="259.08" y1="25.4" x2="220.98" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="259.08" y1="25.4" x2="251.46" y2="25.4" width="0.1524" layer="91"/>
 <junction x="220.98" y="25.4"/>
 <pinref part="U$2" gate="G$1" pin="VCC"/>
+<wire x1="251.46" y1="25.4" x2="220.98" y2="25.4" width="0.1524" layer="91"/>
 <wire x1="269.24" y1="-2.54" x2="259.08" y2="-2.54" width="0.1524" layer="91"/>
 <wire x1="259.08" y1="-2.54" x2="259.08" y2="25.4" width="0.1524" layer="91"/>
 <junction x="259.08" y="25.4"/>
+<pinref part="C13" gate="G$1" pin="1"/>
+<junction x="251.46" y="25.4"/>
 </segment>
 </net>
 <net name="+5V" class="0">
@@ -17454,29 +17464,29 @@ Source: 008-0260-0_E.pdf</description>
 <net name="N$26" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="B1"/>
-<pinref part="X1" gate="-2" pin="1"/>
 <wire x1="281.94" y1="20.32" x2="294.64" y2="20.32" width="0.1524" layer="91"/>
+<pinref part="X1" gate="-2" pin="1"/>
 </segment>
 </net>
 <net name="N$28" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="B2"/>
-<pinref part="X1" gate="-3" pin="1"/>
 <wire x1="281.94" y1="15.24" x2="294.64" y2="15.24" width="0.1524" layer="91"/>
+<pinref part="X1" gate="-3" pin="1"/>
 </segment>
 </net>
 <net name="N$30" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="B1"/>
-<pinref part="X2" gate="-2" pin="1"/>
 <wire x1="281.94" y1="-7.62" x2="294.64" y2="-7.62" width="0.1524" layer="91"/>
+<pinref part="X1" gate="-6" pin="1"/>
 </segment>
 </net>
 <net name="N$38" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="B2"/>
-<pinref part="X2" gate="-3" pin="1"/>
 <wire x1="281.94" y1="-12.7" x2="294.64" y2="-12.7" width="0.1524" layer="91"/>
+<pinref part="X1" gate="-7" pin="1"/>
 </segment>
 </net>
 </nets>
