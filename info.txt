@@ -54,3 +54,6 @@ P3 		P2
 P1 		P0
 
 http://www.zoomerpup.com/
+http://shop.hellofriend.me/
+
+74AC253 - выводы как в FST3253
