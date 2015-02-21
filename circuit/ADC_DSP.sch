@@ -16177,8 +16177,8 @@ Source: 008-0260-0_E.pdf</description>
 <part name="R26" library="rcl" deviceset="R-EU_" device="R0603" value="1.5k"/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="USB" library="con-phoenix-254" deviceset="MPT3" device=""/>
-<part name="R28" library="rcl" deviceset="R-EU_" device="R0603" value="1.2k"/>
-<part name="R29" library="rcl" deviceset="R-EU_" device="R0603" value="1.2k"/>
+<part name="R28" library="rcl" deviceset="R-EU_" device="R0603" value="120"/>
+<part name="R29" library="rcl" deviceset="R-EU_" device="R0603" value="120"/>
 <part name="R32" library="rcl" deviceset="R-EU_" device="R0603" value="10k"/>
 <part name="R34" library="rcl" deviceset="R-EU_" device="R0603" value="10k"/>
 <part name="C25" library="rcl" deviceset="C-EU" device="C0603" value="2.2u"/>
