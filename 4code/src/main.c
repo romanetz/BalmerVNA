@@ -2,6 +2,7 @@
 #include "delay.h"
 #include "ili/hw_ili9341.h"
 #include "ili/UTFT.h"
+#include "ad9958_drv.h"
 
 RCC_ClocksTypeDef RCC_Clocks;
 extern int32_t g_fft_min;
@@ -13,17 +14,28 @@ int main(void)
     SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
 
     DelayInit();
+
+    AD9958_Init();
+    DelayUs(30);
+    AD9958_Set_Frequency(0, 999000);
+    AD9958_Set_Frequency(2, 1234000);
+
     HwLcdInit();
     HwLcdPinLed(1);
 
     UTFT_InitLCD(UTFT_LANDSCAPE);
+
+    UTFT_setBackColor(0,0,0);
+    UTFT_clrScr();
+
+
 
     if(1)
     {
         UTFT_setFont(BigFont);
         UTFT_setColor(255, 255, 255);
         //UTFT_print(" !\"#$%&'()*+,-./", UTFT_CENTER, 0, 0);
-        UTFT_print("0123456789:;<=>?", UTFT_CENTER, 16, 0);
+        //UTFT_print("0123456789:;<=>?", UTFT_CENTER, 16, 0);
         UTFT_print("@ABCDEFGHIJKLMNO", UTFT_CENTER, 32, 0);
         UTFT_print("PQRSTUVWXYZ[\\]^_", UTFT_CENTER, 48, 0);
         UTFT_print("`abcdefghijklmno", UTFT_CENTER, 64, 0);
@@ -41,9 +53,13 @@ int main(void)
 
     }
 
+    int i=0;
+    UTFT_setColor(0, 255, 255);
+    UTFT_setFont(BigFont);
     while(1)
     {
-
+        DelayMs(1000);
+        UTFT_printNumI(i++, 120, 0, 4, ' ');
     }
 
 /*

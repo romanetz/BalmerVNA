@@ -5,6 +5,7 @@
 
 DEPS += \
 	output/CMSIS/startup_stm32f4xx.d \
+	output/base/src/ad9958_drv.d \
 	output/base/src/delay.d \
 	output/base/src/main.d \
 	output/base/src/stm32f4xx_it.d \
@@ -32,6 +33,7 @@ DEPS += \
 
 OBJS += \
 	output/CMSIS/startup_stm32f4xx.o \
+	output/base/src/ad9958_drv.o \
 	output/base/src/delay.o \
 	output/base/src/main.o \
 	output/base/src/stm32f4xx_it.o \
@@ -60,6 +62,10 @@ OBJS += \
 output/CMSIS/startup_stm32f4xx.o: ../../SoundCard/code/Libraries/CMSIS/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f4xx.S
 	@echo 'Building target: startup_stm32f4xx.S'
 	@$(CC) $(ASM_FLAGS) -o "$@" "$<"
+
+output/base/src/ad9958_drv.o: ./src/ad9958_drv.c
+	@echo 'Building target: ad9958_drv.c'
+	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
 output/base/src/delay.o: ./src/delay.c
 	@echo 'Building target: delay.c'

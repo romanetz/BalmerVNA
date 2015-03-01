@@ -16127,8 +16127,8 @@ Source: 008-0260-0_E.pdf</description>
 <part name="C26" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="P+5" library="supply1" deviceset="+5V" device=""/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
-<part name="C27" library="rcl" deviceset="C-EU" device="C0805" value="1.5n"/>
-<part name="C28" library="rcl" deviceset="C-EU" device="C0805" value="1.5n"/>
+<part name="C27" library="rcl" deviceset="C-EU" device="C0805" value="4.7n"/>
+<part name="C28" library="rcl" deviceset="C-EU" device="C0805" value="4.7n"/>
 <part name="C5" library="rcl" deviceset="CPOL-EU" device="153CLV-0605" value="220uF"/>
 <part name="R1" library="rcl" deviceset="R-EU_" device="R0603" value="220"/>
 <part name="R2" library="rcl" deviceset="R-EU_" device="R0603" value="220"/>
@@ -16177,12 +16177,12 @@ Source: 008-0260-0_E.pdf</description>
 <part name="R26" library="rcl" deviceset="R-EU_" device="R0603" value="1.5k"/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="USB" library="con-phoenix-254" deviceset="MPT3" device=""/>
-<part name="R28" library="rcl" deviceset="R-EU_" device="R0603" value="120"/>
-<part name="R29" library="rcl" deviceset="R-EU_" device="R0603" value="120"/>
-<part name="R32" library="rcl" deviceset="R-EU_" device="R0603" value="10k"/>
-<part name="R34" library="rcl" deviceset="R-EU_" device="R0603" value="10k"/>
-<part name="C25" library="rcl" deviceset="C-EU" device="C0603" value="2.2u"/>
-<part name="C35" library="rcl" deviceset="C-EU" device="C0603" value="2.2u"/>
+<part name="R28" library="rcl" deviceset="R-EU_" device="R0603" value="150"/>
+<part name="R29" library="rcl" deviceset="R-EU_" device="R0603" value="150"/>
+<part name="R32" library="rcl" deviceset="R-EU_" device="R0603" value="12k"/>
+<part name="R34" library="rcl" deviceset="R-EU_" device="R0603" value="12k"/>
+<part name="C25" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
+<part name="C35" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="U$1" library="balmer" deviceset="SN74LVC1G3157DBVR" device=""/>
 <part name="U$2" library="balmer" deviceset="SN74LVC1G3157DBVR" device=""/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>

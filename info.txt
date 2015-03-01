@@ -24,12 +24,12 @@
 		пропробовать развести как в плате AD9959, чтобы шлейф воткнуть и не париться
 		PB0, PB1, PB2, PB10, PB11, PC5
 
-		AD_CSB - PB11
-		AD_IO_UPDATE - PB10
-		AD_SCLK - PB2
-		AD_SDIO_0 - PB1
-		AD_PWR_DWN - PB0
-		AD_RESET - PC5
+		AD_CSB - PB11 *
+		AD_IO_UPDATE - PB10 *
+		AD_SCLK - PB2 *
+		AD_SDIO_0 - PB1 *
+		AD_PWR_DWN - PB0 *
+		AD_RESET - PC5 *
 
 	- GPIO несколько для управления оставшимся оборудованием --ok
 		PC0, PC1, PC2, PC3
