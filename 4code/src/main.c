@@ -3,6 +3,9 @@
 #include "ili/hw_ili9341.h"
 #include "ili/UTFT.h"
 #include "ad9958_drv.h"
+#include "dac.h"
+#include "cs4272.h"
+#include "process_sound.h"
 
 RCC_ClocksTypeDef RCC_Clocks;
 extern int32_t g_fft_min;
@@ -25,12 +28,13 @@ int main(void)
 
     UTFT_InitLCD(UTFT_LANDSCAPE);
 
+    DacInit();
     UTFT_setBackColor(0,0,0);
     UTFT_clrScr();
 
 
 
-    if(1)
+    if(0)
     {
         UTFT_setFont(BigFont);
         UTFT_setColor(255, 255, 255);
@@ -53,13 +57,33 @@ int main(void)
 
     }
 
-    int i=0;
     UTFT_setColor(0, 255, 255);
     UTFT_setFont(BigFont);
+
+    DacInitFullBuffer();
+    //DacSinusCalculate();
+    bool ok = cs4272_Init();
+
+    UTFT_print(ok?"ok":"fail", UTFT_CENTER, 32, 0);
+
+    DacStart();
+    cs4272_start();
+
+    int i=0;
+    const int divi = 10000;
     while(1)
     {
-        DelayMs(1000);
-        UTFT_printNumI(i++, 120, 0, 4, ' ');
+        DelayUs(10);
+        SoundQuant();
+
+        i++;
+
+        if(i%divi==0)
+        {
+            //UTFT_printNumI(i/divi, 120, 0, 4, ' ');
+            uint16_t* out_buffer = DacGetBuffer();
+            UTFT_printNumI(out_buffer[0], 120, 0, 4, ' ');
+        }
     }
 
 /*

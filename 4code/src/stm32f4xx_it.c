@@ -119,5 +119,5 @@ void SPI2_IRQHandler(void)
 
 void SPI3_IRQHandler(void)
 {
-//  OnSoundReceive();
+  OnSoundReceive();
 }

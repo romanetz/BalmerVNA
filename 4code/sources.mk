@@ -6,8 +6,11 @@
 DEPS += \
 	output/CMSIS/startup_stm32f4xx.d \
 	output/base/src/ad9958_drv.d \
+	output/base/src/cs4272.d \
+	output/base/src/dac.d \
 	output/base/src/delay.d \
 	output/base/src/main.d \
+	output/base/src/process_sound.d \
 	output/base/src/stm32f4xx_it.d \
 	output/base/src/system_stm32f4xx.d \
 	output/base/src/ili/DefaultFonts.d \
@@ -34,8 +37,11 @@ DEPS += \
 OBJS += \
 	output/CMSIS/startup_stm32f4xx.o \
 	output/base/src/ad9958_drv.o \
+	output/base/src/cs4272.o \
+	output/base/src/dac.o \
 	output/base/src/delay.o \
 	output/base/src/main.o \
+	output/base/src/process_sound.o \
 	output/base/src/stm32f4xx_it.o \
 	output/base/src/system_stm32f4xx.o \
 	output/base/src/ili/DefaultFonts.o \
@@ -67,12 +73,24 @@ output/base/src/ad9958_drv.o: ./src/ad9958_drv.c
 	@echo 'Building target: ad9958_drv.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
+output/base/src/cs4272.o: ./src/cs4272.c
+	@echo 'Building target: cs4272.c'
+	@$(CC) $(C_FLAGS) -o "$@" "$<"
+
+output/base/src/dac.o: ./src/dac.c
+	@echo 'Building target: dac.c'
+	@$(CC) $(C_FLAGS) -o "$@" "$<"
+
 output/base/src/delay.o: ./src/delay.c
 	@echo 'Building target: delay.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
 output/base/src/main.o: ./src/main.c
 	@echo 'Building target: main.c'
+	@$(CC) $(C_FLAGS) -o "$@" "$<"
+
+output/base/src/process_sound.o: ./src/process_sound.c
+	@echo 'Building target: process_sound.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
 output/base/src/stm32f4xx_it.o: ./src/stm32f4xx_it.c
