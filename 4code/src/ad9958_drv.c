@@ -136,8 +136,6 @@ void AD9958_Init(void)
 
 	/* Transfer registers */
 	IOUpdatePulse();
-
-  //DDS_RESET(1);
 }
 
 static bool AD9958_SetChannel(int iChannel)

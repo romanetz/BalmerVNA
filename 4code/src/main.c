@@ -9,6 +9,13 @@
 
 RCC_ClocksTypeDef RCC_Clocks;
 extern int32_t g_fft_min;
+extern int sampleQmin;
+extern int sampleQmax;
+extern int sampleMid;
+extern int sampleSqr;
+extern int samplePhase;
+
+void clearSampleNMinMAx();
 
 int main(void)
 {  
@@ -17,11 +24,6 @@ int main(void)
     SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
 
     DelayInit();
-
-    AD9958_Init();
-    DelayUs(30);
-    AD9958_Set_Frequency(0, 999000);
-    AD9958_Set_Frequency(2, 1234000);
 
     HwLcdInit();
     HwLcdPinLed(1);
@@ -61,74 +63,106 @@ int main(void)
     UTFT_setFont(BigFont);
 
     DacInitFullBuffer();
-    //DacSinusCalculate();
+    //DacSetFrequency(1000);
     bool ok = cs4272_Init();
 
-    UTFT_print(ok?"ok":"fail", UTFT_CENTER, 32, 0);
+
+    AD9958_Init();
+    DelayUs(30);
+    AD9958_Set_Frequency(0, 1000);
+    AD9958_Set_Level(0, 100);
+
+    //UTFT_print(ok?"ok":"fail", UTFT_CENTER, 32, 0);
 
     DacStart();
     cs4272_start();
 
+    {
+        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+        GPIO_InitTypeDef gpio; 
+        gpio.GPIO_Pin  = GPIO_Pin_0;
+        gpio.GPIO_Mode = GPIO_Mode_OUT;
+        gpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
+        gpio.GPIO_Speed = GPIO_Speed_25MHz;
+        gpio.GPIO_OType = GPIO_OType_PP;
+        GPIO_Init(GPIOC, &gpio);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_0, 1);
+    }
+
+    UTFT_print("max-min=", 30, 0, 0);
+    UTFT_print("sqr=", 30, 16, 0);
+    UTFT_print("mid=", 30, 32, 0);
+    UTFT_print("dp=", 30, 48, 0);
+
     int i=0;
-    const int divi = 10000;
+    const int divi = 20000;
+    uint16_t lastTime = TimeMs();
+    uint16_t dacReadPosLast = DacGetReadPos();
+    uint32_t dacSamples = 0;
+
+    uint16_t adcReadPosLast = cs4272_getPos();
+    uint32_t adcSamples = 0;
+
     while(1)
     {
         DelayUs(10);
         SoundQuant();
 
-        i++;
-
-        if(i%divi==0)
+        if(0)
         {
-            //UTFT_printNumI(i/divi, 120, 0, 4, ' ');
-            uint16_t* out_buffer = DacGetBuffer();
-            UTFT_printNumI(out_buffer[0], 120, 0, 4, ' ');
+            i++;
+
+            if(i%divi==0)
+            {
+                //UTFT_printNumI(i/divi, 120, 0, 4, ' ');
+                //uint16_t* out_buffer = DacGetBuffer();
+                UTFT_printNumI(sampleQmax-sampleQmin, 80, 0, 9, ' ');
+                UTFT_printNumI(sampleSqr, 80, 16, 9, ' ');
+                UTFT_printNumI(sampleMid-20470, 80, 32, 9, ' ');
+                UTFT_printNumI(DacGetDeltaPos(), 80, 48, 9, ' ');
+
+                clearSampleNMinMAx();
+            }
+        } else
+        {
+            //Считаем время и скоколько сэмплов прошло в ADC/DAC
+            //Как прошла секунда - выводим
+            uint16_t curTime = TimeMs();
+
+            uint16_t dacReadPosCur = DacGetReadPos();
+            if(dacReadPosLast<=dacReadPosCur)
+            {
+                dacSamples += (dacReadPosCur-dacReadPosLast);
+            } else
+            {
+                dacSamples += DAC_BUFFER_SIZE-dacReadPosLast+dacReadPosCur;
+            }
+            dacReadPosLast = dacReadPosCur;
+
+            uint16_t adcReadPosCur = cs4272_getPos();
+            if(adcReadPosLast<=adcReadPosCur)
+            {
+                adcSamples += (adcReadPosCur-adcReadPosLast);
+            } else
+            {
+                adcSamples += SOUND_BUFFER_SIZE-adcReadPosLast+adcReadPosCur;
+            }
+            adcReadPosLast = adcReadPosCur;
+
+            if((uint16_t)(curTime-lastTime)>=1000)
+            {
+                UTFT_printNumI(dacSamples, 80, 0, 9, ' ');
+                UTFT_printNumI(adcSamples/4, 80, 16, 9, ' ');
+                UTFT_printNumI(i++, 80, 32, 9, ' ');
+
+                lastTime = curTime;
+                dacSamples = 0;
+                adcSamples = 0;
+            }
+
         }
     }
 
-/*
-  DelayInit();
-  InitFft();
-  SpiInit();
-  DacInit();
-  processDataInit();
-  g_fft_min = cs4272_Init();
-
-  //DacSetPeriod(48, 600);
-  DacInitFullBuffer();
-  DacStart();
-  cs4272_start();
-
-  while (1)
-  {
-    //DelayMs(1);
-    DelayUs(10);
-    SoundQuant();
-    SpiQuant();
-  }
-*/
-/*
-  DelayInit();
-
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-  GPIO_InitTypeDef gpio; 
-  gpio.GPIO_Pin  = GPIO_Pin_14;
-  gpio.GPIO_Mode = GPIO_Mode_OUT;
-  gpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  gpio.GPIO_Speed = GPIO_Speed_25MHz;
-  gpio.GPIO_OType = GPIO_OType_PP;
-  GPIO_Init(GPIOB, &gpio);
-
-  while (1)
-  {
-    GPIO_SetBits(GPIOB, GPIO_Pin_14);
-    //DelayUs(1000);
-    DelayMs(1);
-    GPIO_ResetBits(GPIOB, GPIO_Pin_14);
-    //DelayUs(1000);
-    DelayMs(1);
-  }
-*/
 }
 
 #ifdef  USE_FULL_ASSERT

@@ -68,8 +68,7 @@ static void DacSquareCalculate()
 
 void DacSinusCalculate()
 {
-	float mul = 10*
-				2*pi/SinusBufferSize;
+	float mul = 2*pi/SinusBufferSize;
 	for(int i=0; i<SinusBufferSize; i++)
 	{
 		float s = sin(i*mul);
@@ -97,7 +96,8 @@ void DacInit(void)
 	DAC_StructInit(&DAC_InitStructure);
 	DAC_InitStructure.DAC_Trigger = DAC_Trigger_T2_TRGO;
 	DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
-	DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
+	//DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
+	DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Disable;
 	
 	DAC_Init(DAC_Channel_1, &DAC_InitStructure);
 	DAC_Cmd(DAC_Channel_1, ENABLE);

@@ -69,13 +69,35 @@ void DacCorrectWritePos()
 
 }
 
+int sampleQmin = 0xFFFFFF;
+int sampleQmax = -0xFFFFFF;
+
+int sampleCount = 0;
+int sampleMid = 0;
+uint64_t sampleSqr = 0;
+int samplePhase = 0;
+const int sampleCountMax = 1000;
+
+void clearSampleNMinMAx()
+{
+    sampleQmin = 0xFFFFFF;
+    sampleQmax = -0xFFFFFF;
+
+    sampleCount = 0;
+	sampleMid = 0;
+	sampleSqr = 0;
+	samplePhase = 0;
+}
+
 void OnSoundData(int32_t sampleQ, int32_t sampleI)
 {
 	uint16_t* out_buffer = DacGetBuffer();
 
 	int s;
-	s = (sampleQ>>(14))+DAC_ZERO;
-	//s = (sampleQ>>8)+DAC_ZERO;
+	//s = (sampleQ>>10)+DAC_ZERO;
+	//s = (sampleQ>>(14))+DAC_ZERO;
+	s = (sampleQ>>16)+DAC_ZERO;
+	//s = (sampleQ>>20)+DAC_ZERO;
 
 
 	if(s<0)
@@ -83,6 +105,43 @@ void OnSoundData(int32_t sampleQ, int32_t sampleI)
 	if(s>4095)
 		s=4095;
 	out_buffer[g_cur_pos] = s;
+/*
+	if(sampleQmin>sampleQ)
+		sampleQmin = sampleQ;
+	if(sampleQmax<sampleQ)
+		sampleQmax = sampleQ;
+*/
+	
+	if(sampleQmin>s)
+		sampleQmin = s;
+	if(sampleQmax<s)
+		sampleQmax = s;
+	if(samplePhase==0)
+	{
+		sampleCount++;
+		sampleMid += s;
+
+		if(sampleCount>=sampleCountMax)
+		{
+			sampleMid = (sampleMid*10)/sampleCountMax;
+			samplePhase = 1;
+			sampleCount = 0;
+		}
+	}
+
+	if(samplePhase==1)
+	{
+		int ss = s*10-sampleMid;
+
+		sampleCount++;
+		sampleSqr += ss*ss;
+
+		if(sampleCount>=sampleCountMax)
+		{
+			sampleSqr = sqrtf(sampleSqr/sampleCount);
+			samplePhase = 2;	
+		}
+	}
 
 	g_cur_pos = (g_cur_pos+1)%DAC_BUFFER_SIZE;
 }

@@ -57,5 +57,5 @@ uint16_t TimeUs()
 
 uint16_t TimeMs()
 {
-	return TIM7->CNT;
+	return TIM7->CNT / 8;
 }
