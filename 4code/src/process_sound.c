@@ -76,7 +76,7 @@ int sampleCount = 0;
 int sampleMid = 0;
 uint64_t sampleSqr = 0;
 int samplePhase = 0;
-const int sampleCountMax = 1000;
+const int sampleCountMax = 300;
 
 void clearSampleNMinMAx()
 {
@@ -94,9 +94,9 @@ void OnSoundData(int32_t sampleQ, int32_t sampleI)
 	uint16_t* out_buffer = DacGetBuffer();
 
 	int s;
-	//s = (sampleQ>>10)+DAC_ZERO;
+	s = (sampleQ>>10)+DAC_ZERO;
 	//s = (sampleQ>>(14))+DAC_ZERO;
-	s = (sampleQ>>16)+DAC_ZERO;
+	//s = (sampleQ>>16)+DAC_ZERO;
 	//s = (sampleQ>>20)+DAC_ZERO;
 
 

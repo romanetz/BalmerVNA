@@ -108,7 +108,7 @@ int main(void)
         DelayUs(10);
         SoundQuant();
 
-        if(0)
+        if(1)
         {
             i++;
 
@@ -118,8 +118,8 @@ int main(void)
                 //uint16_t* out_buffer = DacGetBuffer();
                 UTFT_printNumI(sampleQmax-sampleQmin, 80, 0, 9, ' ');
                 UTFT_printNumI(sampleSqr, 80, 16, 9, ' ');
-                UTFT_printNumI(sampleMid-20470, 80, 32, 9, ' ');
-                UTFT_printNumI(DacGetDeltaPos(), 80, 48, 9, ' ');
+                //UTFT_printNumI(sampleMid-20470, 80, 32, 9, ' ');
+                //UTFT_printNumI(DacGetDeltaPos(), 80, 48, 9, ' ');
 
                 clearSampleNMinMAx();
             }
