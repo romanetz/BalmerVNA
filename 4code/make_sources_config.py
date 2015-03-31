@@ -18,7 +18,10 @@ sources = [
 	"output" : "base",
 	"dirs" : [
 		"src",
-		"src/ili"
+		"src/ili",
+		"lib/USB_OTG/src",
+		"lib/USB_Device/Core/src",
+		"lib/USB_Device/Class/cdc/src"
 	]
 },
 {

@@ -13,6 +13,10 @@ C_INCLIDES+= -I../../SoundCard/code/Libraries/CMSIS/Include
 C_INCLIDES+= -I../../SoundCard/code/Libraries/CMSIS/Device/ST/STM32F4xx/Include
 C_INCLIDES+= -Iinc
 C_INCLIDES+= -includeinc/stm32f4xx_conf.h
+C_INCLIDES+= -Ilib/USB_OTG/inc
+C_INCLIDES+= -Ilib/Conf
+C_INCLIDES+= -Ilib/USB_Device/Core/inc
+C_INCLIDES+= -Ilib/USB_Device/Class/cdc/inc
 
 ifeq ($(MAKECMDGOALS),debug)
 C_DEFINES= -DDEBUG

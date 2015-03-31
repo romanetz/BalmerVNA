@@ -14994,14 +14994,14 @@ www.irf.com&lt;p&gt;
 <part name="C28" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="C29" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="GND31" library="supply1" deviceset="GND" device=""/>
-<part name="R40" library="rcl" deviceset="R-EU_" device="R0603" value="22K"/>
-<part name="R35" library="rcl" deviceset="R-EU_" device="R0603" value="22K"/>
+<part name="R40" library="rcl" deviceset="R-EU_" device="R0603" value="3K9"/>
+<part name="R35" library="rcl" deviceset="R-EU_" device="R0603" value="3K9"/>
 <part name="C34" library="rcl" deviceset="C-EU" device="C0805" value="1N"/>
 <part name="C33" library="rcl" deviceset="C-EU" device="C0805" value="1N"/>
 <part name="GND36" library="supply1" deviceset="GND" device=""/>
 <part name="GND35" library="supply1" deviceset="GND" device=""/>
-<part name="C32" library="rcl" deviceset="C-EU" device="C0805" value="220N"/>
-<part name="C31" library="rcl" deviceset="C-EU" device="C0805" value="220N"/>
+<part name="C32" library="rcl" deviceset="C-EU" device="C0805" value="2u2"/>
+<part name="C31" library="rcl" deviceset="C-EU" device="C0805" value="2u2"/>
 <part name="C27" library="rcl" deviceset="C-EU" device="C0603" value="100N"/>
 <part name="C26" library="rcl" deviceset="C-EU" device="C0805" value="100P"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
@@ -15023,14 +15023,14 @@ www.irf.com&lt;p&gt;
 <part name="C17" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="C14" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
-<part name="R27" library="rcl" deviceset="R-EU_" device="R0603" value="4K7"/>
-<part name="R23" library="rcl" deviceset="R-EU_" device="R0603" value="4K7"/>
+<part name="R27" library="rcl" deviceset="R-EU_" device="R0603" value="3K9"/>
+<part name="R23" library="rcl" deviceset="R-EU_" device="R0603" value="3K9"/>
 <part name="C23" library="rcl" deviceset="C-EU" device="C0805" value="1N"/>
 <part name="C22" library="rcl" deviceset="C-EU" device="C0805" value="1N"/>
 <part name="GND25" library="supply1" deviceset="GND" device=""/>
 <part name="GND24" library="supply1" deviceset="GND" device=""/>
-<part name="C21" library="rcl" deviceset="C-EU" device="C0805" value="220N"/>
-<part name="C20" library="rcl" deviceset="C-EU" device="C0805" value="220N"/>
+<part name="C21" library="rcl" deviceset="C-EU" device="C0805" value="2u2"/>
+<part name="C20" library="rcl" deviceset="C-EU" device="C0805" value="2u2"/>
 <part name="C16" library="rcl" deviceset="C-EU" device="C0603" value="100N"/>
 <part name="C15" library="rcl" deviceset="C-EU" device="C0805" value="100P"/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
@@ -15040,7 +15040,7 @@ www.irf.com&lt;p&gt;
 <part name="C19" library="rcl" deviceset="C-EU" device="C0805" value="nc"/>
 <part name="R29" library="rcl" deviceset="R-EU_" device="R0603" value="330K"/>
 <part name="GND27" library="supply1" deviceset="GND" device=""/>
-<part name="R28" library="rcl" deviceset="R-EU_" device="R0603" value="10K"/>
+<part name="R28" library="rcl" deviceset="R-EU_" device="R0603" value="9K1"/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="R8" library="rcl" deviceset="R-EU_" device="R0603" value="220"/>
 <part name="R20" library="rcl" deviceset="R-EU_" device="R0603" value="47R"/>
@@ -15056,20 +15056,20 @@ www.irf.com&lt;p&gt;
 <part name="R21" library="rcl" deviceset="R-EU_" device="R0805" value="49R9"/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="R3" library="rcl" deviceset="R-EU_" device="R0805" value="49R9"/>
-<part name="C18" library="rcl" deviceset="C-EU" device="C0805" value="220N"/>
+<part name="C18" library="rcl" deviceset="C-EU" device="C0805" value="1u"/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="U1" library="vnwa" deviceset="SA612" device=""/>
 <part name="R1" library="rcl" deviceset="R-EU_" device="R0603" value="510"/>
 <part name="C3" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
-<part name="R7" library="rcl" deviceset="R-EU_" device="R0603" value="15K"/>
-<part name="R4" library="rcl" deviceset="R-EU_" device="R0603" value="15K"/>
+<part name="R7" library="rcl" deviceset="R-EU_" device="R0603" value="3K9"/>
+<part name="R4" library="rcl" deviceset="R-EU_" device="R0603" value="3K9"/>
 <part name="C11" library="rcl" deviceset="C-EU" device="C0805" value="1N"/>
 <part name="C10" library="rcl" deviceset="C-EU" device="C0805" value="1N"/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
-<part name="C7" library="rcl" deviceset="C-EU" device="C0805" value="220N"/>
-<part name="C8" library="rcl" deviceset="C-EU" device="C0805" value="220N"/>
+<part name="C7" library="rcl" deviceset="C-EU" device="C0805" value="2u2"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="C0805" value="2u2"/>
 <part name="C2" library="rcl" deviceset="C-EU" device="C0603" value="100N"/>
 <part name="C1" library="rcl" deviceset="C-EU" device="C0805" value="100P"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
@@ -15082,10 +15082,10 @@ www.irf.com&lt;p&gt;
 <part name="R2" library="rcl" deviceset="R-EU_" device="R0805" value="49R9"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
-<part name="C4" library="rcl" deviceset="C-EU" device="C0805" value="220N"/>
+<part name="C4" library="rcl" deviceset="C-EU" device="C0805" value="1u"/>
 <part name="C5" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
-<part name="R30" library="rcl" deviceset="R-EU_" device="R0603" value="10K"/>
+<part name="R30" library="rcl" deviceset="R-EU_" device="R0603" value="9K1"/>
 <part name="GND26" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="vnwa" deviceset="+6V0" device=""/>
 <part name="P+4" library="vnwa" deviceset="+6V0" device=""/>
@@ -15112,11 +15112,11 @@ www.irf.com&lt;p&gt;
 <part name="X2" library="con-phoenix-254" deviceset="MPT2" device=""/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="C24" library="rcl" deviceset="C-EU" device="C0603" value="100N"/>
-<part name="C25" library="rcl" deviceset="C-EU" device="C0805" value="220N"/>
+<part name="C25" library="rcl" deviceset="C-EU" device="C0805" value="1u"/>
 <part name="Q1" library="transistor-small-signal" deviceset="BSS84" device="" value="IRML6302"/>
-<part name="R10" library="rcl" deviceset="R-EU_" device="R0603" value="4.7k"/>
+<part name="R10" library="rcl" deviceset="R-EU_" device="R0603" value="5K4"/>
 <part name="Q2" library="transistor-small-signal" deviceset="BSS84" device="" value="IRML6302"/>
-<part name="R42" library="rcl" deviceset="R-EU_" device="R0603" value="4.7k"/>
+<part name="R42" library="rcl" deviceset="R-EU_" device="R0603" value="5K4"/>
 <part name="P+7" library="vnwa" deviceset="+6V0" device=""/>
 <part name="R43" library="rcl" deviceset="R-EU_" device="R0603" value="68k"/>
 <part name="R44" library="rcl" deviceset="R-EU_" device="R0603" value="68k"/>

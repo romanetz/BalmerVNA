@@ -1950,7 +1950,7 @@ design rules under a new name.</description>
 <element name="X-AD9959" library="balmer" package="PIN8X2_SMD" value="PIN8X2" x="33.02" y="9.525" rot="MR270"/>
 <element name="R3" library="rcl" package="R0603" value="56" x="51.435" y="32.52"/>
 <element name="R12" library="rcl" package="R0603" value="56" x="51.435" y="34.925"/>
-<element name="R13" library="rcl" package="R0603" value="1K5" x="51.435" y="30.22"/>
+<element name="R13" library="rcl" package="R0603" value="1K5(infinity)" x="51.435" y="30.22"/>
 <element name="R14" library="rcl" package="R0603" value="33" x="32.77" y="16" rot="MR270"/>
 <element name="R15" library="rcl" package="R0603" value="33" x="34.8" y="16" rot="MR270"/>
 <element name="R16" library="rcl" package="R0603" value="33" x="36.83" y="16" rot="MR270"/>
@@ -2020,7 +2020,7 @@ design rules under a new name.</description>
 <attribute name="OC_FARNELL" value="unknown" x="30.48" y="72.39" size="1.778" layer="28" rot="MR0" display="off"/>
 </element>
 <element name="C13" library="rcl" package="C0603" value="100n" x="30.48" y="66.04" rot="MR90"/>
-<element name="C29" library="rcl" package="153CLV-0605" value="100uF" x="-5.08" y="5.08"/>
+<element name="C29" library="rcl" package="153CLV-0605" value="100uF" x="22.86" y="57.785"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -2255,7 +2255,7 @@ design rules under a new name.</description>
 <wire x1="39.37" y1="74.93" x2="57.96" y2="74" width="0" layer="19" extent="1-1"/>
 <wire x1="3" y1="3" x2="5.715" y2="6.35" width="0" layer="19" extent="1-1"/>
 <wire x1="3" y1="74" x2="3.335" y2="64.295" width="0" layer="19" extent="16-16"/>
-<wire x1="-7.78" y1="5.08" x2="3" y2="3" width="0" layer="19" extent="1-1"/>
+<wire x1="20.16" y1="57.785" x2="3" y2="3" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="+3V3">
 <contactref element="IC3" pad="64"/>
@@ -2606,7 +2606,7 @@ design rules under a new name.</description>
 <wire x1="25.4" y1="59.475" x2="25.4" y2="57.47" width="0.3048" layer="16"/>
 <wire x1="25.4" y1="57.47" x2="25.72" y2="57.15" width="0.3048" layer="16"/>
 <contactref element="C29" pad="+"/>
-<wire x1="-2.38" y1="5.08" x2="23.075" y2="53.59" width="0" layer="19" extent="1-16"/>
+<wire x1="25.56" y1="57.785" x2="23.075" y2="53.59" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="AVCC">
 <contactref element="C26" pad="1"/>
@@ -2712,7 +2712,7 @@ design rules under a new name.</description>
 <wire x1="47.335" y1="33.365" x2="48.895" y2="34.925" width="0.25" layer="1"/>
 <wire x1="48.895" y1="34.925" x2="50.585" y2="34.925" width="0.25" layer="1"/>
 </signal>
-<signal name="N$16">
+<signal name="D+">
 <contactref element="R12" pad="2"/>
 <contactref element="R13" pad="2"/>
 <contactref element="USB" pad="1"/>
@@ -3001,7 +3001,7 @@ design rules under a new name.</description>
 <wire x1="25.415" y1="31.365" x2="14.57" y2="31.365" width="0.25" layer="1"/>
 <wire x1="14.57" y1="31.365" x2="12.915" y2="33.02" width="0.25" layer="1"/>
 </signal>
-<signal name="N$3">
+<signal name="D-">
 <contactref element="R3" pad="2"/>
 <contactref element="USB" pad="2"/>
 <wire x1="55.88" y1="33.655" x2="53.42" y2="33.655" width="0.25" layer="1"/>

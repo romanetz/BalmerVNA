@@ -7,6 +7,11 @@
 #include "cs4272.h"
 #include "process_sound.h"
 
+#include "usbd_cdc_core.h"
+#include "usbd_usr.h"
+#include "usbd_desc.h"
+#include "usbd_cdc_vcp.h"
+
 RCC_ClocksTypeDef RCC_Clocks;
 extern int32_t g_fft_min;
 extern int sampleQmin;
@@ -17,6 +22,8 @@ extern int samplePhase;
 
 void clearSampleNMinMAx();
 
+__ALIGN_BEGIN USB_OTG_CORE_HANDLE  USB_OTG_dev __ALIGN_END;
+
 int main(void)
 {  
     // SysTick end of count event each 1ms
@@ -24,6 +31,12 @@ int main(void)
     SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
 
     DelayInit();
+
+    USBD_Init(&USB_OTG_dev,
+                USB_OTG_FS_CORE_ID,
+                &USR_desc,
+                &USBD_CDC_cb,
+                &USR_cb);
 
     HwLcdInit();
     HwLcdPinLed(1);
@@ -102,6 +115,9 @@ int main(void)
 
     uint16_t adcReadPosLast = cs4272_getPos();
     uint32_t adcSamples = 0;
+
+    char* ptr = "ASDFGHJKL";
+    VCP_send_buffer((uint8_t*)ptr, strlen(ptr));
 
     while(1)
     {
