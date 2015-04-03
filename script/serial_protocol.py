@@ -1,6 +1,7 @@
 # coding=UTF-8
 import time
 import serial
+import struct
 
 # ls /dev/cu.* <--- find device in Mac OS X
 
@@ -79,7 +80,7 @@ def receive():
 	command = None
 	while ser.inWaiting() > 0:
 		c = ser.read(1)
-		print(c)
+		#print(c)
 		if ord(c)==0xFF:
 			command = decode(lastData)
 			lastData = b''
@@ -104,18 +105,49 @@ def test():
 	s1 = decode(se)
 	print(s1)
 	pass
+
+def sendRange(amin, amax):
+	send(1, struct.pack("HH", amin, amax))
+	ret = receive()
+	assert(ret[0]==1)
+	if len(ret)!=(1+(amax-amin)*2):
+		print("bad size :", ret)
+
+
+	bad = False
+	offset = 1
+	for x in range(amin, amax):
+		data = struct.unpack_from("H", ret, offset)[0]
+		if data!=x:
+			bad = True
+			break
+		offset += 2
+
+	if bad:
+		print("bad value offset=", offset, ":",ret)
+	else:
+		print("range received ok ", amin, ",", amax, " size=", len(ret))
+
 def test2():
 	if not connect():
 		print("Cannot connect device")
-	send(2, b"DDDxyz")
-	ret = receive()
-	if ret:
-		print(ret)
+	if False:
+		send(2, b"DDDxyz")
+		ret = receive()
+		if ret:
+			print(ret)
 
-	send(3, b"abX")
-	ret = receive()
-	if ret:
-		print(ret)
+		send(3, b"abX")
+		ret = receive()
+		if ret:
+			print(ret)
+
+	sendRange(3,8)
+	sendRange(1,30)
+	sendRange(0,100)
+	sendRange(0,300)
+	sendRange(0,600)
+	#sendRange(0,1200)
 
 	close()
 	pass

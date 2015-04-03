@@ -55,21 +55,37 @@ void DataReceive(uint8_t* data, uint32_t size)
 	}
 }
 
+void USBFlush(void)
+{
+	VCP_send_buffer(USB_Tx_Buffer, USB_Tx_length);
+	USB_Tx_length = 0;
+}
+
+void USBSend(void)
+{
+	USB_Tx_Buffer[USB_Tx_length++] = 0xFF; //end packet
+	USBFlush();
+}
+
+
 void USBAdd(uint8_t* data, uint32_t size)
 {
-	uint32_t i;
-	if(USB_Tx_length+size>VIRTUAL_COM_PORT_DATA_SIZE-1)
-		size = VIRTUAL_COM_PORT_DATA_SIZE-1 - USB_Tx_length;
-	for (i=0; i<size; i++)
+	for(uint32_t i=0; i<size; i++)
 	{
 		if(data[i]>=0xFE)
 		{
 			USB_Tx_Buffer[USB_Tx_length++] = 0xFE;
+			if(USB_Tx_length>=VIRTUAL_COM_PORT_DATA_SIZE)
+				USBFlush();
+
 			USB_Tx_Buffer[USB_Tx_length++] = data[i]-0xFE;
 		} else
 		{
 			USB_Tx_Buffer[USB_Tx_length++] = data[i];
 		}
+
+		if(USB_Tx_length>=VIRTUAL_COM_PORT_DATA_SIZE)
+			USBFlush();
 	}
 }
 
@@ -93,9 +109,3 @@ void USBAdd32(uint32_t data)
 	USBAdd((uint8_t*)&data, sizeof(data));
 }
 
-void USBSend(void)
-{
-	USB_Tx_Buffer[USB_Tx_length++] = 0xFF; //end packet
-	VCP_send_buffer(USB_Tx_Buffer, USB_Tx_length);
-	USB_Tx_length = 0;
-}

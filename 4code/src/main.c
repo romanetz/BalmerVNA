@@ -192,6 +192,18 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
 
     switch(command)
     {
+    case 1:
+        {
+            USBAdd8(command);
+            uint16_t amin = ((uint16_t*)data)[0];
+            uint16_t amax = ((uint16_t*)data)[1];
+            for(uint16_t i=amin; i<amax; i++)
+            {
+                USBAdd16(i);
+            }
+            USBSend();
+        }
+        break;
     default:
         USBAdd8(command);
         USBAdd8(size);
