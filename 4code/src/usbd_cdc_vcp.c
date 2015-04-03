@@ -26,6 +26,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc_vcp.h"
 #include "stm32f4xx_conf.h"
+#include "data_process.h"
 
 /* Private variables ---------------------------------------------------------*/
 LINE_CODING linecoding = {
@@ -204,66 +205,11 @@ uint32_t APP_tx_ptr_head;
 uint32_t APP_tx_ptr_tail;
 
 static uint16_t VCP_DataRx(uint8_t* Buf, uint32_t Len) {
-	uint32_t i;
+	DataReceive(Buf, Len);
 
-	for (i = 0; i < Len; i++) {
-		APP_Tx_Buffer[APP_tx_ptr_head] = *(Buf + i);
-		APP_tx_ptr_head++;
-		if (APP_tx_ptr_head == APP_TX_BUF_SIZE)
-			APP_tx_ptr_head = 0;
-
-		if (APP_tx_ptr_head == APP_tx_ptr_tail)
-			return USBD_FAIL;
-	}
+	//return USBD_FAIL; if buffer overflow
 
 	return USBD_OK;
-}
-
-int VCP_get_char(uint8_t *buf) {
-	if (APP_tx_ptr_head == APP_tx_ptr_tail)
-		return 0;
-
-	*buf = APP_Tx_Buffer[APP_tx_ptr_tail];
-	APP_tx_ptr_tail++;
-	if (APP_tx_ptr_tail == APP_TX_BUF_SIZE)
-		APP_tx_ptr_tail = 0;
-
-	return 1;
-}
-
-int VCP_get_string(uint8_t *buf) {
-	if (APP_tx_ptr_head == APP_tx_ptr_tail)
-		return 0;
-
-	while (!APP_Tx_Buffer[APP_tx_ptr_tail]
-			|| APP_Tx_Buffer[APP_tx_ptr_tail] == '\n'
-			|| APP_Tx_Buffer[APP_tx_ptr_tail] == '\r') {
-		APP_tx_ptr_tail++;
-		if (APP_tx_ptr_tail == APP_TX_BUF_SIZE)
-			APP_tx_ptr_tail = 0;
-		if (APP_tx_ptr_head == APP_tx_ptr_tail)
-			return 0;
-	}
-
-	int i = 0;
-	do {
-		*(buf + i) = APP_Tx_Buffer[i + APP_tx_ptr_tail];
-		i++;
-
-		if ((APP_tx_ptr_tail + i) == APP_TX_BUF_SIZE)
-			i = -APP_tx_ptr_tail;
-		if (APP_tx_ptr_head == (APP_tx_ptr_tail + i))
-			return 0;
-
-	} while (APP_Tx_Buffer[APP_tx_ptr_tail + i]
-			&& APP_Tx_Buffer[APP_tx_ptr_tail + i] != '\n'
-			&& APP_Tx_Buffer[APP_tx_ptr_tail + i] != '\r');
-
-	*(buf + i) = 0;
-	APP_tx_ptr_tail += i;
-	if (APP_tx_ptr_tail >= APP_TX_BUF_SIZE)
-		APP_tx_ptr_tail -= APP_TX_BUF_SIZE;
-	return i;
 }
 
 /**

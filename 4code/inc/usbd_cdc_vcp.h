@@ -53,8 +53,6 @@ typedef struct
 
 void VCP_put_char(uint8_t buf);
 void VCP_send_str(uint8_t* buf);
-int VCP_get_char(uint8_t *buf);
-int VCP_get_string(uint8_t *buf);
 void VCP_send_buffer(uint8_t* buf, int len);
 
 #define DEFAULT_CONFIG                  0

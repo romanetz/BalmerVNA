@@ -8,6 +8,7 @@ DEPS += \
 	output/base/src/ad9958_drv.d \
 	output/base/src/cs4272.d \
 	output/base/src/dac.d \
+	output/base/src/data_process.d \
 	output/base/src/delay.d \
 	output/base/src/main.d \
 	output/base/src/process_sound.d \
@@ -53,6 +54,7 @@ OBJS += \
 	output/base/src/ad9958_drv.o \
 	output/base/src/cs4272.o \
 	output/base/src/dac.o \
+	output/base/src/data_process.o \
 	output/base/src/delay.o \
 	output/base/src/main.o \
 	output/base/src/process_sound.o \
@@ -107,6 +109,10 @@ output/base/src/cs4272.o: ./src/cs4272.c
 
 output/base/src/dac.o: ./src/dac.c
 	@echo 'Building target: dac.c'
+	@$(CC) $(C_FLAGS) -o "$@" "$<"
+
+output/base/src/data_process.o: ./src/data_process.c
+	@echo 'Building target: data_process.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
 output/base/src/delay.o: ./src/delay.c

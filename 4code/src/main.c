@@ -11,6 +11,7 @@
 #include "usbd_usr.h"
 #include "usbd_desc.h"
 #include "usbd_cdc_vcp.h"
+#include "data_process.h"
 
 RCC_ClocksTypeDef RCC_Clocks;
 extern int32_t g_fft_min;
@@ -116,8 +117,8 @@ int main(void)
     uint16_t adcReadPosLast = cs4272_getPos();
     uint32_t adcSamples = 0;
 
-    char* ptr = "ASDFGHJKL";
-    VCP_send_buffer((uint8_t*)ptr, strlen(ptr));
+    //char* ptr = "ASDFGHJKL";
+    //VCP_send_buffer((uint8_t*)ptr, strlen(ptr));
 
     while(1)
     {
@@ -179,6 +180,24 @@ int main(void)
         }
     }
 
+}
+
+void PacketReceive(volatile uint8_t* data, uint32_t size)
+{
+    if(size==0)
+        return;
+    uint8_t command = data[0];
+    data++;
+    size--;
+
+    switch(command)
+    {
+    default:
+        USBAdd8(command);
+        USBAdd8(size);
+        USBSend();
+        break;
+    }
 }
 
 #ifdef  USE_FULL_ASSERT
