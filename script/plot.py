@@ -30,9 +30,38 @@ def plotRaw(data):
 	plt.show()
 	pass
 
+def plotOut():
+	data = readJson("out.json")
+	fig, ax = plt.subplots()
+	#ax.set_xlabel("Time ")
+	#ax.set_xscale('log')
+	#ax.set_ylabel('Y')
+
+	I = data['I']
+	Q = data['Q']
+
+	timeList = makeTimeList(I, 0, 1.0/44800)
+
+	ax.plot (timeList, I, color='red')
+	ax.plot (timeList, Q, color='blue')
+
+	plt.show()
+
+def plotIQ():
+	jout = readJson("freq.json")
+	fig, ax = plt.subplots()
+	freq = jout['freq']
+	I = jout['I']
+	Q = jout['Q']
+	ax.plot (freq, I, color='red')
+	ax.plot (freq, Q, color='blue')
+	plt.show()
+	pass
+
+
 def main():
-	data = readJson("out.json")["data"]
-	plotRaw(data)
+	plotOut()
+	#plotIQ()
 	pass
 
 main()

@@ -50,9 +50,10 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
     	break;
     case COMMAND_START_SAMPLING:
     	{
-		    UTFT_setColor(255, 255, 255);
+		    /*UTFT_setColor(255, 255, 255);
 		    UTFT_setFont(BigFont);
     		UTFT_print("start", 30, 16, 0);
+    		*/
 			SamplingStart();
     	}
     	break;

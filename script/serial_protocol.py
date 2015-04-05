@@ -72,29 +72,51 @@ def send(command, data=None):
 	full_data.append(0xFF)
 	#print("Send:" , full_data)
 	ser.write(full_data)
+	ser.flush()
 	pass
 
 def receive():
 	global lastData
-	time.sleep(0.001)
-	for i in range(10):
-		time.sleep(0.001)
+	time.sleep(0.01)
+
 	command = None
-	while ser.inWaiting() > 0:
-		c = ser.read(1)
-		#print(c)
-		if ord(c)==0xFF:
-			command = decode(lastData)
-			lastData = b''
+	for i in range(10):
+		while ser.inWaiting() > 0:
+			c = ser.read(1)
+			#print(c)
+			if ord(c)==0xFF:
+				command = decode(lastData)
+				lastData = b''
+				break
+			else:
+				lastData += c
+		if command!=None:
 			break
 		else:
-			lastData += c
+			time.sleep(0.01)
+			print("receive null", i)
+		pass
+
+	if command==None:
+		if len(lastData)>20:
+			print(command, len(lastData))
+		else:
+			print(command, lastData)
+	elif len(command)>20:
+		print(len(command), lastData)
+	else:
+		print(command, lastData)
 	return command
 
 def printBin(s):
 	for c in s:
 		print(hex(ord(c)))
 	print
+	pass
+
+def clearQueue():
+	ser.flushInput()
+	ser.flushOutput()
 	pass
 
 def test():
