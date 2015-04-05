@@ -5,8 +5,11 @@
 void OnSoundData(int32_t sampleQ, int32_t sampleI);
 void SoundQuant();
 
-void InitFft();
+void SamplingStart();
+bool SamplingStarted();
 
+/*
+void InitFft();
 //Куда в текущий момент пишем в буфере
 uint16_t DacGetWritePos();
 
@@ -14,3 +17,8 @@ uint16_t DacGetWritePos();
 uint16_t DacGetDeltaPos();
 
 extern uint16_t fft_to_display[FFT_LENGTH];
+*/
+
+#define SAMPLE_BUFFER_SIZE 1024
+extern int32_t g_samplesQ[SAMPLE_BUFFER_SIZE];
+extern int32_t g_samplesI[SAMPLE_BUFFER_SIZE];

@@ -10,20 +10,14 @@ void CalculateFft();
 
 static uint16_t g_cur_pos = DAC_BUFFER_SIZE/2;
 static uint16_t g_dma_cur_pos = 0;
-static uint16_t prev_time_ms = 0;
 
 uint16_t g_sound_quant_time = 0;
 
-//Количество сэмплов, сгенерированных с ADC (мгновенное значение)
-static uint32_t summary_adc_samples = 0;
-//Количество сэмплов, воспроизведенных DAC (мгновенное значение)
-static uint32_t summary_dac_samples = 0;
-static uint16_t adc_cur_pos_momental = 0;
-static uint16_t dac_cur_pos_momental = 0;
+int32_t g_samplesQ[SAMPLE_BUFFER_SIZE];
+int32_t g_samplesI[SAMPLE_BUFFER_SIZE];
+static uint32_t samplesCurPos = SAMPLE_BUFFER_SIZE;
 
 void OnSoundDataFft(int32_t sampleQ, int32_t sampleI);
-
-void UpdateSummarySamples(uint16_t adc_pos);
 
 uint16_t DacGetWritePos()
 {
@@ -46,104 +40,34 @@ uint16_t DacGetDeltaPos()
 	//return (uint16_t)summary_adc_samples-(uint16_t)summary_dac_samples;
 }
 
-void DacCorrectWritePos()
-{
-	return;
-	if(summary_adc_samples==summary_dac_samples)
-	{
-	} else
-	if(summary_adc_samples>summary_dac_samples)
-	{
-		uint16_t pos_delta = summary_adc_samples-summary_dac_samples;
-
-		if(pos_delta>1)
-		{
-			g_cur_pos += DAC_BUFFER_SIZE-pos_delta;
-			g_cur_pos %= DAC_BUFFER_SIZE;
-			summary_dac_samples = summary_adc_samples;
-		}
-	} else
-	{
-		//Тут код еще не написали, надо проверить случай, когда таймер идет быстрее
-	}
-
-}
-
-int sampleQmin = 0xFFFFFF;
-int sampleQmax = -0xFFFFFF;
-
-int sampleCount = 0;
-int sampleMid = 0;
-uint64_t sampleSqr = 0;
-int samplePhase = 0;
-const int sampleCountMax = 300;
-
-void clearSampleNMinMAx()
-{
-    sampleQmin = 0xFFFFFF;
-    sampleQmax = -0xFFFFFF;
-
-    sampleCount = 0;
-	sampleMid = 0;
-	sampleSqr = 0;
-	samplePhase = 0;
-}
-
 void OnSoundData(int32_t sampleQ, int32_t sampleI)
 {
-	uint16_t* out_buffer = DacGetBuffer();
-
-	int s;
-	s = (sampleQ>>10)+DAC_ZERO;
-	//s = (sampleQ>>(14))+DAC_ZERO;
-	//s = (sampleQ>>16)+DAC_ZERO;
-	//s = (sampleQ>>20)+DAC_ZERO;
-
-
-	if(s<0)
-		s = 0;
-	if(s>4095)
-		s=4095;
-	out_buffer[g_cur_pos] = s;
-/*
-	if(sampleQmin>sampleQ)
-		sampleQmin = sampleQ;
-	if(sampleQmax<sampleQ)
-		sampleQmax = sampleQ;
-*/
-	
-	if(sampleQmin>s)
-		sampleQmin = s;
-	if(sampleQmax<s)
-		sampleQmax = s;
-	if(samplePhase==0)
+	if(samplesCurPos<SAMPLE_BUFFER_SIZE)
 	{
-		sampleCount++;
-		sampleMid += s;
-
-		if(sampleCount>=sampleCountMax)
-		{
-			sampleMid = (sampleMid*10)/sampleCountMax;
-			samplePhase = 1;
-			sampleCount = 0;
-		}
+		g_samplesQ[samplesCurPos] = sampleQ>>8;
+		g_samplesI[samplesCurPos] = sampleI>>8;
+		samplesCurPos++;
+		return;
 	}
 
-	if(samplePhase==1)
+	if(0)//Write to DAC
 	{
-		int ss = s*10-sampleMid;
+		uint16_t* out_buffer = DacGetBuffer();
 
-		sampleCount++;
-		sampleSqr += ss*ss;
+		int s;
+		s = (sampleQ>>10)+DAC_ZERO;
+		//s = (sampleQ>>(14))+DAC_ZERO;
+		//s = (sampleQ>>16)+DAC_ZERO;
+		//s = (sampleQ>>20)+DAC_ZERO;
 
-		if(sampleCount>=sampleCountMax)
-		{
-			sampleSqr = sqrtf(sampleSqr/sampleCount);
-			samplePhase = 2;	
-		}
+		if(s<0)
+			s = 0;
+		if(s>4095)
+			s=4095;
+		out_buffer[g_cur_pos] = s;
+
+		g_cur_pos = (g_cur_pos+1)%DAC_BUFFER_SIZE;
 	}
-
-	g_cur_pos = (g_cur_pos+1)%DAC_BUFFER_SIZE;
 }
 
 void CopySoundData(uint16_t start, uint16_t count)
@@ -164,7 +88,6 @@ void SoundQuant()
 	uint16_t start = TimeUs();
 
 	uint16_t pos = cs4272_getPos();
-	UpdateSummarySamples(pos);
 
 	if(g_dma_cur_pos==pos)
 	{
@@ -188,51 +111,17 @@ void SoundQuant()
 		}
 	}
 
-	//Раз в секунду корректируем положение записи, чтобы была синхронизация частоты чтением и записью.
-	uint16_t cur_time = TimeMs();
-	if( ((uint16_t)(cur_time-prev_time_ms))>1000)
-	{
-		prev_time_ms = cur_time;
-		DacCorrectWritePos();
-	}
-
 	uint16_t quant_time = TimeUs()-start;
 	if(quant_time>5)
 		g_sound_quant_time = quant_time;
 }
 
-void UpdateSummarySamples(uint16_t adc_pos)
+void SamplingStart()
 {
-//summary_adc_samples
-//summary_dac_samples
-	uint16_t pos = adc_pos;
-	if(adc_cur_pos_momental==pos)
-	{
-	} else
-	if(adc_cur_pos_momental<pos)
-	{
-		summary_adc_samples += (pos-adc_cur_pos_momental)/4;
-	} else
-	{
-		summary_adc_samples += (SOUND_BUFFER_SIZE-adc_cur_pos_momental)/4;
-		summary_adc_samples += (pos)/4;
-	}
-	adc_cur_pos_momental = pos;
+	samplesCurPos = 0;	
+}
 
-	pos = DacGetReadPos();
-
-	if(dac_cur_pos_momental==pos)
-	{
-	} else
-	if(dac_cur_pos_momental<pos)
-	{
-		summary_dac_samples += pos-dac_cur_pos_momental;
-	} else
-	{
-		summary_dac_samples += DAC_BUFFER_SIZE-dac_cur_pos_momental;
-		summary_dac_samples += pos;
-	}
-
-	dac_cur_pos_momental = pos;
-
+bool SamplingStarted()
+{
+	return samplesCurPos<SAMPLE_BUFFER_SIZE;
 }

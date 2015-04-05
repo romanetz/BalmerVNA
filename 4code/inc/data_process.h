@@ -14,5 +14,6 @@ void USBAddStr(char* data);
 void USBAdd8(uint8_t data);
 void USBAdd16(uint16_t data);
 void USBAdd32(uint32_t data);
+void USBAdd32i(int32_t data);
 //send command 
 void USBSend(void);

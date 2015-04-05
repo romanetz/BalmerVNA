@@ -70,13 +70,15 @@ def send(command, data=None):
 	full_data.append(command)
 	full_data += encode(data)
 	full_data.append(0xFF)
-	print("Send:" , full_data)
+	#print("Send:" , full_data)
 	ser.write(full_data)
 	pass
 
 def receive():
 	global lastData
-	time.sleep(0.01)
+	time.sleep(0.001)
+	for i in range(10):
+		time.sleep(0.001)
 	command = None
 	while ser.inWaiting() > 0:
 		c = ser.read(1)
@@ -105,28 +107,6 @@ def test():
 	s1 = decode(se)
 	print(s1)
 	pass
-
-def sendRange(amin, amax):
-	send(1, struct.pack("HH", amin, amax))
-	ret = receive()
-	assert(ret[0]==1)
-	if len(ret)!=(1+(amax-amin)*2):
-		print("bad size :", ret)
-
-
-	bad = False
-	offset = 1
-	for x in range(amin, amax):
-		data = struct.unpack_from("H", ret, offset)[0]
-		if data!=x:
-			bad = True
-			break
-		offset += 2
-
-	if bad:
-		print("bad value offset=", offset, ":",ret)
-	else:
-		print("range received ok ", amin, ",", amax, " size=", len(ret))
 
 def test2():
 	if not connect():
@@ -159,4 +139,7 @@ def test3():
 		print(x)
 	pass
 
-test2()
+if __name__ == "__main__":
+	test2()
+	pass
+

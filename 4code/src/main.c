@@ -3,7 +3,6 @@
 #include "ili/hw_ili9341.h"
 #include "ili/UTFT.h"
 #include "ad9958_drv.h"
-#include "dac.h"
 #include "cs4272.h"
 #include "process_sound.h"
 
@@ -14,14 +13,6 @@
 #include "data_process.h"
 
 RCC_ClocksTypeDef RCC_Clocks;
-extern int32_t g_fft_min;
-extern int sampleQmin;
-extern int sampleQmax;
-extern int sampleMid;
-extern int sampleSqr;
-extern int samplePhase;
-
-void clearSampleNMinMAx();
 
 __ALIGN_BEGIN USB_OTG_CORE_HANDLE  USB_OTG_dev __ALIGN_END;
 
@@ -44,7 +35,7 @@ int main(void)
 
     UTFT_InitLCD(UTFT_LANDSCAPE);
 
-    DacInit();
+    //DacInit();
     UTFT_setBackColor(0,0,0);
     UTFT_clrScr();
 
@@ -76,140 +67,59 @@ int main(void)
     UTFT_setColor(0, 255, 255);
     UTFT_setFont(BigFont);
 
-    DacInitFullBuffer();
+    //DacInitFullBuffer();
     //DacSetFrequency(1000);
     bool ok = cs4272_Init();
+    (void)ok;
 
 
     AD9958_Init();
     DelayUs(30);
-    AD9958_Set_Frequency(0, 1000);
-    AD9958_Set_Level(0, 100);
+    uint32_t freq = 100000;
+    uint16_t level = 200;
+    AD9958_Set_Frequency(0, freq);
+    AD9958_Set_Level(0, level);
+    AD9958_Set_Frequency(1, freq+1000);
+    AD9958_Set_Level(1, level);
 
     //UTFT_print(ok?"ok":"fail", UTFT_CENTER, 32, 0);
 
-    DacStart();
+    //DacStart();
     cs4272_start();
 
     {
+        //GPIO_Pin_0 - переключение входов CS4242
+        //GPIO_Pin_1 - переключение сигнала на RF_INPUT 0-прямой, 1 - отраженный
         RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
         GPIO_InitTypeDef gpio; 
-        gpio.GPIO_Pin  = GPIO_Pin_0;
+        gpio.GPIO_Pin  = GPIO_Pin_0;// | GPIO_Pin_1;
         gpio.GPIO_Mode = GPIO_Mode_OUT;
         gpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
         gpio.GPIO_Speed = GPIO_Speed_25MHz;
         gpio.GPIO_OType = GPIO_OType_PP;
         GPIO_Init(GPIOC, &gpio);
         GPIO_WriteBit(GPIOC, GPIO_Pin_0, 1);
+
+        //GPIO_WriteBit(GPIOC, GPIO_Pin_1, 0);
     }
 
-    UTFT_print("max-min=", 30, 0, 0);
-    UTFT_print("sqr=", 30, 16, 0);
-    UTFT_print("mid=", 30, 32, 0);
-    UTFT_print("dp=", 30, 48, 0);
-
-    int i=0;
-    const int divi = 20000;
-    uint16_t lastTime = TimeMs();
-    uint16_t dacReadPosLast = DacGetReadPos();
-    uint32_t dacSamples = 0;
-
-    uint16_t adcReadPosLast = cs4272_getPos();
-    uint32_t adcSamples = 0;
-
-    //char* ptr = "ASDFGHJKL";
-    //VCP_send_buffer((uint8_t*)ptr, strlen(ptr));
+    UTFT_print("Spectroanalizer", 30, 0, 0);
 
     while(1)
     {
         DelayUs(10);
         SoundQuant();
 
-        if(1)
+        /*
         {
-            i++;
+            UTFT_printNumI(sampleQmax-sampleQmin, 80, 0, 9, ' ');
+            UTFT_printNumI(sampleSqr, 80, 16, 9, ' ');
 
-            if(i%divi==0)
-            {
-                //UTFT_printNumI(i/divi, 120, 0, 4, ' ');
-                //uint16_t* out_buffer = DacGetBuffer();
-                UTFT_printNumI(sampleQmax-sampleQmin, 80, 0, 9, ' ');
-                UTFT_printNumI(sampleSqr, 80, 16, 9, ' ');
-                //UTFT_printNumI(sampleMid-20470, 80, 32, 9, ' ');
-                //UTFT_printNumI(DacGetDeltaPos(), 80, 48, 9, ' ');
-
-                clearSampleNMinMAx();
-            }
-        } else
-        {
-            //Считаем время и скоколько сэмплов прошло в ADC/DAC
-            //Как прошла секунда - выводим
-            uint16_t curTime = TimeMs();
-
-            uint16_t dacReadPosCur = DacGetReadPos();
-            if(dacReadPosLast<=dacReadPosCur)
-            {
-                dacSamples += (dacReadPosCur-dacReadPosLast);
-            } else
-            {
-                dacSamples += DAC_BUFFER_SIZE-dacReadPosLast+dacReadPosCur;
-            }
-            dacReadPosLast = dacReadPosCur;
-
-            uint16_t adcReadPosCur = cs4272_getPos();
-            if(adcReadPosLast<=adcReadPosCur)
-            {
-                adcSamples += (adcReadPosCur-adcReadPosLast);
-            } else
-            {
-                adcSamples += SOUND_BUFFER_SIZE-adcReadPosLast+adcReadPosCur;
-            }
-            adcReadPosLast = adcReadPosCur;
-
-            if((uint16_t)(curTime-lastTime)>=1000)
-            {
-                UTFT_printNumI(dacSamples, 80, 0, 9, ' ');
-                UTFT_printNumI(adcSamples/4, 80, 16, 9, ' ');
-                UTFT_printNumI(i++, 80, 32, 9, ' ');
-
-                lastTime = curTime;
-                dacSamples = 0;
-                adcSamples = 0;
-            }
-
+            clearSampleNMinMAx();
         }
+        */
     }
 
-}
-
-void PacketReceive(volatile uint8_t* data, uint32_t size)
-{
-    if(size==0)
-        return;
-    uint8_t command = data[0];
-    data++;
-    size--;
-
-    switch(command)
-    {
-    case 1:
-        {
-            USBAdd8(command);
-            uint16_t amin = ((uint16_t*)data)[0];
-            uint16_t amax = ((uint16_t*)data)[1];
-            for(uint16_t i=amin; i<amax; i++)
-            {
-                USBAdd16(i);
-            }
-            USBSend();
-        }
-        break;
-    default:
-        USBAdd8(command);
-        USBAdd8(size);
-        USBSend();
-        break;
-    }
 }
 
 #ifdef  USE_FULL_ASSERT
