@@ -60,8 +60,8 @@ def plotIQ():
 
 
 def main():
-	plotOut()
-	#plotIQ()
+	#plotOut()
+	plotIQ()
 	pass
 
 main()

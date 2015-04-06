@@ -94,6 +94,16 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
     		USBSend();
     	}
     	break;
+    case COMMAND_SET_TX:
+    	{
+    		uint8_t tx = data[0];
+    		setTX(tx?1:0);
+
+    		USBAdd8(command);
+    		USBAdd8(tx);
+    		USBSend();
+    	}
+    	break;
     }
 }
 

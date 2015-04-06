@@ -96,7 +96,7 @@ def receive():
 			time.sleep(0.01)
 			print("receive null", i)
 		pass
-
+	'''
 	if command==None:
 		if len(lastData)>20:
 			print(command, len(lastData))
@@ -106,6 +106,7 @@ def receive():
 		print(len(command), lastData)
 	else:
 		print(command, lastData)
+	'''
 	return command
 
 def printBin(s):

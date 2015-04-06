@@ -14,15 +14,17 @@ COMMAND_START_SAMPLING = 3
 COMMAND_SAMPLING_COMPLETE = 4
 COMMAND_SAMPLING_BUFFER_SIZE = 5
 COMMAND_GET_SAMPLES = 6
-
+COMMAND_SET_TX = 7
 
 SAMPLING_BUFFER_SIZE = None
 
 def getFreq():
 	freq = []
+	'''
 	for f in range(1, 10):
 		freq.append(f*100e3)
-	for f in range(1, 31):
+	'''
+	for f in range(1, 100, 2):
 		freq.append(f*1e6)
 	return freq
 
@@ -79,6 +81,18 @@ def samplingBufferSize():
 	assert(data[0]==COMMAND_SAMPLING_BUFFER_SIZE)
 	return struct.unpack_from('H', data, 1)[0]	
 
+def setTX(tx):
+	if tx:
+		tx = 1
+	else:
+		tx = 0
+	send(COMMAND_SET_TX, struct.pack("=B", tx))
+	data = receive()
+	assert(data[0]==COMMAND_SET_TX)
+	assert(data[1]==tx)
+	pass
+
+
 def getSamples(sampleQ, offset, count):
 	send(COMMAND_GET_SAMPLES, struct.pack("=BHH", sampleQ, offset, count))
 	data = receive()
@@ -102,7 +116,7 @@ def getAllSamples(sampleQ):
 	while offset<SAMPLING_BUFFER_SIZE:
 		if offset+count>SAMPLING_BUFFER_SIZE:
 			count = SAMPLING_BUFFER_SIZE-offset
-		print("offset=", offset)
+		#print("offset=", offset)
 		tmpSamples = getSamples(sampleQ, offset, count)
 		
 		if tmpSamples==None:
@@ -215,10 +229,11 @@ def main():
 	#writeSamples(samplesI)
 	#print(len(samplesI))
 
-	samplingOne(100e3)
+	#samplingOne(100e3)
 
 	#print("getSqrByFreq=", getSqrByFreq(100000))
 	#scanFreq()
+	setTX(0)
 
 	pass
 def test():

@@ -6,6 +6,9 @@
 
 //#include "stm32f4xx.h"
 #include <stdio.h>
+#include <stdbool.h>
 #include "stm32f4xx_it.h"
+
+void setTX(bool tx);
  
 #endif//_MAIN_H_

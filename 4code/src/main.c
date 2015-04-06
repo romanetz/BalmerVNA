@@ -16,6 +16,34 @@ RCC_ClocksTypeDef RCC_Clocks;
 
 __ALIGN_BEGIN USB_OTG_CORE_HANDLE  USB_OTG_dev __ALIGN_END;
 
+void initGpio()
+{
+    //GPIO_Pin_0 - переключение входов CS4242
+    //GPIO_Pin_1 - переключение сигнала на RF_INPUT 0-прямой, 1 - отраженный
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+    GPIO_InitTypeDef gpio;
+    gpio.GPIO_Pin  = GPIO_Pin_0;
+    gpio.GPIO_Mode = GPIO_Mode_OUT;
+    gpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    gpio.GPIO_Speed = GPIO_Speed_25MHz;
+    gpio.GPIO_OType = GPIO_OType_PP;
+    GPIO_Init(GPIOC, &gpio);
+    GPIO_WriteBit(GPIOC, GPIO_Pin_0, 1);
+
+    gpio.GPIO_Pin  = GPIO_Pin_1;
+    gpio.GPIO_Mode = GPIO_Mode_OUT;
+    gpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    gpio.GPIO_Speed = GPIO_Speed_25MHz;
+    gpio.GPIO_OType = GPIO_OType_OD;
+    GPIO_Init(GPIOC, &gpio);
+    GPIO_WriteBit(GPIOC, GPIO_Pin_1, 1);
+}
+
+void setTX(bool tx)
+{
+    GPIO_WriteBit(GPIOC, GPIO_Pin_1, tx?0:1);
+}
+
 int main(void)
 {  
     // SysTick end of count event each 1ms
@@ -87,21 +115,7 @@ int main(void)
     //DacStart();
     cs4272_start();
 
-    {
-        //GPIO_Pin_0 - переключение входов CS4242
-        //GPIO_Pin_1 - переключение сигнала на RF_INPUT 0-прямой, 1 - отраженный
-        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-        GPIO_InitTypeDef gpio; 
-        gpio.GPIO_Pin  = GPIO_Pin_0;// | GPIO_Pin_1;
-        gpio.GPIO_Mode = GPIO_Mode_OUT;
-        gpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
-        gpio.GPIO_Speed = GPIO_Speed_25MHz;
-        gpio.GPIO_OType = GPIO_OType_PP;
-        GPIO_Init(GPIOC, &gpio);
-        GPIO_WriteBit(GPIOC, GPIO_Pin_0, 1);
-
-        //GPIO_WriteBit(GPIOC, GPIO_Pin_1, 0);
-    }
+    initGpio();
 
     UTFT_print("Spectroanalizer", 30, 0, 0);
 
