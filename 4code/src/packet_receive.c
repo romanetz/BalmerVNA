@@ -60,7 +60,7 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
     case COMMAND_SAMPLING_COMPLETE:
     	{
     		USBAdd8(command);
-    		USBAdd8(SamplingStarted());
+    		USBAdd8(!SamplingStarted());
     		USBSend();
     	}
     	break;

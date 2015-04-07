@@ -44,8 +44,8 @@ void OnSoundData(int32_t sampleQ, int32_t sampleI)
 {
 	if(samplesCurPos<SAMPLE_BUFFER_SIZE)
 	{
-		g_samplesQ[samplesCurPos] = sampleQ>>8;
-		g_samplesI[samplesCurPos] = sampleI>>8;
+		g_samplesQ[samplesCurPos] = sampleQ;
+		g_samplesI[samplesCurPos] = sampleI;
 		samplesCurPos++;
 		return;
 	}

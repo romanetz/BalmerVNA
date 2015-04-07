@@ -3,6 +3,7 @@ import time
 import array
 import json
 import math
+import smath as sm
 
 import serial_protocol
 from serial_protocol import send,receive
@@ -143,9 +144,9 @@ def sqrMean(arr):
 		s = x-mid
 		sum += s*s
 
-	return math.sqrt(sum)/len(arr)
+	return math.sqrt(sum/len(arr))
 
-def getSqrByFreq(freq):
+def getSamplesByFreq(freq):
 	setFreq(freq)
 	time.sleep(0.01)
 	startSampling()
@@ -159,7 +160,7 @@ def getSqrByFreq(freq):
 
 	ISampes = getAllSamples(False)
 	QSampes = getAllSamples(True)
-	return (sqrMean(ISampes), sqrMean(QSampes))
+	return (ISampes, QSampes)
 
 
 def writeSamples(samples):
@@ -174,17 +175,29 @@ def scanFreq():
 	freq = getFreq()
 	IArray = []
 	QArray = []
+	fsin = []
 	for f in freq:
 		print("f=", f)
-		(I,Q) = getSqrByFreq(f)
+		(ISampes, QSampes) = getSamplesByFreq(f)
+		I = sqrMean(ISampes)
+		Q = sqrMean(QSampes)
 		print("getSqrByFreq=", I, Q)
 		IArray.append(I)
 		QArray.append(Q)
+
+		freqDelta = 1
+		freqCenter = 1000
+		count = 101
+		(freqArr, Fmath) = sm.arrayFreq(QSampes, freqCenter-freqDelta, freqCenter+freqDelta, sm.STEP, count)
+		fmax = sm.findFreqMax(freqArr, Fmath)
+		print("fmax=", fmax)
+		fsin.append(fmax) 
 
 	jout = {}
 	jout['freq'] = freq
 	jout['I'] = IArray
 	jout['Q'] = QArray
+	jout['fsin'] = fsin
 	f = open('freq.json', 'wt')
 	f.write(json.dumps(jout))
 	f.close()
@@ -197,6 +210,7 @@ def samplingOne(freq):
 	for i in range(10):
 		time.sleep(0.01)
 		ok = samplingCompleted()
+		print("ok=",ok)
 		if ok:
 			break
 	assert(ok)
@@ -210,6 +224,9 @@ def samplingOne(freq):
 	f = open('out.json', 'wt')
 	f.write(json.dumps(jout))
 	f.close()
+
+	print( "sqrI=", sqrMean(samplesI))
+	print( "sqrQ=", sqrMean(samplesQ))
 	pass
 
 def main():
@@ -219,21 +236,16 @@ def main():
 	time.sleep(0.01)
 	sendNone()
 	#sendBigData(0,100)
-	setFreq(120000)
+	setFreq(100000)
 	#startSampling()
-	print("samplingCompleted=",samplingCompleted())
+	#print("samplingCompleted=",samplingCompleted())
 	SAMPLING_BUFFER_SIZE = samplingBufferSize()
-	#print("bufSize=", SAMPLING_BUFFER_SIZE)
-	#getSamples(False, 0, 5)
-	#samplesI = getAllSamples(sampleQ=False)
-	#writeSamples(samplesI)
-	#print(len(samplesI))
+	setTX(1)
 
-	#samplingOne(100e3)
+	samplingOne(100000)
 
 	#print("getSqrByFreq=", getSqrByFreq(100000))
 	#scanFreq()
-	setTX(0)
 
 	pass
 def test():
