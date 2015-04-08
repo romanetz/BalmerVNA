@@ -25,7 +25,7 @@ def getFreq():
 	for f in range(1, 10):
 		freq.append(f*100e3)
 	'''
-	for f in range(1, 100, 2):
+	for f in range(1, 100, 1):
 		freq.append(f*1e6)
 	return freq
 
@@ -185,8 +185,10 @@ def scanFreq():
 		IArray.append(I)
 		QArray.append(Q)
 
-		freqDelta = 1
-		freqCenter = 1000
+		#freqDelta = 1
+		#freqCenter = 1000
+		freqDelta = 0.5
+		freqCenter = 999.6
 		count = 101
 		(freqArr, Fmath) = sm.arrayFreq(QSampes, freqCenter-freqDelta, freqCenter+freqDelta, sm.STEP, count)
 		fmax = sm.findFreqMax(freqArr, Fmath)
@@ -242,10 +244,10 @@ def main():
 	SAMPLING_BUFFER_SIZE = samplingBufferSize()
 	setTX(1)
 
-	samplingOne(100000)
+	#samplingOne(100000)
 
 	#print("getSqrByFreq=", getSqrByFreq(100000))
-	#scanFreq()
+	scanFreq()
 
 	pass
 def test():

@@ -57,7 +57,7 @@ def plotFreq():
 
 	Q = data['Q']
 
-	freqDelta = 100
+	freqDelta = 1
 	freqCenter = 1000
 	count = 201
 	(freqArr, Fmath) = sm.arrayFreq(Q, freqCenter-freqDelta, freqCenter+freqDelta, sm.STEP, count)
@@ -84,8 +84,8 @@ def plotIQ():
 
 
 def main():
-	plotOut()
-	#plotIQ()
+	#plotOut()
+	plotIQ()
 	#plotFreq()
 	pass
 

@@ -110,8 +110,17 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
 void UsbSetFreq(uint32_t freq)
 {
     uint16_t level = 200;
+/*    
     AD9958_Set_Frequency(0, freq);
     AD9958_Set_Level(0, level);
     AD9958_Set_Frequency(1, freq+1000);
+    AD9958_Set_Level(1, level);	
+*/    
+
+    uint32_t freqWord = AD9958_Calc_FrequencyWord(freq);
+    uint32_t freqWordAdd = AD9958_Calc_FrequencyWord(1000);
+    AD9958_Set_FrequencyWord(0, freqWord);
+    AD9958_Set_Level(0, level);
+    AD9958_Set_FrequencyWord(1, freqWord+freqWordAdd);
     AD9958_Set_Level(1, level);	
 }

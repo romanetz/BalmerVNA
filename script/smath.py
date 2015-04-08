@@ -37,3 +37,9 @@ def findFreqMax(farr, out):
 			smax = out[i]
 			imax = i
 	return farr[imax]
+
+def freqWord(freq):
+	PLL_MUL = 20
+	REFCLK = 25000000.0
+	MASTER_CLOCK = (REFCLK*PLL_MUL)
+	return freq*(0xFFFFFFFF/MASTER_CLOCK+1.0/MASTER_CLOCK)

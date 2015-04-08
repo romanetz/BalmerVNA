@@ -180,12 +180,22 @@ static void AD9958_SetAllChannel()
   */
 int AD9958_Set_Frequency(int iChannel, double dfFreq)
 {
-    if(!AD9958_SetChannel(iChannel))
-    	return 0;
+  uint32_t freqWord = AD9958_Calc_FrequencyWord(dfFreq);
+  return AD9958_Set_FrequencyWord(iChannel, freqWord);
+}
+
+uint32_t AD9958_Calc_FrequencyWord(double dfFreq)
+{
+  return (uint32_t)(dfFreq*(0xFFFFFFFF/(float)MASTER_CLOCK+1.0/MASTER_CLOCK));
+}
+
+int AD9958_Set_FrequencyWord(int iChannel, uint32_t freqWord)
+{
+  if(!AD9958_SetChannel(iChannel))
+  	return 0;
 
 	/* Write frequency word */
- 	uint32_t u32Temp=(uint32_t)dfFreq*(0xFFFFFFFF/(float)MASTER_CLOCK+1.0/MASTER_CLOCK);
- 	WR_CFTW0(u32Temp);
+ 	WR_CFTW0(freqWord);
 
 	AD9958_SetAllChannel();
 

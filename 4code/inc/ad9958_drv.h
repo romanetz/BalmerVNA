@@ -35,6 +35,9 @@ extern void AD9958_Init(void);
   */
 extern int AD9958_Set_Frequency(int iChannel, double dfFreq);
 
+uint32_t AD9958_Calc_FrequencyWord(double dfFreq);
+int AD9958_Set_FrequencyWord(int iChannel, uint32_t freqWord);
+
 /**
   * @brief  Enter or resumes from low power mode
   *
