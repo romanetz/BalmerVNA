@@ -25,7 +25,7 @@ def getFreq():
 	for f in range(1, 10):
 		freq.append(f*100e3)
 	'''
-	for f in range(1, 100, 1):
+	for f in range(1, 50, 2):
 		freq.append(f*1e6)
 	return freq
 
@@ -175,6 +175,7 @@ def scanFreq():
 	freq = getFreq()
 	IArray = []
 	QArray = []
+	FIarray = []
 	fsin = []
 	for f in freq:
 		print("f=", f)
@@ -192,14 +193,21 @@ def scanFreq():
 		count = 101
 		(freqArr, Fmath) = sm.arrayFreq(QSampes, freqCenter-freqDelta, freqCenter+freqDelta, sm.STEP, count)
 		fmax = sm.findFreqMax(freqArr, Fmath)
-		print("fmax=", fmax)
-		fsin.append(fmax) 
+		fsin.append(fmax)
+		(Ic0, Isin, Icos) = sm.calcSinCosMatrix(ISampes, fmax, sm.STEP)
+		(Qc0, Qsin, Qcos) = sm.calcSinCosMatrix(QSampes, fmax, sm.STEP)
+		(Iamplitude, Ifi) = sm.calcFi(Isin, Icos)
+		(Qamplitude, Qfi) = sm.calcFi(Qsin, Qcos)
+		FIarray.append(Ifi-Qfi)
+		print("fmax=", fmax, "fi=", Ifi-Qfi)
+		pass
 
 	jout = {}
 	jout['freq'] = freq
 	jout['I'] = IArray
 	jout['Q'] = QArray
 	jout['fsin'] = fsin
+	jout['fi'] = FIarray
 	f = open('freq.json', 'wt')
 	f.write(json.dumps(jout))
 	f.close()
