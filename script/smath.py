@@ -110,8 +110,8 @@ def calcFi(csin, ccos):
 
 def calcSinCosMatrix(arr, freq, step):
 	'''
-		return (c0,csin, ccos)
-		c0+csin*sin(f)+ccos*cos(f)
+		return (c, csin, ccos)
+		c+csin*sin(f)+ccos*cos(f)
 	'''
 	N = len(arr)
 	fcycle = 2*math.pi*freq
@@ -135,19 +135,72 @@ def calcSinCosMatrix(arr, freq, step):
 	m22 = np.sum(fcos*fsin)
 
 	M = np.array([[m00, m01, m02], [m10, m11, m12], [m20, m21, m22]])
-	#print("M=", M)
+	print("M=", M)
 	C = np.array([c0, c1, c2])
 	x = np.linalg.solve(M, C)
-	#print("const=", x[0], "csin=", x[1], "ccos=", x[2])
+
+	print("c=", x[0], "csin=", x[1], "ccos=", x[2])
+	print(gaussSolve([[m00, m01, m02], [m10, m11, m12], [m20, m21, m22]], [c0, c1, c2]))
 	return (x[0], x[1], x[2])
+
+def gaussSolve(M, C):
+	'''
+	Решение уравнение M*x=C
+	M - матрица 3x3
+	Учитываем, что m00, m12, m21 доминирующие элементы матрицы
+	'''
+	#вычитаем первую строку из второй и третьей
+	k10 = M[1][0]/M[0][0]
+	#M[1][0] -= M[0][0]*k10
+	M[1][0] = 0 #при вычитании гарантированно 0 получается
+	M[1][1] -= M[0][1]*k10
+	M[1][2] -= M[0][2]*k10
+	C[1] -= C[0]*k10
+
+	k20 = M[2][0]/M[0][0]
+	#M[2][0] -= M[0][0]*k20
+	M[2][0] = 0 #при вычитании гарантированно 0 получается (аналогично в других присваиваниях нулю)
+	M[2][1] -= M[0][1]*k20
+	M[2][2] -= M[0][2]*k20
+	C[2] -= C[0]*k20
+
+	#вычитаем вторую строку из первой и третьей
+	#учитываем, что М[1][0] == 0
+	k01 = M[0][2]/M[1][2]
+	M[0][1] -= M[1][1]*k01
+	#M[0][2] -= M[1][2]*k01
+	M[0][2] = 0
+	C[0] -= C[1]*k01
+
+	k21 = M[2][2]/M[1][2]
+	M[2][1] -= M[1][1]*k21
+	#M[2][2] -= M[1][2]*k21
+	M[2][2] = 0
+	C[2] -= C[1]*k21
+
+	#вычитаем третью строку из первой и второй
+	#учитываем, что М[2][0] == 0 и M[2][2] == 0
+	k02 = M[0][1]/M[2][1]
+	#M[0][1] -= M[2][1]*k02
+	M[0][1] = 0
+	C[0] -= C[2]*k02
+
+	k12 = M[1][1]/M[2][1]
+	#M[1][1] -= M[2][1]*k12
+	M[1][1] = 0
+	C[1] -= C[2]*k12
+
+	print(np.array(M))
+	return [C[0]/M[0][0], C[2]/M[2][1], C[1]/M[1][2]]
+
 
 def main():
 	N = 256
 	freq = 1111
 	timeList = np.linspace(0, STEP*(N-1), num=N)
-	phase = 1.5*math.pi
+	phase = 1 #*math.pi
 	fcycle = 2*math.pi*freq
-	arr = np.sin(2*math.pi*freq*timeList+phase)
+	arr = np.sin(2*math.pi*freq*timeList+phase)-0.1234
 	calcSinCosMatrix(arr, freq, STEP)
 	pass
 
