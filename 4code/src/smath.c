@@ -89,8 +89,8 @@ void calcSinCosMatrix(int32_t* arr, uint32_t arrSize, float freq, float step,
 	{
 		float t = step*i;
 		float y = arr[i];
-		float fsin = sin(fcycle*t);
-		float fcos = cos(fcycle*t);
+		float fsin = sinf(fcycle*t);
+		float fcos = cosf(fcycle*t);
 
 		sumy += y;
 		sumy_fcos += y*fcos;
@@ -167,11 +167,11 @@ float squareMean(int32_t* arr, uint32_t arrSize, float freq, float step,
 	for(uint32_t i=0; i<arrSize; i++)
 	{
 		float tf = fcycle*step*i;
-		float y = cconst+csin*sin(tf)+ccos*cos(tf);
+		float y = cconst+csin*sinf(tf)+ccos*cosf(tf);
 		float dy = arr[i]-y;
 		ssum += dy*dy;
 	}
 
-	return sqrt(ssum/arrSize);
+	return sqrtf(ssum/arrSize);
 }
 

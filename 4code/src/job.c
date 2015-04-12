@@ -48,21 +48,21 @@ void CalculateAll()
 {
 	uint16_t startTime = TimeMs();
 	float step = 1.0f/48000.0f;
-	float freqMin = 999.0f;
-	float freqMax = 1000.0f;
+	float freqMin = 999.3f;
+	float freqMax = 999.8f;
 
 	float freq = 999.6f;
 	float q_cconst = 1, q_csin = 2, q_ccos = 3;
 	float i_cconst = 4, i_csin = 5, i_ccos = 6;
 	float q_sqr = 7;
 	float i_sqr = 8;
-	//float freq = findFreqMax(g_samplesQ, SAMPLE_BUFFER_SIZE, step, freqMin, freqMax, 20);
+	freq = findFreqMax(g_samplesQ, SAMPLE_BUFFER_SIZE, step, freqMin, freqMax, 11);
 	
 	calcSinCosMatrix(g_samplesQ, SAMPLE_BUFFER_SIZE, freq, step, &q_cconst, &q_csin, &q_ccos);
-	//q_sqr = squareMean(g_samplesQ, SAMPLE_BUFFER_SIZE, freq, step, q_cconst, q_csin, q_ccos);
+	q_sqr = squareMean(g_samplesQ, SAMPLE_BUFFER_SIZE, freq, step, q_cconst, q_csin, q_ccos);
 
-	//calcSinCosMatrix(g_samplesQ, SAMPLE_BUFFER_SIZE, freq, step, &i_cconst, &i_csin, &i_ccos);
-	//i_sqr = squareMean(g_samplesQ, SAMPLE_BUFFER_SIZE, freq, step, i_cconst, i_csin, i_ccos);
+	calcSinCosMatrix(g_samplesI, SAMPLE_BUFFER_SIZE, freq, step, &i_cconst, &i_csin, &i_ccos);
+	i_sqr = squareMean(g_samplesI, SAMPLE_BUFFER_SIZE, freq, step, i_cconst, i_csin, i_ccos);
 
 	result_freq = freq;
 	result_q_cconst = q_cconst;

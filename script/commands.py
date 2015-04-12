@@ -302,12 +302,12 @@ def main():
 	SAMPLING_BUFFER_SIZE = samplingBufferSize()
 	setTX(1)
 
-	readCs4272Reg(0x1)
-	samplingOne(100002)
+	#readCs4272Reg(0x1)
+	#samplingOne(100002)
 
 	#print("getSqrByFreq=", getSqrByFreq(100000))
 	#scanFreq()
-	#samplingAndCalculate()
+	samplingAndCalculate()
 
 	pass
 def test():
