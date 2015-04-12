@@ -55,9 +55,14 @@ def plotOut():
 	#ax.set_ylabel('Y')
 
 	I = data['I']
+
 	Q = data['Q']
 	timeList = makeTimeList(I, 0, sm.STEP)
 
+	L =[]
+	for i in range(10):
+		L.append(hex(I[i]))
+	print(L)
 	#andData(I),andData(Q)
 
 	#freq = 1000

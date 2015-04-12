@@ -280,10 +280,13 @@ bool cs4272_Init()
 	gpio.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOC, &gpio);
 
+	RST_LOW;
+	DelayMs(20);
+
 	init_I2C1();
 	init_GPIO_I2S();
+	cs4272_start();
 
-	RST_LOW;
 	DelayMs(10);
 	RST_HIGH;
 

@@ -114,7 +114,7 @@ int main(void)
     //UTFT_print(ok?"ok":"fail", UTFT_CENTER, 32, 0);
 
     //DacStart();
-    cs4272_start();
+    //cs4272_start();
 
     initGpio();
 
