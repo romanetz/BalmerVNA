@@ -113,3 +113,8 @@ void USBAdd32i(int32_t data)
 {
 	USBAdd((uint8_t*)&data, sizeof(data));
 }
+
+void USBAddF(float data)
+{
+	USBAdd((uint8_t*)&data, sizeof(data));	
+}

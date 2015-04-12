@@ -10,9 +10,11 @@ DEPS += \
 	output/base/src/dac.d \
 	output/base/src/data_process.d \
 	output/base/src/delay.d \
+	output/base/src/job.d \
 	output/base/src/main.d \
 	output/base/src/packet_receive.d \
 	output/base/src/process_sound.d \
+	output/base/src/smath.d \
 	output/base/src/stm32f4xx_it.d \
 	output/base/src/system_stm32f4xx.d \
 	output/base/src/usb_bsp.d \
@@ -57,9 +59,11 @@ OBJS += \
 	output/base/src/dac.o \
 	output/base/src/data_process.o \
 	output/base/src/delay.o \
+	output/base/src/job.o \
 	output/base/src/main.o \
 	output/base/src/packet_receive.o \
 	output/base/src/process_sound.o \
+	output/base/src/smath.o \
 	output/base/src/stm32f4xx_it.o \
 	output/base/src/system_stm32f4xx.o \
 	output/base/src/usb_bsp.o \
@@ -121,6 +125,10 @@ output/base/src/delay.o: ./src/delay.c
 	@echo 'Building target: delay.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
+output/base/src/job.o: ./src/job.c
+	@echo 'Building target: job.c'
+	@$(CC) $(C_FLAGS) -o "$@" "$<"
+
 output/base/src/main.o: ./src/main.c
 	@echo 'Building target: main.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
@@ -131,6 +139,10 @@ output/base/src/packet_receive.o: ./src/packet_receive.c
 
 output/base/src/process_sound.o: ./src/process_sound.c
 	@echo 'Building target: process_sound.c'
+	@$(CC) $(C_FLAGS) -o "$@" "$<"
+
+output/base/src/smath.o: ./src/smath.c
+	@echo 'Building target: smath.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
 output/base/src/stm32f4xx_it.o: ./src/stm32f4xx_it.c

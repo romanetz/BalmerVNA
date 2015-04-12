@@ -11,6 +11,7 @@
 #include "usbd_desc.h"
 #include "usbd_cdc_vcp.h"
 #include "data_process.h"
+#include "job.h"
 
 RCC_ClocksTypeDef RCC_Clocks;
 
@@ -97,9 +98,9 @@ int main(void)
 
     //DacInitFullBuffer();
     //DacSetFrequency(1000);
-    bool ok = cs4272_Init();
-    (void)ok;
-
+    bool okAdc = cs4272_Init();
+    UTFT_print("Spectroanalizer", 30, 0, 0);
+    UTFT_print(okAdc?"okAdc=1":"okAdc=0", 0, 16, 0);
 
     AD9958_Init();
     DelayUs(30);
@@ -117,12 +118,12 @@ int main(void)
 
     initGpio();
 
-    UTFT_print("Spectroanalizer", 30, 0, 0);
 
     while(1)
     {
         DelayUs(10);
         SoundQuant();
+        JobQuant();
 
         /*
         {

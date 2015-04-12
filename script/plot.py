@@ -31,6 +31,22 @@ def plotRaw(data):
 	plt.show()
 	pass
 
+def andData(data):
+	sub = 1
+	if sub==2:
+		for i in range(len(data)):
+			d = data[i]&0xFFFF
+			if d>0x7FFF:
+				d = d-0xFFFF-1
+			data[i] = d
+	if sub==1:
+		for i in range(len(data)):
+			d = data[i]&0xFFFFFF
+			if d>0x7FFFFF:
+				d = d-0xFFFFFF-1
+			data[i] = d
+
+
 def plotOut():
 	data = readJson("out.json")
 	fig, ax = plt.subplots()
@@ -41,6 +57,8 @@ def plotOut():
 	I = data['I']
 	Q = data['Q']
 	timeList = makeTimeList(I, 0, sm.STEP)
+
+	#andData(I),andData(Q)
 
 	#freq = 1000
 	#I = 1e6*np.sin(2*math.pi*freq*np.array(timeList))
@@ -151,11 +169,11 @@ def plotFi2():
 	pass
 
 def main():
-	#plotOut()
+	plotOut()
 	#plotIQ()
 	#plotFreq()
 	#plotTestPhase()
-	plotFi2()
+	#plotFi2()
 	pass
 
 if __name__ == "__main__":

@@ -6,7 +6,8 @@
 #include "data_process.h"
 #include "commands.h"
 #include "process_sound.h"
-#include "ili/UTFT.h"
+#include "job.h"
+#include "cs4272.h"
 
 void UsbSetFreq(uint32_t freq);
 
@@ -60,7 +61,7 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
     case COMMAND_SAMPLING_COMPLETE:
     	{
     		USBAdd8(command);
-    		USBAdd8(!SamplingStarted());
+    		USBAdd8(SamplingCompleted());
     		USBSend();
     	}
     	break;
@@ -104,6 +105,28 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
     		USBSend();
     	}
     	break;
+    case COMMAND_GET_CALCULATED:
+        {
+            JobSendCalculated();
+        }
+        break;
+    case COMMAND_START_SAMPLING_AND_CALCULATE:
+        {
+            JobStartSampling();
+            USBAdd8(command);
+            USBSend();
+        }
+        break;
+    case COMMAND_CS4272_READ_REG:
+        {
+            uint8_t reg = data[0];
+            uint8_t data = cs4272_i2c_read_reg(reg);
+            USBAdd8(command);
+            USBAdd8(reg);
+            USBAdd8(data);
+            USBSend();
+        }
+        break;
     }
 }
 

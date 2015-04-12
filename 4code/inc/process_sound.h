@@ -6,7 +6,7 @@ void OnSoundData(int32_t sampleQ, int32_t sampleI);
 void SoundQuant();
 
 void SamplingStart();
-bool SamplingStarted();
+bool SamplingCompleted();
 
 /*
 void InitFft();

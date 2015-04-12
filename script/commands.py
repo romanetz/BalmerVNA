@@ -16,6 +16,14 @@ COMMAND_SAMPLING_COMPLETE = 4
 COMMAND_SAMPLING_BUFFER_SIZE = 5
 COMMAND_GET_SAMPLES = 6
 COMMAND_SET_TX = 7
+COMMAND_GET_CALCULATED = 8
+COMMAND_START_SAMPLING_AND_CALCULATE = 9
+COMMAND_CS4272_READ_REG = 10
+
+JOB_NONE = 0
+JOB_SAMPLING = 2
+JOB_CALCULATING = 3
+JOB_CALCULATING_COMPLETE = 4
 
 SAMPLING_BUFFER_SIZE = None
 
@@ -239,6 +247,48 @@ def samplingOne(freq):
 	print( "sqrQ=", sqrMean(samplesQ))
 	pass
 
+def startSampling():
+	send(COMMAND_START_SAMPLING_AND_CALCULATE)
+	ret = receive()
+	assert(ret[0]==COMMAND_START_SAMPLING_AND_CALCULATE)
+	pass
+
+def getCalculated():
+	send(COMMAND_GET_CALCULATED)
+	ret = receive()
+	assert(ret[0]==COMMAND_GET_CALCULATED)
+	if ret[1]!=JOB_CALCULATING_COMPLETE:
+		print("ret[1]=", ret[1])
+		return [ret[1],]
+
+	print(len(ret))
+
+	data = struct.unpack_from("fffffffffH", ret, 2)
+	print("data=", data)
+
+	return data
+
+def samplingAndCalculate():
+	startSampling()
+
+	for x in range(10):
+		data = getCalculated()
+		if len(data)>1:
+			break
+		time.sleep(0.05)
+		pass
+	pass
+
+def readCs4272Reg(reg):
+	send(COMMAND_CS4272_READ_REG, struct.pack("=B", reg))
+	ret = receive()
+	assert(ret[0]==COMMAND_CS4272_READ_REG)
+	assert(ret[1]==reg)
+	val = ret[2]
+	print("reg=", reg, "val=", hex(val), bin(val))
+	return val
+
+
 def main():
 	global SAMPLING_BUFFER_SIZE
 	if not serial_protocol.connect():
@@ -246,16 +296,18 @@ def main():
 	time.sleep(0.01)
 	sendNone()
 	#sendBigData(0,100)
-	setFreq(100000)
+	setFreq(100001)
 	#startSampling()
 	#print("samplingCompleted=",samplingCompleted())
 	SAMPLING_BUFFER_SIZE = samplingBufferSize()
 	setTX(1)
 
-	#samplingOne(100000)
+	readCs4272Reg(0x7)
+	samplingOne(100002)
 
 	#print("getSqrByFreq=", getSqrByFreq(100000))
-	scanFreq()
+	#scanFreq()
+	#samplingAndCalculate()
 
 	pass
 def test():

@@ -121,7 +121,7 @@ void SamplingStart()
 	samplesCurPos = 0;	
 }
 
-bool SamplingStarted()
+bool SamplingCompleted()
 {
-	return samplesCurPos<SAMPLE_BUFFER_SIZE;
+	return samplesCurPos>=SAMPLE_BUFFER_SIZE;
 }
