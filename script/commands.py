@@ -29,11 +29,13 @@ SAMPLING_BUFFER_SIZE = None
 
 def getFreq():
 	freq = []
-	'''
-	for f in range(1, 10):
-		freq.append(f*100e3)
-	'''
-	for f in range(1, 50, 2):
+	#for f in range(5, 200, 2):
+	#	freq.append(f*1e4)
+	#for f in range(1, 10):
+	#	freq.append(f*1e5)
+	#for f in range(1, 101, 1):
+	#	freq.append(f*1e6)
+	for f in range(30, 101, 1):
 		freq.append(f*1e6)
 	return freq
 
@@ -65,13 +67,14 @@ def sendBigData(amin, amax):
 		print("range received ok ", amin, ",", amax, " size=", len(ret))
 	pass
 
-def setFreq(freq):
+def setFreq(freq, level=200):
 	freq = int(freq)
-	send(COMMAND_SET_FREQ, struct.pack("=I", freq))
+	print("level=", level)
+	send(COMMAND_SET_FREQ, struct.pack("=Ii", freq, int(level)))
 	data = receive()
 	assert(data[0]==COMMAND_SET_FREQ)
 	retFreq = struct.unpack_from('I', data, 1)[0]
-	print("ret=", retFreq)
+	#print("ret=", retFreq)
 	pass
 
 def startSampling():
@@ -221,6 +224,65 @@ def scanFreq():
 	f.close()
 	pass
 
+def levelFreq(f):
+	fmin = 37
+	fmax = 100
+	a = (f*1e-6-fmin)/(fmax-fmin)
+	b0 = 200
+	b1 = 237
+	if a<=0:
+		return b0
+	if a>1:
+		return b1
+	return b0*(1-a)+b1*a
+
+def scanFreqHard():
+	freq = getFreq()
+	IArray = []
+	QArray = []
+	FIarray = []
+	fsin = []
+
+	for f in freq:		
+		setFreq(f) #, levelFreq(f))
+		time.sleep(0.02)
+		data = samplingAndCalculate()
+		result_freq = data[0];
+		result_q_cconst = data[1];
+		result_q_csin = data[2];
+		result_q_ccos = data[3];
+		result_q_sqr = data[4];
+		result_i_cconst = data[5];
+		result_i_csin = data[6];
+		result_i_ccos = data[7];
+		result_i_sqr = data[8];
+		result_time = data[9];
+
+		print("f=", f, "fmax=", result_freq);
+
+
+		#IArray.append(result_i_sqr)
+		#QArray.append(result_q_sqr)
+
+		(Iamplitude, Ifi) = sm.calcFi(result_i_csin, result_i_ccos)
+		(Qamplitude, Qfi) = sm.calcFi(result_q_csin, result_q_ccos)
+		IArray.append(Iamplitude)
+		QArray.append(Qamplitude)
+		FIarray.append(Ifi-Qfi)
+		print("fi=", Ifi-Qfi)
+		pass
+
+	jout = {}
+	jout['freq'] = freq
+	jout['I'] = IArray
+	jout['Q'] = QArray
+	jout['fsin'] = fsin
+	jout['fi'] = FIarray
+	f = open('freq.json', 'wt')
+	f.write(json.dumps(jout))
+	f.close()
+	pass
+
 def samplingOne(freq):
 	setFreq(freq)
 	time.sleep(0.01)
@@ -258,18 +320,17 @@ def getCalculated():
 	ret = receive()
 	assert(ret[0]==COMMAND_GET_CALCULATED)
 	if ret[1]!=JOB_CALCULATING_COMPLETE:
-		print("ret[1]=", ret[1])
+		#print("ret[1]=", ret[1])
 		return [ret[1],]
 
-	print(len(ret))
-
 	data = struct.unpack_from("fffffffffH", ret, 2)
-	print("data=", data)
-
+	#print("data=", data)
 	return data
 
 def samplingAndCalculate():
 	startSampling()
+
+	data = None
 
 	for x in range(10):
 		data = getCalculated()
@@ -277,7 +338,7 @@ def samplingAndCalculate():
 			break
 		time.sleep(0.05)
 		pass
-	pass
+	return data
 
 def readCs4272Reg(reg):
 	send(COMMAND_CS4272_READ_REG, struct.pack("=B", reg))
@@ -306,8 +367,10 @@ def main():
 	#samplingOne(100002)
 
 	#print("getSqrByFreq=", getSqrByFreq(100000))
+
 	#scanFreq()
-	samplingAndCalculate()
+	scanFreqHard()
+	#print(samplingAndCalculate())
 
 	pass
 def test():

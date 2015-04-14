@@ -9,7 +9,7 @@
 #include "job.h"
 #include "cs4272.h"
 
-void UsbSetFreq(uint32_t freq);
+void UsbSetFreq(uint32_t freq, int32_t level);
 
 void PacketReceive(volatile uint8_t* data, uint32_t size)
 {
@@ -42,7 +42,8 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
     case COMMAND_SET_FREQ:
     	{
     		uint32_t freq = ((uint32_t*)data)[0];
-    		UsbSetFreq(freq);
+            int32_t level = ((uint32_t*)data)[1];
+    		UsbSetFreq(freq, level);
 
     		USBAdd8(command);
     		USBAdd32(freq);
@@ -130,10 +131,10 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
     }
 }
 
-void UsbSetFreq(uint32_t freq)
+void UsbSetFreq(uint32_t freq, int32_t level)
 {
-    uint16_t level = 200;
 /*    
+    uint16_t level = 200;
     AD9958_Set_Frequency(0, freq);
     AD9958_Set_Level(0, level);
     AD9958_Set_Frequency(1, freq+1000);

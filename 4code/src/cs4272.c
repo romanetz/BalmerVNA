@@ -21,6 +21,8 @@
 static uint8_t x4count = 0;
 uint16_t sound_buffer[SOUND_BUFFER_SIZE];
 
+void cs4272_start();
+
 static void start()
 {
 	if(g_i2s_dma)

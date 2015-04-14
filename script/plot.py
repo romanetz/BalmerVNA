@@ -112,12 +112,16 @@ def plotIQ():
 	fi = jout['fi']
 
 	addToFiArr(fi, math.pi)
-	#ax.plot (freq, I, color='red')
-	#ax.plot (freq, Q, color='blue')
-	#ax.set_ylim(999.0, 1000.0)
-	#ax.plot (freq, fsin)
-	ax.set_ylim(-math.pi, +math.pi)
-	ax.plot (freq, fi)
+
+	if True:
+		ax.plot (freq, I, color='red')
+		ax.plot (freq, Q, color='blue')
+		ax.set_ylim(0, plt.ylim()[1])
+		#ax.set_ylim(0, None)
+		#ax.plot (freq, fsin)
+	else:
+		ax.set_ylim(-math.pi, +math.pi)
+		ax.plot (freq, fi)
 	plt.show()
 	pass
 
@@ -174,8 +178,8 @@ def plotFi2():
 	pass
 
 def main():
-	plotOut()
-	#plotIQ()
+	#plotOut()
+	plotIQ()
 	#plotFreq()
 	#plotTestPhase()
 	#plotFi2()
