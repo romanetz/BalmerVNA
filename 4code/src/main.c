@@ -93,23 +93,26 @@ int main(void)
 
     }
 
-    UTFT_setColor(0, 255, 255);
     UTFT_setFont(BigFont);
 
     //DacInitFullBuffer();
     //DacSetFrequency(1000);
     bool okAdc = cs4272_Init();
-    UTFT_print("Spectroanalizer", 30, 0, 0);
+    UTFT_setColor(255, 255, 255);
+    UTFT_print("VNA", 80, 0, 0);
+    UTFT_setColor(0, 255, 255);
     UTFT_print(okAdc?"okAdc=1":"okAdc=0", 0, 16, 0);
 
     AD9958_Init();
     DelayUs(30);
-    uint32_t freq = 100000;
+    /*
+    uint32_t freq = 76000;
     uint16_t level = 200;
     AD9958_Set_Frequency(0, freq);
     AD9958_Set_Level(0, level);
     AD9958_Set_Frequency(1, freq+1000);
     AD9958_Set_Level(1, level);
+    */
 
     //UTFT_print(ok?"ok":"fail", UTFT_CENTER, 32, 0);
 

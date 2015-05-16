@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import smath as sm
 
+mul = 77./327107250.
+
+
 def readJson(filename):
 	with open(filename, "rt") as file:
 		data = json.load(file)
@@ -55,7 +58,6 @@ def plotOut():
 	#ax.set_ylabel('Y')
 
 	I = data['I']
-
 	Q = data['Q']
 	timeList = makeTimeList(I, 0, sm.STEP)
 
@@ -64,6 +66,10 @@ def plotOut():
 		L.append(hex(I[i]))
 	print(L)
 	#andData(I),andData(Q)
+	for i in range(len(I)):
+		I[i] *= mul
+		Q[i] *= mul
+		#Q[i] *= 3e-4
 
 	#freq = 1000
 	#I = 1e6*np.sin(2*math.pi*freq*np.array(timeList))
@@ -102,26 +108,71 @@ def addToFiArr(fi, add):
 	for i in range(len(fi)):
 		fi[i] = addToFi(fi[i], add)
 
-def plotIQ():
-	jout = readJson("freq.json")
+def plotIQ(filename="freq.json"):
+	#filename = "json/f0_100uH.json"
+	#filename = "json/f0_7_5nF.json"
+	#filename = "json/f0_short.json"
+	#filename = "json/f0_1Om.json"
+	#filename = "json/f0_50Om.json"
+	#filename = "json/f0_100Om.json"
+	filename = "json/f0_open.json"
+	jout = readJson(filename)
 	fig, ax = plt.subplots()
+	ax.set_xlabel('Frequency (Hz)')
 	freq = jout['freq']
 	I = jout['I']
 	Q = jout['Q']
+	A = []
+	KU_REF = 1.96
+	KU_RX = 6.38
+	for i in range(len(Q)):
+		A.append(I[i]/Q[i] * KU_REF/KU_RX*2) #Двойку добавили эмпирически, так что возможно все неверно
+		I[i] *= 1e-8
+		Q[i] *= 1e-8
+		Q[i] *= 0.12
 	fsin = jout['fsin']
 	fi = jout['fi']
 
 	addToFiArr(fi, math.pi)
 
-	if True:
+	if False:
 		ax.plot (freq, I, color='red')
 		ax.plot (freq, Q, color='blue')
 		ax.set_ylim(0, plt.ylim()[1])
-		#ax.set_ylim(0, None)
+		ax.set_xscale('log')
 		#ax.plot (freq, fsin)
 	else:
-		ax.set_ylim(-math.pi, +math.pi)
-		ax.plot (freq, fi)
+		ax.plot (freq, fi, color='blue')
+		ax.set_ylabel('Phase')
+		#ax.set_ylim(-math.pi, +math.pi)
+		for tl in ax.get_yticklabels():
+		    tl.set_color('b')
+
+		ax2 = ax.twinx()
+		ax2.set_ylabel('Amplithude')
+		ax2.plot (freq, A, color='red')
+		for tl in ax2.get_yticklabels():
+		    tl.set_color('r')
+		#ax2.set_yscale('log')
+		#ax.set_xscale('log')
+	plt.show()
+	pass
+
+def plotIQ1():
+	joutOp = readJson("tmp_graph/freq_trans.json")
+	joutTr = readJson("tmp_graph/freq_operational.json")
+	fig, ax = plt.subplots()
+	freq = joutOp['freq']
+	QOp = joutOp['Q']
+	QTr = joutTr['Q']
+	IOp = joutOp['I']
+	ITr = joutTr['I']
+
+	ax.plot (freq, IOp, color='blue')
+	ax.plot (freq, ITr, color='red')
+
+	ax.set_ylim(0, plt.ylim()[1])
+	ax.set_xscale('log')
 	plt.show()
 	pass
 

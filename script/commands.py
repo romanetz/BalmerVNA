@@ -27,16 +27,29 @@ JOB_CALCULATING_COMPLETE = 4
 
 SAMPLING_BUFFER_SIZE = None
 
+def getLogArray(fmin, fmax, count):
+	freq = []
+	flmin = math.log(fmin)
+	flmax = math.log(fmax)
+	for i in range(count):
+		fl = (flmax-flmin)*i/(count-1.0)+flmin
+		freq.append(math.exp(fl))
+	return freq
+
 def getFreq():
 	freq = []
-	#for f in range(5, 200, 2):
-	#	freq.append(f*1e4)
-	#for f in range(1, 10):
-	#	freq.append(f*1e5)
-	#for f in range(1, 101, 1):
-	#	freq.append(f*1e6)
-	for f in range(30, 101, 1):
+	'''
+	for f in range(1, 10):
+		freq.append(f*1e4)
+	for f in range(1, 10):
+		freq.append(f*1e5)
+	for f in range(1, 101, 1):
 		freq.append(f*1e6)
+	'''
+	#for f in range(30, 101, 1):
+	#	freq.append(f*1e6)
+	freq = getLogArray(10e3, 10e6, 100)
+	#freq = getLogArray(7.99e6, 8.02e6, 150)
 	return freq
 
 def sendNone():
@@ -69,7 +82,7 @@ def sendBigData(amin, amax):
 
 def setFreq(freq, level=200):
 	freq = int(freq)
-	print("level=", level)
+	#print("level=", level)
 	send(COMMAND_SET_FREQ, struct.pack("=Ii", freq, int(level)))
 	data = receive()
 	assert(data[0]==COMMAND_SET_FREQ)
@@ -243,6 +256,12 @@ def scanFreqHard():
 	FIarray = []
 	fsin = []
 
+
+	for i in range(2):	
+		setFreq(freq[0]) #, levelFreq(f))
+		time.sleep(0.2)
+		data = samplingAndCalculate()
+
 	for f in freq:		
 		setFreq(f) #, levelFreq(f))
 		time.sleep(0.02)
@@ -269,6 +288,7 @@ def scanFreqHard():
 		IArray.append(Iamplitude)
 		QArray.append(Qamplitude)
 		FIarray.append(Ifi-Qfi)
+		print("Iamplitude=", Iamplitude, "Qamplitude=", Qamplitude)
 		print("fi=", Ifi-Qfi)
 		pass
 
@@ -361,23 +381,20 @@ def main():
 	#startSampling()
 	#print("samplingCompleted=",samplingCompleted())
 	SAMPLING_BUFFER_SIZE = samplingBufferSize()
-	setTX(1)
+	setTX(0)
 
 	#readCs4272Reg(0x1)
-	#samplingOne(100002)
-
-	#print("getSqrByFreq=", getSqrByFreq(100000))
-
-	#scanFreq()
+	#samplingOne(100000)
 	scanFreqHard()
 	#print(samplingAndCalculate())
 
 	pass
 def test():
-	data = struct.pack("H", 1234)
-	print(len(data))
-	print(bool(0))
-	print(getFreq())
+	#data = struct.pack("H", 1234)
+	#print(len(data))
+	#print(bool(0))
+	#print(getFreq())
+	print(getLogArray(100e3, 100e6, 100))
 	pass
 
 if __name__ == "__main__":
