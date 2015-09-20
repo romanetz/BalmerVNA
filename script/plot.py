@@ -1,11 +1,13 @@
 import array
 import math
+import cmath
 import json
 
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import smath as sm
+import z_math as zm
 
 mul = 77./327107250.
 
@@ -115,7 +117,7 @@ def plotIQ(filename="freq.json"):
 	#filename = "json/f0_1Om.json"
 	#filename = "json/f0_50Om.json"
 	#filename = "json/f0_100Om.json"
-	filename = "json/f0_open.json"
+	#filename = "json/f0_open.json"
 	jout = readJson(filename)
 	fig, ax = plt.subplots()
 	ax.set_xlabel('Frequency (Hz)')
@@ -123,10 +125,10 @@ def plotIQ(filename="freq.json"):
 	I = jout['I']
 	Q = jout['Q']
 	A = []
-	KU_REF = 1.96
-	KU_RX = 6.38
+	#KU = 0.5 #примерно на глаз прикинули
+	KU = 0.5148
 	for i in range(len(Q)):
-		A.append(I[i]/Q[i] * KU_REF/KU_RX*2) #Двойку добавили эмпирически, так что возможно все неверно
+		A.append(I[i]/Q[i] * KU)
 		I[i] *= 1e-8
 		Q[i] *= 1e-8
 		Q[i] *= 0.12
@@ -135,7 +137,9 @@ def plotIQ(filename="freq.json"):
 
 	addToFiArr(fi, math.pi)
 
-	if False:
+	if True:
+		ax.plot (freq, fi, color='blue')
+	elif False:
 		ax.plot (freq, I, color='red')
 		ax.plot (freq, Q, color='blue')
 		ax.set_ylim(0, plt.ylim()[1])
@@ -155,24 +159,6 @@ def plotIQ(filename="freq.json"):
 		    tl.set_color('r')
 		#ax2.set_yscale('log')
 		#ax.set_xscale('log')
-	plt.show()
-	pass
-
-def plotIQ1():
-	joutOp = readJson("tmp_graph/freq_trans.json")
-	joutTr = readJson("tmp_graph/freq_operational.json")
-	fig, ax = plt.subplots()
-	freq = joutOp['freq']
-	QOp = joutOp['Q']
-	QTr = joutTr['Q']
-	IOp = joutOp['I']
-	ITr = joutTr['I']
-
-	ax.plot (freq, IOp, color='blue')
-	ax.plot (freq, ITr, color='red')
-
-	ax.set_ylim(0, plt.ylim()[1])
-	ax.set_xscale('log')
 	plt.show()
 	pass
 
@@ -228,12 +214,70 @@ def plotFi2():
 	plt.show()
 	pass
 
+def plotU_Z(filename="freq.json"):
+	#filename = "json/f0_100uH.json"
+	#filename = "json/f0_7_5nF.json"
+	#filename = "json/f0_short.json"
+	#filename = "json/f0_1Om.json"
+	#filename = "json/f0_50Om.json"
+	#filename = "json/f0_100Om.json"
+	filename = "json/f0_open.json"
+	jout = readJson(filename)
+	fig, ax = plt.subplots()
+	ax.set_xlabel('Frequency (Hz)')
+	freq = jout['freq']
+	I = jout['I']
+	Q = jout['Q']
+	Zre = []
+	Zim = []
+	U_Zre = []
+	U_Zim = []
+	U_Zphase = []
+	KU = 0.5148
+	fi = jout['fi']
+	addToFiArr(fi, math.pi)
+
+	for i in range(len(Q)):
+		amp = I[i]/Q[i] * KU
+		phase = fi[i]
+		if phase < -(math.pi*0.5+0.1):
+			phase += math.pi
+			amp = -amp
+
+		U15 = cmath.rect(amp, phase)
+		r = zm.calcU15(U15)
+		U_Zre.append(r.U_Z.real)
+		U_Zim.append(r.U_Z.imag)
+		Zre.append(r.Z.real)
+		Zim.append(r.Z.imag)
+		U_Zphase.append(cmath.phase(r.U_Z)) #*180./math.pi)
+
+	if True:
+		ax.plot (freq, U_Zphase, color='blue')
+		ax.set_xscale('log')
+		#ax.set_ylabel('Phase (Grad)')
+	elif True:
+		ax.plot (freq, U_Zre, color='red')
+		ax.plot (freq, U_Zim, color='blue')
+		#ax.set_ylim(0, plt.ylim()[1])
+		ax.set_xscale('log')
+		#ax.plot (freq, fsin)
+	else:
+		ax.set_ylabel('Resistance (Om)')
+		ax.plot (freq, Zre, color='red')
+		ax.plot (freq, Zim, color='blue')
+		ax.set_xscale('log')
+	plt.show()
+	pass
+
 def main():
 	#plotOut()
-	plotIQ()
+	#plotIQ()
 	#plotFreq()
 	#plotTestPhase()
 	#plotFi2()
+
+	plotU_Z()
 	pass
 
 if __name__ == "__main__":

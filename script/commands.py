@@ -186,15 +186,6 @@ def getSamplesByFreq(freq):
 	QSampes = getAllSamples(True)
 	return (ISampes, QSampes)
 
-
-def writeSamples(samples):
-	jout = {}
-	jout['data'] = samples
-	f = open('out.json', 'wt')
-	f.write(json.dumps(jout))
-	f.close()
-	pass
-
 def scanFreq():
 	freq = getFreq()
 	IArray = []
@@ -377,14 +368,16 @@ def main():
 	time.sleep(0.01)
 	sendNone()
 	#sendBigData(0,100)
-	setFreq(100001)
+	freq = 100000
+	setFreq(freq)
 	#startSampling()
 	#print("samplingCompleted=",samplingCompleted())
 	SAMPLING_BUFFER_SIZE = samplingBufferSize()
-	setTX(0)
+	setTX(1)
+	time.sleep(0.1)
 
 	#readCs4272Reg(0x1)
-	#samplingOne(100000)
+	#samplingOne(freq)
 	scanFreqHard()
 	#print(samplingAndCalculate())
 

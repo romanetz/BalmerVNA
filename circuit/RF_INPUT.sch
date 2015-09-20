@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.1.0">
+<eagle version="7.4.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -14928,8 +14928,8 @@ www.irf.com&lt;p&gt;
 </classes>
 <parts>
 <part name="U3" library="vnwa" deviceset="SA612" device=""/>
-<part name="X4" library="con-coax" deviceset="SMA-" device="142-0701-801/806" value="SMA-142-0701-801/806"/>
-<part name="X6" library="con-coax" deviceset="SMA-" device="142-0701-801/806" value="SMA-142-0701-801/806"/>
+<part name="X4" library="con-coax" deviceset="SMA-" device="142-0701-801/806" value="SMA"/>
+<part name="X6" library="con-coax" deviceset="SMA-" device="142-0701-801/806" value="SMA"/>
 <part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="R33" library="rcl" deviceset="R-EU_" device="R0603" value="100R"/>
 <part name="R31" library="rcl" deviceset="R-EU_" device="R0603" value="33R"/>

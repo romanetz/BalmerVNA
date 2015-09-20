@@ -33,7 +33,7 @@ def calcUZ(U_Z, U):
 	r.U_R15 = U_Z - U_R19
 	return r
 
-def calcU15(U_R15, U):
+def calcU15(U_R15, U=1):
 	C_R16 = 1/R16+1/R14+1/R22+1/R19
 	C_R19 = 1/R19+1/R21
 	U_R19 = ((U/R16 + U_R15/R14)/C_R16 + U_R15/R15*R19)/(C_R19*R19-(1/R14+1/R19)/C_R16)
@@ -67,7 +67,11 @@ def calcZ(Z, U):
 	#print("U_R16=",U_R16)
 	#print("U_R19=",U_R19)
 	#print("U_R15=",U_R15)
-
+	return U_R15
+def calcZ0(U):
+	C_R16 = 1/R16+1/R14+1/R19+1/R22
+	C_R15 = 1/R19+1/R21+1/R15
+	U_R15 = - U/R16 / (C_R15*R19*C_R16 - 1/R19)
 	return U_R15
 
 def Check(r):
@@ -95,6 +99,44 @@ def Check(r):
 	print("I_R19 - I_R21 + I_R15=", I_R19 - I_R21 + I_R15)
 	pass
 
+def KU(U_R15, Z):
+	U_R15_1 = calcZ(Z, 1)
+	return U_R15_1/U_R15
+
+def KU_EMP():
+	KU_REF = 1.96
+	KU_RX = 6.38
+	ku = KU_REF/KU_RX*2
+	print("ku_emp=", ku)
+
+def calcKU():
+	KU_EMP()
+
+	I = 110855503.
+	Q = 857022344.
+	Z = 100
+	ku = KU(I/Q, Z)
+	print("ku_100=", ku)
+
+	I = 326195154
+	Q = 916171180
+	Z = 1e6
+	ku = KU(I/Q, Z)
+	print("ku_open=", ku)
+
+	I = 320680206
+	Q = 739051838
+	Z = 1e-6
+	ku = KU(-I/Q, Z)
+	print("ku_short=", ku)
+
+def calcZByU15():
+	#U15 = complex(-0.2138, +0.0)
+	U15 = complex(0.0666, +0.0)
+	r1 = calcU15(U15, 1)
+	print("U_Z=", r1.U_Z)
+	print("Z=", r1.Z)
+	#Check(r1)
 
 def main():
 	#r = calcUZ(0.4, 1)
@@ -106,11 +148,6 @@ def main():
 	Check(r1)
 	'''
 	'''
-	r1 = calcU15(complex(-0.20, +0.001), 1)
-	print("U_Z=", r1.U_Z)
-	print("Z=", r1.Z)
-	#Check(r1)
-	'''
 	Z = complex(1, -0.1)
 	U_R15 = calcZ(Z, 1)
 	print("U_R15=",U_R15)
@@ -118,6 +155,14 @@ def main():
 	print("Z=", r.Z)
 	print("Z=", r.Z)
 	print("U_R15=", r.U_Z - r.U_R19)
+	'''
+	calcKU()
+	#calcZByU15()
+
+	#print("U_R15_1", calcZ(1e-6, 1))
+	#print("U_R15_0", calcZ0(1))
+	
+	pass
 
 if __name__ == "__main__":
 	main()
