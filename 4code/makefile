@@ -6,11 +6,11 @@ OBJCOPY=$(TC)-objcopy
 AR=$(TC)-ar
 GDB=$(TC)-gdb
 
-
-C_INCLIDES= -I../../SoundCard/code/Libraries/CMSIS/ST/STM32F4xx/Include
-C_INCLIDES+= -I../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/inc
-C_INCLIDES+= -I../../SoundCard/code/Libraries/CMSIS/Include
-C_INCLIDES+= -I../../SoundCard/code/Libraries/CMSIS/Device/ST/STM32F4xx/Include
+STM_LIB_DIR = /home/balmer/radio/stm32/std_lib
+C_INCLIDES= -I$(STM_LIB_DIR)/CMSIS/ST/STM32F4xx/Include
+C_INCLIDES+= -I$(STM_LIB_DIR)/STM32F4xx_StdPeriph_Driver/inc
+C_INCLIDES+= -I$(STM_LIB_DIR)/CMSIS/Include
+C_INCLIDES+= -I$(STM_LIB_DIR)/CMSIS/Device/ST/STM32F4xx/Include
 C_INCLIDES+= -Iinc
 C_INCLIDES+= -includeinc/stm32f4xx_conf.h
 C_INCLIDES+= -Ilib/USB_OTG/inc

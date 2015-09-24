@@ -2,5 +2,9 @@
 circuit/*.b#?
 circuit/*.s#?
 4code/output/
+
+*.pyc
+
 .gitignore~
-info.txt~
+*.py~
+*.txt~

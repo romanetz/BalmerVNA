@@ -428,4 +428,5 @@ TS464CD SO-14 (AD8684R такой же корпус и цоколевка)
 
 - нарисовать цифровой кусок с дифференциальным одним входом
 	con-garry = 2mm pins
-
+	http://www.itead.cc/open-pcb/pcb-prototyping/2layer-green-pcb-5cm-x-10cm-max.html
+	KiCADьф

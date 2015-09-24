@@ -101,7 +101,7 @@ OBJS += \
 	output/FFT/TransformFunctions/arm_rfft_f32.o \
 
 
-output/CMSIS/startup_stm32f4xx.o: ../../SoundCard/code/Libraries/CMSIS/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f4xx.S
+output/CMSIS/startup_stm32f4xx.o: /home/balmer/radio/stm32/std_lib/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f4xx.S
 	@echo 'Building target: startup_stm32f4xx.S'
 	@$(CC) $(ASM_FLAGS) -o "$@" "$<"
 
@@ -221,67 +221,67 @@ output/base/lib/USB_Device/Class/cdc/src/usbd_cdc_core.o: ./lib/USB_Device/Class
 	@echo 'Building target: usbd_cdc_core.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/misc.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/misc.c
+output/StdPeriph_Driver/misc.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/misc.c
 	@echo 'Building target: misc.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/stm32f4xx_dac.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dac.c
+output/StdPeriph_Driver/stm32f4xx_dac.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dac.c
 	@echo 'Building target: stm32f4xx_dac.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/stm32f4xx_dma.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
+output/StdPeriph_Driver/stm32f4xx_dma.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
 	@echo 'Building target: stm32f4xx_dma.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/stm32f4xx_exti.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c
+output/StdPeriph_Driver/stm32f4xx_exti.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c
 	@echo 'Building target: stm32f4xx_exti.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/stm32f4xx_gpio.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+output/StdPeriph_Driver/stm32f4xx_gpio.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
 	@echo 'Building target: stm32f4xx_gpio.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/stm32f4xx_i2c.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
+output/StdPeriph_Driver/stm32f4xx_i2c.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
 	@echo 'Building target: stm32f4xx_i2c.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/stm32f4xx_rcc.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
+output/StdPeriph_Driver/stm32f4xx_rcc.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
 	@echo 'Building target: stm32f4xx_rcc.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/stm32f4xx_spi.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
+output/StdPeriph_Driver/stm32f4xx_spi.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
 	@echo 'Building target: stm32f4xx_spi.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/stm32f4xx_syscfg.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_syscfg.c
+output/StdPeriph_Driver/stm32f4xx_syscfg.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_syscfg.c
 	@echo 'Building target: stm32f4xx_syscfg.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/StdPeriph_Driver/stm32f4xx_tim.o: ../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
+output/StdPeriph_Driver/stm32f4xx_tim.o: /home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
 	@echo 'Building target: stm32f4xx_tim.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/FFT/CommonTables/arm_common_tables.o: ../../SoundCard/code/Libraries/CMSIS/DSP_Lib/Source/CommonTables/arm_common_tables.c
+output/FFT/CommonTables/arm_common_tables.o: /home/balmer/radio/stm32/std_lib/CMSIS/DSP_Lib/Source/CommonTables/arm_common_tables.c
 	@echo 'Building target: arm_common_tables.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/FFT/ComplexMathFunctions/arm_cmplx_mag_f32.o: ../../SoundCard/code/Libraries/CMSIS/DSP_Lib/Source/ComplexMathFunctions/arm_cmplx_mag_f32.c
+output/FFT/ComplexMathFunctions/arm_cmplx_mag_f32.o: /home/balmer/radio/stm32/std_lib/CMSIS/DSP_Lib/Source/ComplexMathFunctions/arm_cmplx_mag_f32.c
 	@echo 'Building target: arm_cmplx_mag_f32.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/FFT/TransformFunctions/arm_cfft_radix4_f32.o: ../../SoundCard/code/Libraries/CMSIS/DSP_Lib/Source/TransformFunctions/arm_cfft_radix4_f32.c
+output/FFT/TransformFunctions/arm_cfft_radix4_f32.o: /home/balmer/radio/stm32/std_lib/CMSIS/DSP_Lib/Source/TransformFunctions/arm_cfft_radix4_f32.c
 	@echo 'Building target: arm_cfft_radix4_f32.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/FFT/TransformFunctions/arm_cfft_radix4_init_f32.o: ../../SoundCard/code/Libraries/CMSIS/DSP_Lib/Source/TransformFunctions/arm_cfft_radix4_init_f32.c
+output/FFT/TransformFunctions/arm_cfft_radix4_init_f32.o: /home/balmer/radio/stm32/std_lib/CMSIS/DSP_Lib/Source/TransformFunctions/arm_cfft_radix4_init_f32.c
 	@echo 'Building target: arm_cfft_radix4_init_f32.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/FFT/TransformFunctions/arm_rfft_init_f32.o: ../../SoundCard/code/Libraries/CMSIS/DSP_Lib/Source/TransformFunctions/arm_rfft_init_f32.c
+output/FFT/TransformFunctions/arm_rfft_init_f32.o: /home/balmer/radio/stm32/std_lib/CMSIS/DSP_Lib/Source/TransformFunctions/arm_rfft_init_f32.c
 	@echo 'Building target: arm_rfft_init_f32.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 
-output/FFT/TransformFunctions/arm_rfft_f32.o: ../../SoundCard/code/Libraries/CMSIS/DSP_Lib/Source/TransformFunctions/arm_rfft_f32.c
+output/FFT/TransformFunctions/arm_rfft_f32.o: /home/balmer/radio/stm32/std_lib/CMSIS/DSP_Lib/Source/TransformFunctions/arm_rfft_f32.c
 	@echo 'Building target: arm_rfft_f32.c'
 	@$(CC) $(C_FLAGS) -o "$@" "$<"
 

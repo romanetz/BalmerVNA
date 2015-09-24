@@ -4,9 +4,10 @@
 # "files" - raw list of source files
 # "output" - output path prefix
 
+STM_LIB_DIR = "/home/balmer/radio/stm32/std_lib"
 sources = [
 {
-	"base" : "../../SoundCard/code/Libraries/CMSIS/ST/STM32F4xx/Source/Templates/gcc_ride7",
+	"base" : STM_LIB_DIR+"/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7",
 	"output" : "CMSIS",
 	"files" : [
 		"startup_stm32f4xx.S"
@@ -25,7 +26,7 @@ sources = [
 	]
 },
 {
-	"base" : "../../SoundCard/code/Libraries/STM32F4xx_StdPeriph_Driver/src",
+	"base" : STM_LIB_DIR+"/STM32F4xx_StdPeriph_Driver/src",
 	"output" : "StdPeriph_Driver",
 	"files" : [
 		"misc.c",
@@ -41,7 +42,7 @@ sources = [
 		]
 },
 {
-	"base" : "../../SoundCard/code/Libraries/CMSIS/DSP_Lib/Source",
+	"base" : STM_LIB_DIR+"/CMSIS/DSP_Lib/Source",
 	"output" : "FFT",
 	"files" : [
 		"CommonTables/arm_common_tables.c",
