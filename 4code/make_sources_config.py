@@ -5,6 +5,8 @@
 # "output" - output path prefix
 
 STM_LIB_DIR = "/home/balmer/radio/stm32/std_lib"
+QT_PROJECT_NAME = "BalmerVNA"
+
 sources = [
 {
 	"base" : STM_LIB_DIR+"/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7",

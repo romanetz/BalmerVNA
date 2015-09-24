@@ -59,9 +59,27 @@ def createDirectories(sources):
 		print "Create:"+d
 		os.makedirs(d)
 	pass
+
+def makeQtCreatorProject(sources):
+	name = make_sources_config.QT_PROJECT_NAME
+	f = open(name+".config", "w")
+	f.close()
+	f = open(name+".files", "w")
+	for s in sources:
+		srel = os.path.relpath(s[0])
+		f.write(srel+"\n")
+	f.close()
+
+	f = open(name+".creator", "w")
+	f.write("[General]\n")
+	f.close()
+	pass
+
     
 def main():
 	sources = makeSources(make_sources_config.sources)
+
+	makeQtCreatorProject(sources)
    
 	makeFile = open("sources.mk", "w")
 	makeFile.write("################################################################################\n")
