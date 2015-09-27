@@ -14,12 +14,20 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    vnadevice.cpp
+    vnadevice.cpp \
+    vnacommands.cpp
 
 HEADERS  += mainwindow.h \
     vnadevice.h \
-    ../4code/inc/commands.h
+    ../4code/inc/commands.h \
+    vnacommands.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
 
 CONFIG += c++11
+
+RESOURCES += \
+    icons.qrc
+
+DISTFILES += \
+    icons/file_send.png

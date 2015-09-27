@@ -5,10 +5,10 @@
 #include <QSerialPortInfo>
 
 #include "mainwindow.h"
-#include "../4code/inc/commands.h"
 
 VnaDevice::VnaDevice()
     : commandStarted(false)
+    , lastIsFE(false)
 {
     serial = new QSerialPort(this);
 
@@ -39,6 +39,7 @@ bool VnaDevice::open()
 
     qDebug() << "Serial port connected:" << serialName;
 
+    lastIsFE = false;
     return true;
 }
 
@@ -60,18 +61,42 @@ void VnaDevice::handleError(QSerialPort::SerialPortError error)
 void VnaDevice::readData()
 {
     QByteArray data = serial->readAll();
-    QString strDebug;
 
     for(uint8_t c : data)
     {
-        strDebug += QString::number(c, 16);
-        strDebug += " ";
+        if(c==0xFF)
+        {
+            emit onPacket(readBuffer);
+            readBuffer.clear();
+            continue;
+        }
+
+        if(c==0xFE)
+        {
+            lastIsFE = true;
+            continue;
+        }
+
+        if(lastIsFE)
+        {
+            lastIsFE = false;
+            if(c==0)
+                c = 0xFE;
+            else
+            if(c==1)
+                c = 0xFF;
+            else
+            {
+                Q_ASSERT(0);
+            }
+        }
+
+        readBuffer.append(c);
     }
 
-    qDebug() << "Receive:" << strDebug;
 }
 
-void VnaDevice::add(uint8_t* data, uint32_t size)
+void VnaDevice::add(const uint8_t* data, uint32_t size)
 {
     Q_ASSERT(commandStarted);
     for(uint32_t i=0; i<size; i++)
@@ -86,6 +111,22 @@ void VnaDevice::add(uint8_t* data, uint32_t size)
         }
     }
 }
+
+void VnaDevice::add8(uint8_t data)
+{
+    add(&data, sizeof(data));
+}
+
+void VnaDevice::add16(uint16_t data)
+{
+    add((uint8_t*)&data, sizeof(data));
+}
+
+void VnaDevice::add32(uint32_t data)
+{
+    add((uint8_t*)&data, sizeof(data));
+}
+
 
 void VnaDevice::startCommand(uint8_t command)
 {
@@ -102,10 +143,3 @@ void VnaDevice::endCommand()
 }
 
 
-void VnaDevice::sendNone()
-{
-    startCommand(COMMAND_NONE);
-    uint8_t data = 0xD1;
-    add(&data, 1);
-    endCommand();
-}

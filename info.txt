@@ -444,8 +444,8 @@ https://github.com/balmerdx/BalmerVNA.git
 	sudo gpasswd --add jodes dialout
 	sudo usermod -a -G dialout balmer
 
-	- open serial port
-	- send first command
+	- open serial port --ok
+	- send first command --ok
 	
 
 

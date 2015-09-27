@@ -15,23 +15,27 @@ public:
 
     void startCommand(uint8_t command);
     void endCommand();
-
-    void sendNone();
+    //Вызывать тольбко внутри startCommand/endCommand
+    void add(const uint8_t* data, uint32_t size);
+    void add8(uint8_t data);
+    void add16(uint16_t data);
+    void add32(uint32_t data);
 signals:
-
+    //Пришел пакет с девайса
+    void onPacket(const QByteArray& data);
 public slots:
     void handleError(QSerialPort::SerialPortError error);
     void readData();
 protected:
     void closeSerialPort();
 
-    //Вызывать тольбко внутри startCommand/endCommand
-    void add(uint8_t* data, uint32_t size);
 protected:
     QSerialPort *serial;
     QByteArray sendBuffer;
+    QByteArray readBuffer;
 
     bool commandStarted;
+    bool lastIsFE;
 };
 
 #endif // VNADEVICE_H
