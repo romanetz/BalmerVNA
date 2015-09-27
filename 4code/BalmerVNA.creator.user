@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.5.0, 2015-09-24T23:11:00. -->
+<!-- Written by QtCreator 3.5.0, 2015-09-27T13:55:06. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -68,9 +68,7 @@
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/balmer/radio/stm32/projects/BalmerVNA/4code</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
-      <valuelist type="QVariantList" key="GenericProjectManager.GenericMakeStep.BuildTargets">
-       <value type="QString">all</value>
-      </valuelist>
+      <valuelist type="QVariantList" key="GenericProjectManager.GenericMakeStep.BuildTargets"/>
       <value type="bool" key="GenericProjectManager.GenericMakeStep.Clean">false</value>
       <value type="QString" key="GenericProjectManager.GenericMakeStep.MakeArguments">release</value>
       <value type="QString" key="GenericProjectManager.GenericMakeStep.MakeCommand">make</value>

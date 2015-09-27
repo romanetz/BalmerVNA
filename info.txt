@@ -429,4 +429,24 @@ TS464CD SO-14 (AD8684R такой же корпус и цоколевка)
 - нарисовать цифровой кусок с дифференциальным одним входом
 	con-garry = 2mm pins
 	http://www.itead.cc/open-pcb/pcb-prototyping/2layer-green-pcb-5cm-x-10cm-max.html
-	KiCADьф
+	KiCAD
+
+- сделать общение через Serial Port и выводить приходящие данные в виде графиков.
+- писать на диск используя PugiXML
+
+https://github.com/balmerdx/BalmerVNA.git
+
+- Serial Port
+	Display Detected System's Serial Support
+	dmesg | grep tty
+
+	Добавляем себе права обращаться к Serial Port (потом перезагружаемся)
+	sudo gpasswd --add jodes dialout
+	sudo usermod -a -G dialout balmer
+
+	- open serial port
+	- send first command
+	
+
+
+

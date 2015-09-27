@@ -9,3 +9,5 @@ circuit/*.s#?
 *.py~
 *.txt~
 *.includes~
+
+build/

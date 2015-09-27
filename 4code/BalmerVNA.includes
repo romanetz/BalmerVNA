@@ -1,0 +1,11 @@
+/usr/lib/gcc/arm-none-eabi/4.8/include
+/home/balmer/radio/stm32/std_lib/CMSIS/ST/STM32F4xx/Include
+/home/balmer/radio/stm32/std_lib/STM32F4xx_StdPeriph_Driver/inc
+/home/balmer/radio/stm32/std_lib/CMSIS/Include
+/home/balmer/radio/stm32/std_lib/CMSIS/Device/ST/STM32F4xx/Include
+inc
+lib/USB_OTG/inc
+lib/Conf
+lib/USB_Device/Core/inc
+lib/USB_Device/Class/cdc/inc
+
