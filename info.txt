@@ -446,6 +446,11 @@ https://github.com/balmerdx/BalmerVNA.git
 
 	- open serial port --ok
 	- send first command --ok
+
+- прикрутить QCustomPlot
+- сделать по тестовой кнопке процессинг команд через StateMachine
+	setFreq/startSAmpling/getSamplesByFreq
+
 	
 
 

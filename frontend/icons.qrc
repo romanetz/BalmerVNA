@@ -4,5 +4,7 @@
         <file>icons/disconnect.png</file>
         <file>icons/settings.png</file>
         <file>icons/file_send.png</file>
+        <file>icons/connect_status.png</file>
+        <file>icons/disconnect_status.png</file>
     </qresource>
 </RCC>

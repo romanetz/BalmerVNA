@@ -46,7 +46,10 @@ bool VnaDevice::open()
 void VnaDevice::closeSerialPort()
 {
     if (serial->isOpen())
+    {
         serial->close();
+        emit signalClose();
+    }
 }
 
 
@@ -56,6 +59,8 @@ void VnaDevice::handleError(QSerialPort::SerialPortError error)
         QMessageBox::critical(mainWindow, tr("Critical Error"), serial->errorString());
         closeSerialPort();
     }
+
+    emit signalError(error);
 }
 
 void VnaDevice::readData()
@@ -66,7 +71,7 @@ void VnaDevice::readData()
     {
         if(c==0xFF)
         {
-            emit onPacket(readBuffer);
+            emit signalPacket(readBuffer);
             readBuffer.clear();
             continue;
         }

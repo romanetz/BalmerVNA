@@ -22,7 +22,9 @@ public:
     void add32(uint32_t data);
 signals:
     //Пришел пакет с девайса
-    void onPacket(const QByteArray& data);
+    void signalPacket(const QByteArray& data);
+    void signalError(QSerialPort::SerialPortError error);
+    void signalClose();
 public slots:
     void handleError(QSerialPort::SerialPortError error);
     void readData();

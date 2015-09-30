@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport
+QT       += core gui serialport printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,12 +15,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     vnadevice.cpp \
-    vnacommands.cpp
+    vnacommands.cpp \
+    qcustomplot/qcustomplot.cpp
 
 HEADERS  += mainwindow.h \
     vnadevice.h \
     ../4code/inc/commands.h \
-    vnacommands.h
+    vnacommands.h \
+    qcustomplot/qcustomplot.h
 
 FORMS    +=
 

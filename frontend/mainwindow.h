@@ -2,9 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSerialPort>
+
+#include "qcustomplot/qcustomplot.h"
 
 class QAction;
 class QToolBar;
+class QLabel;
 
 class VnaDevice;
 class VnaCommands;
@@ -20,9 +24,16 @@ public:
 public slots:
     void openSerialPort();
     void writeTestData();
+
+    void onCloseSerial();
+
+    void onNoneComplete();
 private:
     void createActions();
     void createToolbar();
+    void createCustomPlot();
+
+    void setStatusConnected(bool connected);
 private:
 
     VnaDevice* device;
@@ -33,6 +44,10 @@ private:
     QAction* connectAct;
     QAction* settingsAct;
     QAction* writeTestAct;
+
+    QLabel* statusConnect;
+
+    QCustomPlot* customPlot;
 };
 
 extern MainWindow* mainWindow;
