@@ -448,8 +448,9 @@ https://github.com/balmerdx/BalmerVNA.git
 	- send first command --ok
 
 - прикрутить QCustomPlot
-- сделать по тестовой кнопке процессинг команд через StateMachine
-	setFreq/startSAmpling/getSamplesByFreq
+- сделать чтобы команды можно было добавить в очередь
+	Сделать "Составные команды"
+	
 
 	
 

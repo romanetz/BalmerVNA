@@ -1,6 +1,7 @@
 
 typedef enum USB_COMMANDS
 {
+    COMMAND_BAD = -1,
 	COMMAND_NONE = 0,
 	COMMAND_BIG_DATA = 1,
 	COMMAND_SET_FREQ = 2,

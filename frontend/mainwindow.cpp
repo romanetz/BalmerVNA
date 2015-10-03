@@ -94,13 +94,14 @@ void MainWindow::openSerialPort()
         return;
     }
 
-    commands->sendNone();
     setStatusConnected(true);
+
+    commands->addCommand(new VnaCommandNone());
 }
 
 void MainWindow::writeTestData()
 {
-    commands->sendBigData(0, 256);
+    commands->addCommand(new VnaCommandBigData(0, 256));
 }
 
 void MainWindow::setStatusConnected(bool connected)
@@ -115,5 +116,5 @@ void MainWindow::onCloseSerial()
 
 void MainWindow::onNoneComplete()
 {
-    commands->sendSetFreq(123456);
+    //commands->sendSetFreq(123456);
 }
