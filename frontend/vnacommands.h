@@ -78,6 +78,13 @@ protected:
     int retryCount;
 };
 
+class VnaSamplingBufferSize : public VnaCommand
+{
+public:
+    void start() override;
+    void onPacket(uint8_t* cdata, int csize) override;
+};
+
 class VnaCommands : public QObject
 {
     Q_OBJECT
@@ -87,7 +94,7 @@ public:
     explicit VnaCommands(VnaDevice* device, QObject *parent = 0);
     ~VnaCommands();
 
-    void addCommand(VnaCommand* command, bool autostart=true);
+    void appendCommand(VnaCommand* command, bool autostart=true);
     void startCommand(bool wait=true);
 /*
     void sendNone();
@@ -100,9 +107,13 @@ public:
 */
 
     uint32_t currentFreq() const { return _currentFreq; }
-    void setCurrentFreq(uint32_t freq) { _currentFreq = freq; }
+    void setCurrentFreq(uint32_t freq) { _currentFreq = freq; }  //вызывается только из команды
+
+    uint16_t samplingBufferSize() { return _samplingBufferSize; }
+    void setSamplingBufferSize(uint16_t size) { _samplingBufferSize = size; }  //вызывается только из команды
 
     bool samplingStarted() const { return _samplingStarted; }
+    void setSamplingStarted(bool b) { _samplingStarted = b;} //вызывается только из команды
 
     void commandSampling(uint32_t freq);
 signals:
@@ -119,7 +130,9 @@ public:
     void debugRaw();
     //Пришла плохая команда, очищаем очередь команд.
     void badPacket();
-    void setSamplingStarted(bool b) { _samplingStarted = b;}
+    //Перезапускаем текущую команду
+    void restartCurrentCommand() { _restartCurrentCommand = true; }
+
 protected:
     void onReceiveBadPacket(const QByteArray& data);
     void printDebug(const QByteArray& data);
@@ -131,10 +144,12 @@ protected:
     int numTryBad;
     bool _debugRaw;
     bool _badPacket;
+    bool _restartCurrentCommand;
 
     uint32_t _currentFreq;
 
     bool _samplingStarted;
+    uint16_t _samplingBufferSize;
 };
 
 extern VnaCommands* g_commands;

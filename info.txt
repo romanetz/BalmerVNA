@@ -447,11 +447,9 @@ https://github.com/balmerdx/BalmerVNA.git
 	- open serial port --ok
 	- send first command --ok
 
-- прикрутить QCustomPlot
-- сделать чтобы команды можно было добавить в очередь
-	Сделать "Составные команды"
-	
-
+- прикрутить QCustomPlot --ok
+- сделать чтобы команды можно было добавить в очередь --ok
+- VnaCommandSamplingComplete - перезапускать, а не удалять из очереди а потом добавлять.
 	
 
 
