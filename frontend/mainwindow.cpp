@@ -101,7 +101,8 @@ void MainWindow::openSerialPort()
 
 void MainWindow::writeTestData()
 {
-    commands->addCommand(new VnaCommandBigData(0, 256));
+    //commands->addCommand(new VnaCommandBigData(0, 256));
+    commands->commandSampling(123456);
 }
 
 void MainWindow::setStatusConnected(bool connected)

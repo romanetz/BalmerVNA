@@ -24,16 +24,21 @@ public:
 
     //Вызывается один раз при запуске команды
     virtual void start()=0;
-    virtual void onPacket(USB_COMMANDS command, uint8_t* cdata, int csize)=0;
+
+    virtual void onPacket(uint8_t* cdata, int csize);
+
+    //return msec time
+    virtual uint32_t waitBeforeStart();
 protected:
     USB_COMMANDS _command;
+    uint32_t _waitTime;//msec
 };
 
 class VnaCommandNone : public VnaCommand
 {
 public:
     void start() override;
-    void onPacket(USB_COMMANDS command, uint8_t* cdata, int csize) override;
+    void onPacket(uint8_t* cdata, int csize) override;
 };
 
 class VnaCommandBigData : public VnaCommand
@@ -44,7 +49,33 @@ protected:
 public:
     VnaCommandBigData(uint16_t imin, uint16_t imax);
     void start() override;
-    void onPacket(USB_COMMANDS command, uint8_t* cdata, int csize) override;
+    void onPacket(uint8_t* cdata, int csize) override;
+};
+
+class VnaCommandSetFreq : public VnaCommand
+{
+    uint32_t freq;
+    uint32_t level;
+public:
+    VnaCommandSetFreq(uint32_t freq, uint32_t level=200);
+    void start() override;
+    void onPacket(uint8_t* cdata, int csize) override;
+};
+
+class VnaCommandStartSampling : public VnaCommand
+{
+public:
+    void start() override;
+};
+
+class VnaCommandSamplingComplete : public VnaCommand
+{
+public:
+    VnaCommandSamplingComplete(int retryCount);
+    void start() override;
+    void onPacket(uint8_t* cdata, int csize) override;
+protected:
+    int retryCount;
 };
 
 class VnaCommands : public QObject
@@ -56,7 +87,8 @@ public:
     explicit VnaCommands(VnaDevice* device, QObject *parent = 0);
     ~VnaCommands();
 
-    void addCommand(VnaCommand* command);
+    void addCommand(VnaCommand* command, bool autostart=true);
+    void startCommand(bool wait=true);
 /*
     void sendNone();
     void sendBigData(uint16_t imin, uint16_t imax);
@@ -66,12 +98,20 @@ public:
     void sendSamplingBufferSize();
     void sendGetSamples();
 */
+
+    uint32_t currentFreq() const { return _currentFreq; }
+    void setCurrentFreq(uint32_t freq) { _currentFreq = freq; }
+
+    bool samplingStarted() const { return _samplingStarted; }
+
+    void commandSampling(uint32_t freq);
 signals:
     void signalBadPacket();
     void signalNoneComplete();
     void signalSetFreq(uint32_t freq);
 public slots:
     void onPacket(const QByteArray& data);
+    void onWaitStart();
 public:
     //Для VnaCommand и ее потомков
     VnaDevice* device;
@@ -79,17 +119,22 @@ public:
     void debugRaw();
     //Пришла плохая команда, очищаем очередь команд.
     void badPacket();
+    void setSamplingStarted(bool b) { _samplingStarted = b;}
 protected:
     void onReceiveBadPacket(const QByteArray& data);
     void printDebug(const QByteArray& data);
-protected:
 
+protected:
     //Какие команды мы уже послали (что-бы проверять на верность ответы)
     QList<VnaCommand*> commandQueue;
 
     int numTryBad;
     bool _debugRaw;
     bool _badPacket;
+
+    uint32_t _currentFreq;
+
+    bool _samplingStarted;
 };
 
 extern VnaCommands* g_commands;

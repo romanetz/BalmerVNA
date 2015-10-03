@@ -3,6 +3,7 @@
 #include "vnadevice.h"
 
 #include <QDebug>
+#include <QTimer>
 
 VnaCommands* g_commands = nullptr;
 
@@ -13,6 +14,8 @@ VnaCommands::VnaCommands(VnaDevice *device, QObject *parent)
     , numTryBad(0)
     , _debugRaw(false)
     , _badPacket(false)
+    , _currentFreq(0)
+    , _samplingStarted(false)
 {
     g_commands = this;
     connect(device, SIGNAL(signalPacket(const QByteArray&)), this, SLOT(onPacket(const QByteArray&)));
@@ -57,7 +60,7 @@ void VnaCommands::onPacket(const QByteArray& data)
     }
 
 
-    cmd->onPacket(command, cdata, csize);
+    cmd->onPacket(cdata, csize);
     delete cmd;
 
     if(_badPacket)
@@ -76,6 +79,7 @@ void VnaCommands::onPacket(const QByteArray& data)
     numTryBad = 0;
 
 
+    startCommand();
 /*
     switch(command)
     {
@@ -155,14 +159,47 @@ void VnaCommands::printDebug(const QByteArray& data)
      qDebug() << "Receive:" << strDebug;
 }
 
-void VnaCommands::addCommand(VnaCommand* command)
+void VnaCommands::addCommand(VnaCommand* command, bool autostart)
 {
     commandQueue.append(command);
-    if(commandQueue.size()==1)
+    if(autostart && commandQueue.size()==1)
     {
-        command->start();
+        startCommand();
     }
 }
+
+void VnaCommands::startCommand(bool wait)
+{
+    while(!commandQueue.empty())
+    {
+        VnaCommand* cmd = commandQueue.first();
+
+        if(wait)
+        if(cmd->waitBeforeStart()>0)
+        {
+            QTimer::singleShot(cmd->waitBeforeStart(), this, SLOT(onWaitStart()));
+            break;
+        }
+
+        wait = true;
+
+        cmd->start();
+        if(cmd->command()!=COMMAND_BAD)
+            break;
+
+        qDebug() << "Start command " << cmd->command();
+
+        commandQueue.removeFirst();
+        delete cmd;
+    }
+}
+
+void VnaCommands::onWaitStart()
+{
+    qDebug() << "onWaitStart()";
+    startCommand(false);
+}
+
 /*
 void VnaCommands::sendNone()
 {
@@ -246,10 +283,20 @@ void VnaCommands::badPacket()
     _badPacket = true;
 }
 
+void VnaCommands::commandSampling(uint32_t freq)
+{
+    addCommand(new VnaCommandSetFreq(freq), false);
+    addCommand(new VnaCommandStartSampling(), false);
+    addCommand(new VnaCommandSamplingComplete(10), false);
+
+    startCommand();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 VnaCommand::VnaCommand()
 {
     _command = COMMAND_BAD;
+    _waitTime = 0;
 }
 
 VnaCommand::~VnaCommand()
@@ -261,6 +308,18 @@ USB_COMMANDS VnaCommand::command()
 {
     return _command;
 }
+
+uint32_t VnaCommand::waitBeforeStart()
+{
+    return _waitTime;
+}
+
+void VnaCommand::onPacket(uint8_t* cdata, int csize)
+{
+    (void)cdata;
+    (void)csize;
+}
+
 
 void VnaCommand::startCommand(USB_COMMANDS command)
 {
@@ -301,10 +360,8 @@ void VnaCommandNone::start()
     endCommand();
 }
 
-void VnaCommandNone::onPacket(USB_COMMANDS command, uint8_t* cdata, int csize)
+void VnaCommandNone::onPacket(uint8_t* cdata, int csize)
 {
-    (void)command;
-
     g_commands->debugRaw();
 
     if(csize!=1 || cdata[0]!=1)
@@ -331,9 +388,8 @@ void VnaCommandBigData::start()
     endCommand();
 }
 
-void VnaCommandBigData::onPacket(USB_COMMANDS command, uint8_t* cdata, int csize)
+void VnaCommandBigData::onPacket(uint8_t* cdata, int csize)
 {
-    (void)command;
     (void)cdata;
     qDebug() << "Command 'Big data' size="<<csize;
     g_commands->debugRaw();
@@ -347,3 +403,67 @@ void VnaCommandBigData::onPacket(USB_COMMANDS command, uint8_t* cdata, int csize
         return;
     }
  */
+
+VnaCommandSetFreq::VnaCommandSetFreq(uint32_t freq, uint32_t level)
+    : freq(freq)
+    , level(level)
+{
+
+}
+
+void VnaCommandSetFreq::start()
+{
+    startCommand(COMMAND_SET_FREQ);
+    add32(freq);
+    add32(level);
+    endCommand();
+}
+
+void VnaCommandSetFreq::onPacket(uint8_t* cdata, int csize)
+{
+    Q_ASSERT(csize>=4);
+    uint32_t freq = *(uint32_t*)cdata;
+    qDebug() << "COM: Set freq" << freq;
+    g_commands->setCurrentFreq(freq);
+}
+
+void VnaCommandStartSampling::start()
+{
+    startCommand(COMMAND_START_SAMPLING);
+    endCommand();
+
+    _command = COMMAND_BAD; //В ответ на эту команду не приходит никаких данных.
+    g_commands->setSamplingStarted(true);
+}
+
+
+VnaCommandSamplingComplete::VnaCommandSamplingComplete(int retryCount)
+    : retryCount(retryCount)
+{
+    _waitTime = 10;
+}
+
+void VnaCommandSamplingComplete::start()
+{
+    startCommand(COMMAND_SAMPLING_COMPLETE);
+    endCommand();
+}
+
+void VnaCommandSamplingComplete::onPacket(uint8_t* cdata, int csize)
+{
+    Q_ASSERT(csize>=1);
+    bool complete = cdata[0]?true:false;
+    qDebug() << "COM: Sampling complete" << complete;
+
+    if(!complete)
+    {
+        if(retryCount>0)
+        {
+            g_commands->addCommand(new VnaCommandSamplingComplete(retryCount-1),false);
+        }
+    } else
+    {
+        g_commands->setSamplingStarted(false);
+    }
+}
+
