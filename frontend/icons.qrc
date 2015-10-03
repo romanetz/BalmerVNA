@@ -6,5 +6,6 @@
         <file>icons/file_send.png</file>
         <file>icons/connect_status.png</file>
         <file>icons/disconnect_status.png</file>
+        <file>icons/refresh.png</file>
     </qresource>
 </RCC>

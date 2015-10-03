@@ -2,6 +2,7 @@
 #define VNACOMMANDS_H
 
 #include <QObject>
+#include <QVector>
 #include "../4code/inc/commands.h"
 
 
@@ -29,6 +30,8 @@ public:
 
     //return msec time
     virtual uint32_t waitBeforeStart();
+
+    virtual bool firstByteIsCommand() { return true; }
 protected:
     USB_COMMANDS _command;
     uint32_t _waitTime;//msec
@@ -85,6 +88,20 @@ public:
     void onPacket(uint8_t* cdata, int csize) override;
 };
 
+class VnaCommandGetSamples : public VnaCommand
+{
+public:
+    VnaCommandGetSamples(bool sampleQ, uint16_t offset, uint16_t count);
+    void start() override;
+    void onPacket(uint8_t* cdata, int csize) override;
+
+    bool firstByteIsCommand() override { return false; }
+protected:
+    bool sampleQ;
+    uint16_t offset;
+    uint16_t count;
+};
+
 class VnaCommands : public QObject
 {
     Q_OBJECT
@@ -96,26 +113,23 @@ public:
 
     void appendCommand(VnaCommand* command, bool autostart=true);
     void startCommand(bool wait=true);
-/*
-    void sendNone();
-    void sendBigData(uint16_t imin, uint16_t imax);
-    void sendSetFreq(uint32_t freq, uint32_t level=200);
-    void sendStartSampling();
-    void sendSamplingComplete();
-    void sendSamplingBufferSize();
-    void sendGetSamples();
-*/
 
     uint32_t currentFreq() const { return _currentFreq; }
     void setCurrentFreq(uint32_t freq) { _currentFreq = freq; }  //вызывается только из команды
 
     uint16_t samplingBufferSize() { return _samplingBufferSize; }
-    void setSamplingBufferSize(uint16_t size) { _samplingBufferSize = size; }  //вызывается только из команды
+    void setSamplingBufferSize(uint16_t size);  //вызывается только из команды
 
     bool samplingStarted() const { return _samplingStarted; }
     void setSamplingStarted(bool b) { _samplingStarted = b;} //вызывается только из команды
 
+    void commandInitial();
+
     void commandSampling(uint32_t freq);
+
+    QVector<int32_t>& arrayI() { return _arrayI; }
+    QVector<int32_t>& arrayQ() { return _arrayQ; }
+
 signals:
     void signalBadPacket();
     void signalNoneComplete();
@@ -150,6 +164,11 @@ protected:
 
     bool _samplingStarted;
     uint16_t _samplingBufferSize;
+
+    QVector<int32_t> _arrayI;
+    QVector<int32_t> _arrayQ;
+
+    friend class VnaCommandGetSamples;
 };
 
 extern VnaCommands* g_commands;

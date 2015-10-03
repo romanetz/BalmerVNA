@@ -20,6 +20,8 @@ public:
     void add8(uint8_t data);
     void add16(uint16_t data);
     void add32(uint32_t data);
+
+    void printDebug(const QByteArray& data);
 signals:
     //Пришел пакет с девайса
     void signalPacket(const QByteArray& data);
@@ -30,7 +32,6 @@ public slots:
     void readData();
 protected:
     void closeSerialPort();
-
 protected:
     QSerialPort *serial;
     QByteArray sendBuffer;

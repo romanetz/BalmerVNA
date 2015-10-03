@@ -28,12 +28,14 @@ public slots:
     void onCloseSerial();
 
     void onNoneComplete();
+    void onRefresh();
 private:
     void createActions();
     void createToolbar();
     void createCustomPlot();
 
     void setStatusConnected(bool connected);
+
 private:
 
     VnaDevice* device;
@@ -44,6 +46,7 @@ private:
     QAction* connectAct;
     QAction* settingsAct;
     QAction* writeTestAct;
+    QAction* refreshAct;
 
     QLabel* statusConnect;
 

@@ -52,6 +52,9 @@ void MainWindow::createActions()
 
     writeTestAct = new QAction(QIcon(":/icons/file_send.png"), tr("Write test data"), this );
     connect(writeTestAct, SIGNAL(triggered()), this, SLOT(writeTestData()));
+
+    refreshAct = new QAction(QIcon(":/icons/refresh.png"), tr("Refresh graph"), this );
+    connect(refreshAct, SIGNAL(triggered()), this, SLOT(onRefresh()));
 }
 
 void MainWindow::createToolbar()
@@ -60,6 +63,7 @@ void MainWindow::createToolbar()
     mainToolBar->addAction(connectAct);
     mainToolBar->addAction(settingsAct);
     mainToolBar->addAction(writeTestAct);
+    mainToolBar->addAction(refreshAct);
 }
 
 void MainWindow::createCustomPlot()
@@ -68,14 +72,21 @@ void MainWindow::createCustomPlot()
     customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 
     QVector<double> x(101), y(101); // initialize with entries 0..100
+    QVector<double> y2(101);
     for (int i=0; i<101; ++i)
     {
       x[i] = i/50.0 - 1; // x goes from -1 to 1
       y[i] = x[i]*x[i];  // let's plot a quadratic function
+      y2[i] = sin(x[i]);  // let's plot a quadratic function
     }
     // create graph and assign data to it:
     customPlot->addGraph();
+    customPlot->graph(0)->setPen(QPen(Qt::red));
     customPlot->graph(0)->setData(x, y);
+
+    customPlot->addGraph();
+    customPlot->graph(1)->setPen(QPen(Qt::green));
+    customPlot->graph(1)->setData(x, y2);
     // give the axes some labels:
     customPlot->xAxis->setLabel("x");
     customPlot->yAxis->setLabel("y");
@@ -96,7 +107,8 @@ void MainWindow::openSerialPort()
 
     setStatusConnected(true);
 
-    commands->addCommand(new VnaCommandNone());
+    //commands->appendCommand(new VnaCommandNone());
+    commands->commandInitial();
 }
 
 void MainWindow::writeTestData()
@@ -118,4 +130,22 @@ void MainWindow::onCloseSerial()
 void MainWindow::onNoneComplete()
 {
     //commands->sendSetFreq(123456);
+}
+
+void MainWindow::onRefresh()
+{
+    int count = commands->samplingBufferSize();
+    QVector<double> x(count), yI(count), yQ(count);
+    for(int i=0; i<count; i++)
+    {
+        x[i] = i;
+        yI[i] = commands->arrayI()[i];
+        yQ[i] = commands->arrayQ()[i];
+    }
+
+    customPlot->graph(0)->setData(x, yI);
+    customPlot->graph(1)->setData(x, yQ);
+
+    customPlot->rescaleAxes();
+    customPlot->replot();
 }

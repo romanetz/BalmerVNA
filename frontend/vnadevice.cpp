@@ -63,9 +63,23 @@ void VnaDevice::handleError(QSerialPort::SerialPortError error)
     emit signalError(error);
 }
 
+void VnaDevice::printDebug(const QByteArray& data)
+{
+    //debug commands
+    QString strDebug;
+    for(uint8_t c : data)
+    {
+        strDebug += QString::number(c, 16);
+        strDebug += " ";
+    }
+    qDebug() << "Receive:" << strDebug;
+}
+
+
 void VnaDevice::readData()
 {
     QByteArray data = serial->readAll();
+    //printDebug(data);
 
     for(uint8_t c : data)
     {
