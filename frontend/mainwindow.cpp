@@ -107,13 +107,13 @@ void MainWindow::openSerialPort()
 
     setStatusConnected(true);
 
-    //commands->appendCommand(new VnaCommandNone());
     commands->commandInitial();
+    //commands->appendCommand(new VnaCommandPing());
 }
 
 void MainWindow::writeTestData()
 {
-    //commands->addCommand(new VnaCommandBigData(0, 256));
+    //commands->appendCommand(new VnaCommandPing());
     commands->commandSampling(123456);
 }
 

@@ -8,6 +8,7 @@ src/job.c
 src/main.c
 src/packet_receive.c
 src/process_sound.c
+src/ring_buffer.c
 src/smath.c
 src/stm32f4xx_it.c
 src/system_stm32f4xx.c

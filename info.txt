@@ -451,6 +451,30 @@ https://github.com/balmerdx/BalmerVNA.git
 - сделать чтобы команды можно было добавить в очередь --ok
 - VnaCommandSamplingComplete - перезапускать, а не удалять из очереди а потом добавлять.
 	
+usbd_cdc_DataIn
 
+http://habrahabr.ru/post/248729/
+
+- разбираемся с USB Com port
+	VCP_fops == APP_FOPS
+	usbd_cdc_SOF - посылаем данные.
+	usbd_cdc_DataIn - также посылаем данные.
+
+	- сделать простейший циклический буффер на C.
+		в этот буфер можно добавлять/удалять данные и проверять isFull/isEmpty
+
+	- не забыть о ZLP (Zero Length Packet) если посылаем пакет максимальной длинны.
+
+
+	CDC_DATA_MAX_PACKET_SIZE размер пакета
+	APP_RX_DATA_SIZE - размер циклического буфера для отсылки данных с девайса на 
+компьютер.
+	rx_ring
+	APP_Rx_send_buffer
+	usbd_cdc_DataIn
+	Handle_USBAsynchXfer
+
+	USB_Tx_State ==0 - данные не отсылаются
+	APP_Rx_send_buffer
 
 

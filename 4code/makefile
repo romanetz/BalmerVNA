@@ -77,9 +77,9 @@ clean:
 	-@echo ' '
 
 flashd:
-	python /balmer/radio/stm32/tools/stm32_flash.py "${CURDIR}/$(TARGET)_debug.bin"
+	python /home/balmer/radio/stm32/tools/stm32_flash.py "${CURDIR}/$(TARGET)_debug.bin"
 
 flashr:
-	python /balmer/radio/stm32/tools/stm32_flash.py "${CURDIR}/$(TARGET)_release.bin"
+	python /home/balmer/radio/stm32/tools/stm32_flash.py "${CURDIR}/$(TARGET)_release.bin"
 
 .PHONY: all clean dependents

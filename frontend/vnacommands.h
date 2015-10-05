@@ -37,11 +37,13 @@ protected:
     uint32_t _waitTime;//msec
 };
 
-class VnaCommandNone : public VnaCommand
+class VnaCommandPing : public VnaCommand
 {
 public:
     void start() override;
     void onPacket(uint8_t* cdata, int csize) override;
+protected:
+    uint32_t pingIdx;
 };
 
 class VnaCommandBigData : public VnaCommand

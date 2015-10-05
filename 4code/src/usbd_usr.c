@@ -21,6 +21,7 @@
 
 #include "usbd_usr.h"
 #include "usbd_ioreq.h"
+#include "data_process.h"
 
 USBD_Usr_cb_TypeDef USR_cb =
 {

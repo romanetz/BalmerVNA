@@ -19,12 +19,15 @@ VnaDevice::VnaDevice()
 
 bool VnaDevice::open()
 {
+    QString serialName;
+
     for (const QSerialPortInfo& info : QSerialPortInfo::availablePorts())
     {
+        if(serialName.isEmpty())
+            serialName = info.portName();
         qDebug() << "serial name=" << info.portName() << " desc=" << info.description() << " busy=" << info.isBusy();
     }
 
-    QString serialName = "ttyACM0";
     serial->setPortName(serialName);
     serial->setBaudRate(QSerialPort::Baud115200);
     serial->setDataBits(QSerialPort::Data8);
@@ -69,7 +72,14 @@ void VnaDevice::printDebug(const QByteArray& data)
     QString strDebug;
     for(uint8_t c : data)
     {
-        strDebug += QString::number(c, 16);
+        if(c>=32 && c<128)
+        {
+            strDebug += c;
+        } else
+        {
+            strDebug += QString::number(c, 16);
+        }
+
         strDebug += " ";
     }
     qDebug() << "Receive:" << strDebug;
@@ -79,7 +89,7 @@ void VnaDevice::printDebug(const QByteArray& data)
 void VnaDevice::readData()
 {
     QByteArray data = serial->readAll();
-    //printDebug(data);
+    printDebug(data);
 
     for(uint8_t c : data)
     {
@@ -157,6 +167,7 @@ void VnaDevice::endCommand()
 {
     sendBuffer.append(0xFF);
     serial->write(sendBuffer);
+
     sendBuffer.clear();
     commandStarted = false;
 }

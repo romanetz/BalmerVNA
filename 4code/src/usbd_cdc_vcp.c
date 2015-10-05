@@ -38,20 +38,12 @@ LINE_CODING linecoding = {
 
 USART_InitTypeDef USART_InitStructure;
 
-/* These are external variables imported from CDC core to be used for IN 
- transfer management. */
-extern uint8_t APP_Rx_Buffer[]; /* Write CDC received data in this buffer.
- These data will be sent over USB IN endpoint
- in the CDC core functions. */
-extern uint32_t APP_Rx_ptr_in; /* Increment this pointer or roll it back to
- start address when writing received data
- in the buffer APP_Rx_Buffer. */
+uint16_t VCP_DataTx(uint8_t* buf, uint32_t length);
 
 /* Private function prototypes -----------------------------------------------*/
 static uint16_t VCP_Init(void);
 static uint16_t VCP_DeInit(void);
 static uint16_t VCP_Ctrl(uint32_t Cmd, uint8_t* Buf, uint32_t Len);
-static uint16_t VCP_DataTx(uint8_t* Buf, uint32_t Len);
 static uint16_t VCP_DataRx(uint8_t* Buf, uint32_t Len);
 
 CDC_IF_Prop_TypeDef VCP_fops = { VCP_Init, VCP_DeInit, VCP_Ctrl, VCP_DataTx,
@@ -161,29 +153,6 @@ void VCP_send_buffer(uint8_t* buf, int len) {
 }
 
 /**
- * @brief  VCP_DataTx
- *         CDC received data to be send over USB IN endpoint are managed in
- *         this function.
- * @param  Buf: Buffer of data to be sent
- * @param  Len: Number of data to be sent (in bytes)
- * @retval Result of the opeartion: USBD_OK if all operations are OK else VCP_FAIL
- */
-static uint16_t VCP_DataTx(uint8_t* Buf, uint32_t Len) {
-	uint32_t i = 0;
-	while (i < Len) {
-		APP_Rx_Buffer[APP_Rx_ptr_in] = *(Buf + i);
-		APP_Rx_ptr_in++;
-		i++;
-		/* To avoid buffer overflow */
-		if (APP_Rx_ptr_in == APP_RX_DATA_SIZE) {
-			APP_Rx_ptr_in = 0;
-		}
-	}
-
-	return USBD_OK;
-}
-
-/**
  * @brief  VCP_DataRx
  *         Data received over USB OUT endpoint are sent over CDC interface
  *         through this function.
@@ -198,11 +167,6 @@ static uint16_t VCP_DataTx(uint8_t* Buf, uint32_t Len) {
  * @param  Len: Number of data received (in bytes)
  * @retval Result of the opeartion: USBD_OK if all operations are OK else VCP_FAIL
  */
-
-#define APP_TX_BUF_SIZE 128
-uint8_t APP_Tx_Buffer[APP_TX_BUF_SIZE];
-uint32_t APP_tx_ptr_head;
-uint32_t APP_tx_ptr_tail;
 
 static uint16_t VCP_DataRx(uint8_t* Buf, uint32_t Len) {
 	DataReceive(Buf, Len);

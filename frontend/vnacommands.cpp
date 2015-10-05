@@ -7,6 +7,7 @@
 
 VnaCommands* g_commands = nullptr;
 
+uint32_t g_pingIdx = 12;
 
 VnaCommands::VnaCommands(VnaDevice *device, QObject *parent)
     : QObject(parent)
@@ -56,12 +57,12 @@ void VnaCommands::onPacket(const QByteArray& data)
         }
 
 
-        if(command==0x41 && cmd->command()==COMMAND_NONE)
+        if(command==0x41 && cmd->command()==COMMAND_PING)
         {
-            if(csize==1 && cdata[0]==0x14)
+            if(csize==1 && cdata[0]==0x17)
             {
-                //Говнокод, по причине того, что вначале приходить неправильный ответ на COMMAND_NONE
-                qDebug() << "Bad none received";
+                //Говнокод, по причине того, что вначале приходить неправильный ответ на COMMAND_PING
+                qDebug() << "Bad first ping received";
             } else
             {
                 onReceiveBadPacket(data);
@@ -201,9 +202,10 @@ void VnaCommands::setSamplingBufferSize(uint16_t size)
 
 void VnaCommands::commandInitial()
 {
-    appendCommand(new VnaCommandNone());
-    appendCommand(new VnaCommandNone());
+    appendCommand(new VnaCommandPing());
+    appendCommand(new VnaCommandPing());
     appendCommand(new VnaSamplingBufferSize(), false);
+    appendCommand(new VnaCommandPing());
 }
 
 void VnaCommands::commandSampling(uint32_t freq)
@@ -285,18 +287,19 @@ void VnaCommand::add32(uint32_t data)
 }
 
 
-void VnaCommandNone::start()
+void VnaCommandPing::start()
 {
-    startCommand(COMMAND_NONE);
-    add8(0xD1);
+    pingIdx = g_pingIdx++;
+    startCommand(COMMAND_PING);
+    add32(pingIdx);
     endCommand();
 }
 
-void VnaCommandNone::onPacket(uint8_t* cdata, int csize)
+void VnaCommandPing::onPacket(uint8_t* cdata, int csize)
 {
     g_commands->debugRaw();
 
-    if(csize!=1 || cdata[0]!=1)
+    if(csize!=4 || pingIdx!=*(uint32_t*)cdata)
     {
         g_commands->badPacket();
         return;

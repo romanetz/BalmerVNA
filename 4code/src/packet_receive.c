@@ -10,6 +10,7 @@
 #include "cs4272.h"
 
 void UsbSetFreq(uint32_t freq, int32_t level);
+uint32_t pingIdx = 0;
 
 void PacketReceive(volatile uint8_t* data, uint32_t size)
 {
@@ -21,10 +22,16 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
 
     switch(command)
     {
-    case COMMAND_NONE:
     default:
         USBAdd8(command);
-        USBAdd8(size);
+        //USBAdd8(size);
+        USBAdd(data, size);
+        USBSend();
+        break;
+    case COMMAND_PING:
+        pingIdx = *(uint32_t*)data;
+        USBAdd8(command);
+        USBAdd32(*(uint32_t*)data);
         USBSend();
         break;
     case COMMAND_BIG_DATA:
@@ -52,10 +59,6 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
     	break;
     case COMMAND_START_SAMPLING:
     	{
-		    /*UTFT_setColor(255, 255, 255);
-		    UTFT_setFont(BigFont);
-    		UTFT_print("start", 30, 16, 0);
-    		*/
 			SamplingStart();
     	}
     	break;

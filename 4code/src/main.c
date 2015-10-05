@@ -13,6 +13,10 @@
 #include "data_process.h"
 #include "job.h"
 
+extern uint32_t pingIdx;
+uint32_t pingIdxPrinted = 0;
+
+
 RCC_ClocksTypeDef RCC_Clocks;
 
 __ALIGN_BEGIN USB_OTG_CORE_HANDLE  USB_OTG_dev __ALIGN_END;
@@ -121,20 +125,24 @@ int main(void)
 
     initGpio();
 
-
+    //int idx = 0;
     while(1)
     {
         DelayUs(10);
         SoundQuant();
         JobQuant();
 
-        /*
+        if(pingIdxPrinted!=pingIdx)
         {
-            UTFT_printNumI(sampleQmax-sampleQmin, 80, 0, 9, ' ');
-            UTFT_printNumI(sampleSqr, 80, 16, 9, ' ');
-
-            clearSampleNMinMAx();
+            UTFT_setFont(BigFont);
+            UTFT_setColor(255, 255, 255);
+            UTFT_printNumI(pingIdx, 0, 48, 9, ' ');
+            pingIdxPrinted = pingIdx;
         }
+        /*
+        UTFT_setFont(BigFont);
+        UTFT_setColor(255, 255, 255);
+        UTFT_printNumI(idx++, 0, 64, 9, ' ');
         */
     }
 
