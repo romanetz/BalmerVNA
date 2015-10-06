@@ -26,16 +26,15 @@ public slots:
     void writeTestData();
 
     void onCloseSerial();
-
-    void onNoneComplete();
     void onRefresh();
+    void onEndSampling();
 private:
     void createActions();
     void createToolbar();
     void createCustomPlot();
 
     void setStatusConnected(bool connected);
-
+    void setBisy(bool bisy);
 private:
 
     VnaDevice* device;
@@ -49,8 +48,12 @@ private:
     QAction* refreshAct;
 
     QLabel* statusConnect;
+    QLabel* statusBisy;
 
     QCustomPlot* customPlot;
+
+    QPixmap pix_red_orb;
+    QPixmap pix_green_orb;
 };
 
 extern MainWindow* mainWindow;

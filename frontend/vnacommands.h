@@ -83,7 +83,7 @@ protected:
     int retryCount;
 };
 
-class VnaSamplingBufferSize : public VnaCommand
+class VnaCommandSamplingBufferSize : public VnaCommand
 {
 public:
     void start() override;
@@ -102,6 +102,12 @@ protected:
     bool sampleQ;
     uint16_t offset;
     uint16_t count;
+};
+
+class VnaCommandEndSampling : public VnaCommand
+{
+public:
+    void start();
 };
 
 class VnaCommands : public QObject
@@ -134,8 +140,8 @@ public:
 
 signals:
     void signalBadPacket();
-    void signalNoneComplete();
     void signalSetFreq(uint32_t freq);
+    void signalEndSampling();
 public slots:
     void onPacket(const QByteArray& data);
     void onWaitStart();

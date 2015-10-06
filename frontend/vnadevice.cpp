@@ -5,6 +5,7 @@
 #include <QSerialPortInfo>
 
 #include "mainwindow.h"
+#include "../4code/inc/commands.h"
 
 VnaDevice::VnaDevice()
     : commandStarted(false)
@@ -15,6 +16,10 @@ VnaDevice::VnaDevice()
     connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this,
             SLOT(handleError(QSerialPort::SerialPortError)));
     connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer->start(1000);
 }
 
 bool VnaDevice::open()
@@ -72,30 +77,45 @@ void VnaDevice::printDebug(const QByteArray& data)
     QString strDebug;
     for(uint8_t c : data)
     {
-        if(c>=32 && c<128)
-        {
-            strDebug += c;
-        } else
-        {
-            strDebug += QString::number(c, 16);
-        }
-
+        strDebug += QString::number(c, 16);
         strDebug += " ";
     }
     qDebug() << "Receive:" << strDebug;
+}
+
+void VnaDevice::update()
+{
+    //if(!serial->isOpen())
+    //    return;
+    //startCommand(COMMAND_EMPTY_ANSVER);
+    //endCommand();
+    //qDebug() << "empty";
+/*
+    qint64 bytes = serial->bytesAvailable();
+    if(bytes!=0)
+    {
+        qDebug() << "bytesAvailable=" << bytes;
+    }
+*/
 }
 
 
 void VnaDevice::readData()
 {
     QByteArray data = serial->readAll();
-    printDebug(data);
+    //printDebug(data);
 
     for(uint8_t c : data)
     {
         if(c==0xFF)
         {
-            emit signalPacket(readBuffer);
+            if(readBuffer.size()>0)
+            {
+                emit signalPacket(readBuffer);
+            } else
+            {
+                qDebug() << "empty";
+            }
             readBuffer.clear();
             continue;
         }
@@ -166,6 +186,7 @@ void VnaDevice::startCommand(uint8_t command)
 void VnaDevice::endCommand()
 {
     sendBuffer.append(0xFF);
+    serial->flush();
     serial->write(sendBuffer);
 
     sendBuffer.clear();

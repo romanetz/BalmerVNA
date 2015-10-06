@@ -7,6 +7,8 @@
 
 VnaCommands* g_commands = nullptr;
 
+static bool com_debug = false;
+
 uint32_t g_pingIdx = 12;
 
 VnaCommands::VnaCommands(VnaDevice *device, QObject *parent)
@@ -57,27 +59,13 @@ void VnaCommands::onPacket(const QByteArray& data)
         }
 
 
-        if(command==0x41 && cmd->command()==COMMAND_PING)
+        if(cmd->command()!=command)
         {
-            if(csize==1 && cdata[0]==0x17)
-            {
-                //Говнокод, по причине того, что вначале приходить неправильный ответ на COMMAND_PING
-                qDebug() << "Bad first ping received";
-            } else
-            {
-                onReceiveBadPacket(data);
-                return;
-            }
-        } else
-        {
-            if(cmd->command()!=command)
-            {
-                onReceiveBadPacket(data);
-                return;
-            }
-
-            cmd->onPacket(cdata, csize);
+            onReceiveBadPacket(data);
+            return;
         }
+
+        cmd->onPacket(cdata, csize);
     } else
     {
         cmd->onPacket(cdata, csize);
@@ -116,6 +104,7 @@ void VnaCommands::printDebug(const QByteArray& data)
         strDebug += QString::number(c, 16);
         strDebug += " ";
     }
+
     qDebug() << "Receive:" << strDebug;
 }
 
@@ -146,7 +135,8 @@ void VnaCommands::startCommand(bool wait)
         cmd->start();
         if(cmd->command()!=COMMAND_BAD)
         {
-            qDebug() << "Start command " << cmd->command();
+            if(com_debug)
+                qDebug() << "Start command " << cmd->command();
             break;
         }
 
@@ -158,7 +148,8 @@ void VnaCommands::startCommand(bool wait)
 
 void VnaCommands::onWaitStart()
 {
-    qDebug() << "onWaitStart()";
+    if(com_debug)
+        qDebug() << "onWaitStart()";
     startCommand(false);
 }
 
@@ -204,7 +195,7 @@ void VnaCommands::commandInitial()
 {
     appendCommand(new VnaCommandPing());
     appendCommand(new VnaCommandPing());
-    appendCommand(new VnaSamplingBufferSize(), false);
+    appendCommand(new VnaCommandSamplingBufferSize(), false);
     appendCommand(new VnaCommandPing());
 }
 
@@ -216,12 +207,14 @@ void VnaCommands::commandSampling(uint32_t freq)
 
     for(int sampleQ = 0; sampleQ<2; sampleQ++)
     {
-        int count = 200;
+        int count = 250; //Т.к. буфер на девайсе у нас 2048 и надо оставить запас на конвертацию FE и FF
         for(int offset=0; offset<_samplingBufferSize; offset+=count)
         {
             appendCommand(new VnaCommandGetSamples(sampleQ?true:false, offset, qMin(count, _samplingBufferSize-offset)), false);
         }
     }
+
+    appendCommand(new VnaCommandEndSampling(), false);
 
     startCommand();
 }
@@ -297,15 +290,14 @@ void VnaCommandPing::start()
 
 void VnaCommandPing::onPacket(uint8_t* cdata, int csize)
 {
-    g_commands->debugRaw();
+    if(com_debug)
+        g_commands->debugRaw();
 
     if(csize!=4 || pingIdx!=*(uint32_t*)cdata)
     {
         g_commands->badPacket();
         return;
     }
-
-    emit g_commands->signalNoneComplete();
 }
 
 VnaCommandBigData::VnaCommandBigData(uint16_t imin, uint16_t imax)
@@ -358,7 +350,8 @@ void VnaCommandSetFreq::onPacket(uint8_t* cdata, int csize)
 {
     Q_ASSERT(csize>=4);
     uint32_t freq = *(uint32_t*)cdata;
-    qDebug() << "COM: Set freq" << freq;
+    if(com_debug)
+        qDebug() << "COM: Set freq" << freq;
     g_commands->setCurrentFreq(freq);
 }
 
@@ -388,7 +381,8 @@ void VnaCommandSamplingComplete::onPacket(uint8_t* cdata, int csize)
 {
     Q_ASSERT(csize>=1);
     bool complete = cdata[0]?true:false;
-    qDebug() << "COM: Sampling complete" << complete;
+    if(com_debug)
+        qDebug() << "COM: Sampling complete" << complete;
 
     if(!complete)
     {
@@ -403,17 +397,18 @@ void VnaCommandSamplingComplete::onPacket(uint8_t* cdata, int csize)
     }
 }
 
-void VnaSamplingBufferSize::start()
+void VnaCommandSamplingBufferSize::start()
 {
     startCommand(COMMAND_SAMPLING_BUFFER_SIZE);
     endCommand();
 }
 
-void VnaSamplingBufferSize::onPacket(uint8_t* cdata, int csize)
+void VnaCommandSamplingBufferSize::onPacket(uint8_t* cdata, int csize)
 {
     Q_ASSERT(csize>=2);
     uint16_t bufferSize = *(uint16_t*)cdata;
-    qDebug() << "COM: Sampling buffer size=" << bufferSize;
+    if(com_debug)
+        qDebug() << "COM: Sampling buffer size=" << bufferSize;
     g_commands->setSamplingBufferSize(bufferSize);
 }
 
@@ -438,7 +433,9 @@ void VnaCommandGetSamples::onPacket(uint8_t* cdata, int csize)
 {
     Q_ASSERT(csize==count*4);
     int32_t* inData = (int32_t*)cdata;
-    qDebug() << "COM: Receive samples "<< (sampleQ?"Q":"I") <<" " <<offset << "," << count;
+
+    if(com_debug)
+        qDebug() << "COM: Receive samples "<< (sampleQ?"Q":"I") <<" " <<offset << "," << count;
 
     QVector<int32_t>& v = sampleQ?g_commands->_arrayQ:g_commands->_arrayI;
     //QString s;
@@ -450,4 +447,9 @@ void VnaCommandGetSamples::onPacket(uint8_t* cdata, int csize)
     }
 
     //qDebug() << "samples=" << s;
+}
+
+void VnaCommandEndSampling::start()
+{
+    emit g_commands->signalEndSampling();
 }

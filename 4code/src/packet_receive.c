@@ -131,6 +131,9 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
             USBSend();
         }
         break;
+    case COMMAND_EMPTY_ANSVER:
+        USBSend();
+        break;
     }
 }
 

@@ -12,6 +12,8 @@ MainWindow* mainWindow = nullptr;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
+    , pix_red_orb(":/icons/red_orb.png")
+    , pix_green_orb(":/icons/green_orb.png")
 {
     mainWindow = this;
 
@@ -21,19 +23,24 @@ MainWindow::MainWindow(QWidget *parent)
     connect(device, SIGNAL(signalClose()), this, SLOT(onCloseSerial()));
 
     commands = new VnaCommands(device);
-    connect(commands, SIGNAL(signalNoneComplete()), this, SLOT(onNoneComplete()));
+    connect(commands, SIGNAL(signalEndSampling()), this, SLOT(onEndSampling()));
 
 
     createCustomPlot();
     createActions();
     createToolbar();
 
+    statusBisy = new QLabel();
+    statusBar()->addPermanentWidget(statusBisy);
+
     statusConnect = new QLabel();
     statusBar()->addPermanentWidget(statusConnect);
 
-    this->setCentralWidget(customPlot);
+
+    setCentralWidget(customPlot);
 
     setStatusConnected(false);
+    setBisy(false);
 }
 
 MainWindow::~MainWindow()
@@ -114,6 +121,7 @@ void MainWindow::openSerialPort()
 void MainWindow::writeTestData()
 {
     //commands->appendCommand(new VnaCommandPing());
+    setBisy(true);
     commands->commandSampling(123456);
 }
 
@@ -122,14 +130,17 @@ void MainWindow::setStatusConnected(bool connected)
     statusConnect->setPixmap(QPixmap(connected?":/icons/connect_status.png":":/icons/disconnect_status.png"));
 }
 
+void MainWindow::setBisy(bool bisy)
+{
+    if(bisy)
+        statusBisy->setPixmap(pix_red_orb);
+    else
+        statusBisy->setPixmap(pix_green_orb);
+}
+
 void MainWindow::onCloseSerial()
 {
     setStatusConnected(false);
-}
-
-void MainWindow::onNoneComplete()
-{
-    //commands->sendSetFreq(123456);
 }
 
 void MainWindow::onRefresh()
@@ -148,4 +159,10 @@ void MainWindow::onRefresh()
 
     customPlot->rescaleAxes();
     customPlot->replot();
+}
+
+void MainWindow::onEndSampling()
+{
+    onRefresh();
+    setBisy(false);
 }

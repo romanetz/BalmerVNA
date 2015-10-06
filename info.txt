@@ -455,7 +455,7 @@ usbd_cdc_DataIn
 
 http://habrahabr.ru/post/248729/
 
-- разбираемся с USB Com port
+- разбираемся с USB Com port --вроде корректно стало работать.
 	VCP_fops == APP_FOPS
 	usbd_cdc_SOF - посылаем данные.
 	usbd_cdc_DataIn - также посылаем данные.
@@ -477,4 +477,17 @@ http://habrahabr.ru/post/248729/
 	USB_Tx_State ==0 - данные не отсылаются
 	APP_Rx_send_buffer
 
+	lsusb -v >l - посмотреть на USB дескрипторы
+
+	Приходят команды "AT\0xd"
+	Пускай пакеты завершаются не 0xFF а 0x0D
+
+	ModemManager нам посылает лишние команды
+	https://pixhawk.org/dev/nuttx/building_and_flashing_console 
+
+	idVendor           0x0483 STMicroelectronics
+  echo 'ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1"' >> /tmp/rule
+  sudo mv /tmp/rule /etc/udev/rules.d/20-mm-blacklist-px4.rules && sudo udevadm control --reload-rules
+
+- сделать чтобы автоматом график рисовался после того, как данные прочитали с девайса.
 

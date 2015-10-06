@@ -7,5 +7,7 @@
         <file>icons/connect_status.png</file>
         <file>icons/disconnect_status.png</file>
         <file>icons/refresh.png</file>
+        <file>icons/green_orb.png</file>
+        <file>icons/red_orb.png</file>
     </qresource>
 </RCC>

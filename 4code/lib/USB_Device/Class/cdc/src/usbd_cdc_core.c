@@ -636,11 +636,11 @@ uint16_t VCP_DataTx(uint8_t* buf, uint32_t length) {
   */
 static uint8_t  usbd_cdc_DataIn (void *pdev, uint8_t epnum)
 {
-    if(epnum!=CDC_OUT_EP)
-        return USBD_OK;
+//    if(epnum!=CDC_OUT_EP)
+//        return USBD_OK;
     uint16_t length;
 
-    //if (USB_Tx_State == 1)
+    if (USB_Tx_State == 1)
     {
         //Не
         length = rx_ring.size;
@@ -674,8 +674,8 @@ static uint8_t  usbd_cdc_DataIn (void *pdev, uint8_t epnum)
   */
 static uint8_t  usbd_cdc_DataOut (void *pdev, uint8_t epnum)
 {
-    if(epnum!=CDC_OUT_EP)
-        return USBD_OK;
+//    if(epnum!=CDC_OUT_EP)
+//        return USBD_OK;
   uint16_t USB_Rx_Cnt;
   
   /* Get the received data buffer and update the counter */

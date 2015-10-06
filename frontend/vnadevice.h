@@ -30,6 +30,8 @@ signals:
 public slots:
     void handleError(QSerialPort::SerialPortError error);
     void readData();
+
+    void update();
 protected:
     void closeSerialPort();
 protected:
