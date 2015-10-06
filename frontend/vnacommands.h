@@ -110,6 +110,16 @@ public:
     void start();
 };
 
+class VnaCommandSetTx : public VnaCommand
+{
+public:
+    VnaCommandSetTx(bool tx);
+    void start() override;
+    void onPacket(uint8_t* cdata, int csize) override;
+protected:
+    bool tx;
+};
+
 class VnaCommands : public QObject
 {
     Q_OBJECT

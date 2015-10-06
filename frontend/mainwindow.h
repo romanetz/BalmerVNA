@@ -9,6 +9,7 @@
 class QAction;
 class QToolBar;
 class QLabel;
+class QComboBox;
 
 class VnaDevice;
 class VnaCommands;
@@ -28,6 +29,8 @@ public slots:
     void onCloseSerial();
     void onRefresh();
     void onEndSampling();
+
+    void onRxTxIndexChanged(int index);
 private:
     void createActions();
     void createToolbar();
@@ -41,6 +44,8 @@ private:
     VnaCommands* commands;
 
     QToolBar* mainToolBar;
+    QComboBox* comboRxTx;
+
 
     QAction* connectAct;
     QAction* settingsAct;

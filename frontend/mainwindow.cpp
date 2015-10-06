@@ -3,6 +3,7 @@
 #include <QToolBar>
 #include <QLabel>
 #include <QStatusBar>
+#include <QComboBox>
 
 #include "vnadevice.h"
 #include "vnacommands.h"
@@ -66,11 +67,17 @@ void MainWindow::createActions()
 
 void MainWindow::createToolbar()
 {
+    comboRxTx = new QComboBox();
+    comboRxTx->addItem("RX", QVariant(false));
+    comboRxTx->addItem("TX", QVariant(true));
+    connect(comboRxTx, SIGNAL(currentIndexChanged(int)), this, SLOT(onRxTxIndexChanged(int)));
+
     mainToolBar = addToolBar("main");
     mainToolBar->addAction(connectAct);
     mainToolBar->addAction(settingsAct);
     mainToolBar->addAction(writeTestAct);
     mainToolBar->addAction(refreshAct);
+    mainToolBar->addWidget(comboRxTx);
 }
 
 void MainWindow::createCustomPlot()
@@ -165,4 +172,10 @@ void MainWindow::onEndSampling()
 {
     onRefresh();
     setBisy(false);
+}
+
+void MainWindow::onRxTxIndexChanged(int index)
+{
+    bool tx = comboRxTx->currentData().toBool();
+    commands->appendCommand(new VnaCommandSetTx(tx));
 }

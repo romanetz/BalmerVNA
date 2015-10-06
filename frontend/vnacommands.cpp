@@ -197,6 +197,7 @@ void VnaCommands::commandInitial()
     appendCommand(new VnaCommandPing());
     appendCommand(new VnaCommandSamplingBufferSize(), false);
     appendCommand(new VnaCommandPing());
+    appendCommand(new VnaCommandSetTx(false));
 }
 
 void VnaCommands::commandSampling(uint32_t freq)
@@ -452,4 +453,24 @@ void VnaCommandGetSamples::onPacket(uint8_t* cdata, int csize)
 void VnaCommandEndSampling::start()
 {
     emit g_commands->signalEndSampling();
+}
+
+VnaCommandSetTx::VnaCommandSetTx(bool tx)
+    : tx(tx)
+{
+
+}
+
+void VnaCommandSetTx::start()
+{
+    startCommand(COMMAND_SET_TX);
+    add8(tx?1:0);
+    endCommand();
+
+}
+
+void VnaCommandSetTx::onPacket(uint8_t* cdata, int csize)
+{
+    Q_ASSERT(csize==1);
+    qDebug() << "tx=" << cdata[0];
 }
