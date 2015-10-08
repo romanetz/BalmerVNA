@@ -94,6 +94,7 @@ void JobSendCalculated()
 		USBAddF(result_i_ccos);
 		USBAddF(result_i_sqr);
 		USBAdd16(result_time);
+        USBAdd16(0);
 	}
     USBSend();
 }

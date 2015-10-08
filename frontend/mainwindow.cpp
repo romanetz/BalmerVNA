@@ -63,6 +63,12 @@ void MainWindow::createActions()
 
     refreshAct = new QAction(QIcon(":/icons/refresh.png"), tr("Refresh graph"), this );
     connect(refreshAct, SIGNAL(triggered()), this, SLOT(onRefresh()));
+
+    startSamplingAct = new QAction(QIcon(":/icons/blue_play.png"), tr("Start sampling"), this );
+    connect(startSamplingAct, SIGNAL(triggered()), this, SLOT(onStartSampling()));
+
+    stopSamplingAct = new QAction(QIcon(":/icons/blue_stop.png"), tr("Stop sampling"), this );
+    connect(stopSamplingAct, SIGNAL(triggered()), this, SLOT(onStopSampling()));
 }
 
 void MainWindow::createToolbar()
@@ -78,6 +84,8 @@ void MainWindow::createToolbar()
     mainToolBar->addAction(writeTestAct);
     mainToolBar->addAction(refreshAct);
     mainToolBar->addWidget(comboRxTx);
+    mainToolBar->addAction(startSamplingAct);
+    mainToolBar->addAction(stopSamplingAct);
 }
 
 void MainWindow::createCustomPlot()
@@ -176,6 +184,18 @@ void MainWindow::onEndSampling()
 
 void MainWindow::onRxTxIndexChanged(int index)
 {
+    (void)index;
     bool tx = comboRxTx->currentData().toBool();
     commands->appendCommand(new VnaCommandSetTx(tx));
+}
+
+void MainWindow::onStartSampling()
+{
+    commands->appendCommand(new VnaCommandStartSamplingAndCalculate());
+    commands->appendCommand(new VnaCommandGetCalculated(10));
+}
+
+void MainWindow::onStopSampling()
+{
+
 }

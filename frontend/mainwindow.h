@@ -31,6 +31,9 @@ public slots:
     void onEndSampling();
 
     void onRxTxIndexChanged(int index);
+
+    void onStartSampling();
+    void onStopSampling();
 private:
     void createActions();
     void createToolbar();
@@ -51,6 +54,8 @@ private:
     QAction* settingsAct;
     QAction* writeTestAct;
     QAction* refreshAct;
+    QAction* startSamplingAct;
+    QAction* stopSamplingAct;
 
     QLabel* statusConnect;
     QLabel* statusBisy;

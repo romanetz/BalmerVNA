@@ -489,5 +489,7 @@ http://habrahabr.ru/post/248729/
   echo 'ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1"' >> /tmp/rule
   sudo mv /tmp/rule /etc/udev/rules.d/20-mm-blacklist-px4.rules && sudo udevadm control --reload-rules
 
-- сделать чтобы автоматом график рисовался после того, как данные прочитали с девайса.
+- сделать чтобы автоматом график рисовался после того, как данные прочитали с девайса. --ok
+
+- дописать код для COMMAND_START_SAMPLING_AND_CALCULATE/COMMAND_GET_CALCULATED
 

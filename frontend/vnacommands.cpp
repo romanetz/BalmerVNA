@@ -2,6 +2,8 @@
 
 #include "vnadevice.h"
 
+#include "../4code/inc/job.h"
+
 #include <QDebug>
 #include <QTimer>
 
@@ -218,6 +220,11 @@ void VnaCommands::commandSampling(uint32_t freq)
     appendCommand(new VnaCommandEndSampling(), false);
 
     startCommand();
+}
+
+void VnaCommands::setHardData(const HardSamplingData& data)
+{
+    _hardSamplingData = data;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -472,5 +479,54 @@ void VnaCommandSetTx::start()
 void VnaCommandSetTx::onPacket(uint8_t* cdata, int csize)
 {
     Q_ASSERT(csize==1);
-    qDebug() << "tx=" << cdata[0];
+    if(com_debug)
+        qDebug() << "tx=" << cdata[0];
+}
+
+void VnaCommandStartSamplingAndCalculate::start()
+{
+    startCommand(COMMAND_START_SAMPLING_AND_CALCULATE);
+    endCommand();
+}
+
+void VnaCommandStartSamplingAndCalculate::onPacket(uint8_t* cdata, int csize)
+{
+    (void)cdata;
+    (void)csize;
+    qDebug() << "StartSamplingAndCalculate";
+}
+
+VnaCommandGetCalculated::VnaCommandGetCalculated(int retryCount)
+    : retryCount(retryCount)
+{
+    _waitTime = 10;
+}
+
+void VnaCommandGetCalculated::start()
+{
+    startCommand(COMMAND_GET_CALCULATED);
+    endCommand();
+}
+
+void VnaCommandGetCalculated::onPacket(uint8_t* cdata, int csize)
+{
+    Q_ASSERT(csize>=1);
+    uint8_t jobState = cdata[0];
+    if(com_debug)
+        qDebug() << "COM: Sampling job " << jobState;
+
+    if(jobState!=JOB_CALCULATING_COMPLETE)
+    {
+        if(retryCount>0)
+        {
+            retryCount--;
+            g_commands->restartCurrentCommand();
+        }
+    } else
+    {
+        Q_ASSERT(csize==1+sizeof(HardSamplingData));
+
+        g_commands->setHardData(*(HardSamplingData*)(cdata+1));
+    }
+
 }

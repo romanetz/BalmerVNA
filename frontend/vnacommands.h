@@ -120,6 +120,54 @@ protected:
     bool tx;
 };
 
+struct HardSamplingData
+{
+    float freq;
+    float q_cconst;
+    float q_csin;
+    float q_ccos;
+    float q_sqr;
+    float i_cconst;
+    float i_csin;
+    float i_ccos;
+    float i_sqr;
+    uint16_t result_time;
+    uint16_t nop;
+
+    HardSamplingData()
+    {
+        freq = 0;
+        q_cconst = 0;
+        q_csin = 0;
+        q_ccos = 0;
+        q_sqr = 0;
+        i_cconst = 0;
+        i_csin = 0;
+        i_ccos = 0;
+        i_sqr = 0;
+        result_time = 0;
+        nop = 0;
+    }
+};
+
+class VnaCommandStartSamplingAndCalculate : public VnaCommand
+{
+public:
+    void start() override;
+    void onPacket(uint8_t* cdata, int csize) override;
+};
+
+class VnaCommandGetCalculated : public VnaCommand
+{
+public:
+    VnaCommandGetCalculated(int retryCount);
+    void start() override;
+    void onPacket(uint8_t* cdata, int csize) override;
+
+protected:
+    int retryCount;
+};
+
 class VnaCommands : public QObject
 {
     Q_OBJECT
@@ -148,6 +196,8 @@ public:
     QVector<int32_t>& arrayI() { return _arrayI; }
     QVector<int32_t>& arrayQ() { return _arrayQ; }
 
+    const HardSamplingData& getHardData() { return _hardSamplingData; }
+    void setHardData(const HardSamplingData& data);  //вызывается только из команды
 signals:
     void signalBadPacket();
     void signalSetFreq(uint32_t freq);
@@ -185,6 +235,8 @@ protected:
 
     QVector<int32_t> _arrayI;
     QVector<int32_t> _arrayQ;
+
+    HardSamplingData _hardSamplingData;
 
     friend class VnaCommandGetSamples;
 };
