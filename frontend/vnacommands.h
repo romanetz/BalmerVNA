@@ -196,12 +196,13 @@ public:
     QVector<int32_t>& arrayI() { return _arrayI; }
     QVector<int32_t>& arrayQ() { return _arrayQ; }
 
-    const HardSamplingData& getHardData() { return _hardSamplingData; }
+    const HardSamplingData& hardData() { return _hardSamplingData; }
     void setHardData(const HardSamplingData& data);  //вызывается только из команды
 signals:
     void signalBadPacket();
     void signalSetFreq(uint32_t freq);
     void signalEndSampling();
+    void signalReceiveHard();
 public slots:
     void onPacket(const QByteArray& data);
     void onWaitStart();

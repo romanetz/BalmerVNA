@@ -15,7 +15,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , pix_red_orb(":/icons/red_orb.png")
     , pix_green_orb(":/icons/green_orb.png")
+    , _bStopSample(true)
+    , freqIndex(0)
 {
+    setWindowTitle("Balmer VNA");
     mainWindow = this;
 
     setGeometry(400, 250, 542, 390);
@@ -25,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     commands = new VnaCommands(device);
     connect(commands, SIGNAL(signalEndSampling()), this, SLOT(onEndSampling()));
+    connect(commands, SIGNAL(signalReceiveHard()), this, SLOT(onReceiveHard()));
 
 
     createCustomPlot();
@@ -107,7 +111,7 @@ void MainWindow::createCustomPlot()
     customPlot->graph(0)->setData(x, y);
 
     customPlot->addGraph();
-    customPlot->graph(1)->setPen(QPen(Qt::green));
+    customPlot->graph(1)->setPen(QPen(Qt::blue));
     customPlot->graph(1)->setData(x, y2);
     // give the axes some labels:
     customPlot->xAxis->setLabel("x");
@@ -191,11 +195,106 @@ void MainWindow::onRxTxIndexChanged(int index)
 
 void MainWindow::onStartSampling()
 {
-    commands->appendCommand(new VnaCommandStartSamplingAndCalculate());
-    commands->appendCommand(new VnaCommandGetCalculated(10));
+    arrFreq.resize(300);
+    arrFreqM.resize(arrFreq.size());
+    arrAmplithudeI.resize(arrFreq.size());
+    arrAmplithudeQ.resize(arrFreq.size());
+    arrPhase.resize(arrFreq.size());
+
+    for(int i=0; i<arrFreq.size(); i++)
+    {
+        arrFreq[i] = 1e6+i*30e6/arrFreq.size();
+        arrFreqM[i] = arrFreq[i]*1e-6;
+        arrAmplithudeI[i] = 0;
+        arrAmplithudeQ[i] = 0;
+        arrPhase[i] = 0;
+    }
+
+    _bStopSample = false;
+
+    freqIndex = 0;
+
+    startNextSample();
 }
 
 void MainWindow::onStopSampling()
 {
+    _bStopSample = true;
+}
 
+void MainWindow::startNextSample()
+{
+    if(_bStopSample)
+        return;
+    qDebug() << "start " << freqIndex << "f=" << arrFreq[freqIndex];
+    commands->appendCommand(new VnaCommandSetFreq(arrFreq[freqIndex]));
+    commands->appendCommand(new VnaCommandStartSamplingAndCalculate());
+    commands->appendCommand(new VnaCommandGetCalculated(10));
+}
+
+void calcFi(double csin, double ccos, double& amplitude, double& fi)
+{
+    /*
+        input
+        csin*sin(f)+ccos*cos(f) == amplitude*sin(f+fi)
+        return (amplitude, fi)
+    */
+    amplitude = sqrt(csin*csin+ccos*ccos);
+    csin /= amplitude;
+    ccos /= amplitude;
+
+    fi = atan2(ccos, csin);
+}
+
+void MainWindow::onReceiveHard()
+{
+    if(freqIndex>arrFreq.size())
+    {
+        _bStopSample = true;
+        return;
+    }
+
+    const HardSamplingData& data = commands->hardData();
+    double Iamplitude, Ifi;
+    double Qamplitude, Qfi;
+    calcFi(data.i_csin, data.i_ccos, Iamplitude, Ifi);
+    calcFi(data.q_csin, data.q_ccos, Qamplitude, Qfi);
+
+    arrAmplithudeI[freqIndex] = Iamplitude/Qamplitude*8;
+    //arrAmplithudeQ[freqIndex] = Qamplitude;
+
+    double fi = Ifi-Qfi;
+
+    if(fi>M_PI)
+        fi -= M_PI*2;
+    if(fi<-M_PI)
+        fi += M_PI*2;
+
+    if(freqIndex>0)
+    {
+        double prev = arrPhase[freqIndex-1];
+        if(fi>prev+4)
+            fi -= M_PI*2;
+        if(fi<prev-4)
+            fi += M_PI*2;
+    }
+
+    if(fi>M_PI)
+        fi -= M_PI*2;
+    if(fi<-M_PI)
+        fi += M_PI*2;
+
+    arrPhase[freqIndex] = fi;
+
+
+    freqIndex = (freqIndex+1)%arrFreq.size();
+    startNextSample();
+
+    customPlot->graph(0)->setData(arrFreqM, arrAmplithudeI);
+    //customPlot->graph(1)->setData(arrFreq, arrAmplithudeQ);
+    customPlot->graph(1)->setData(arrFreqM, arrPhase);
+
+
+    customPlot->rescaleAxes();
+    customPlot->replot();
 }

@@ -34,6 +34,8 @@ public slots:
 
     void onStartSampling();
     void onStopSampling();
+
+    void onReceiveHard();
 private:
     void createActions();
     void createToolbar();
@@ -41,6 +43,8 @@ private:
 
     void setStatusConnected(bool connected);
     void setBisy(bool bisy);
+
+    void startNextSample();
 private:
 
     VnaDevice* device;
@@ -64,6 +68,15 @@ private:
 
     QPixmap pix_red_orb;
     QPixmap pix_green_orb;
+
+    QVector<double> arrFreq;
+    QVector<double> arrFreqM;
+    QVector<double> arrAmplithudeI;
+    QVector<double> arrAmplithudeQ;
+    QVector<double> arrPhase;
+    int freqIndex;
+
+    bool _bStopSample;
 };
 
 extern MainWindow* mainWindow;

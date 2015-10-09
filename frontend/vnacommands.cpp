@@ -527,6 +527,7 @@ void VnaCommandGetCalculated::onPacket(uint8_t* cdata, int csize)
         Q_ASSERT(csize==1+sizeof(HardSamplingData));
 
         g_commands->setHardData(*(HardSamplingData*)(cdata+1));
+        emit g_commands->signalReceiveHard();
     }
 
 }
