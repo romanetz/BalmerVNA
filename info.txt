@@ -491,5 +491,11 @@ http://habrahabr.ru/post/248729/
 
 - сделать чтобы автоматом график рисовался после того, как данные прочитали с девайса. --ok
 
-- дописать код для COMMAND_START_SAMPLING_AND_CALCULATE/COMMAND_GET_CALCULATED
-
+- дописать код для COMMAND_START_SAMPLING_AND_CALCULATE/COMMAND_GET_CALCULATED --ok
+- настройки
+	минимальная/максимальная частота
+	количество точек
+	log/linear график
+	две шкалы для амплитуды и фазы
+- http://docs.kicad-pcb.org/en/getting_started_in_kicad.html
+  http://www.kicadlib.org/

@@ -153,6 +153,7 @@ struct HardSamplingData
 class VnaCommandStartSamplingAndCalculate : public VnaCommand
 {
 public:
+    VnaCommandStartSamplingAndCalculate();
     void start() override;
     void onPacket(uint8_t* cdata, int csize) override;
 };

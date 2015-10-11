@@ -15,8 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , pix_red_orb(":/icons/red_orb.png")
     , pix_green_orb(":/icons/green_orb.png")
-    , _bStopSample(true)
     , freqIndex(0)
+    , _bStopSample(true)
 {
     setWindowTitle("Balmer VNA");
     mainWindow = this;
@@ -119,6 +119,8 @@ void MainWindow::createCustomPlot()
     // set axes ranges, so we see all data:
     customPlot->xAxis->setRange(-1, 1);
     customPlot->yAxis->setRange(0, 1);
+    //customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+
 
     customPlot->replot();
 }
@@ -226,7 +228,7 @@ void MainWindow::startNextSample()
 {
     if(_bStopSample)
         return;
-    qDebug() << "start " << freqIndex << "f=" << arrFreq[freqIndex];
+    //qDebug() << "start " << freqIndex << "f=" << arrFreq[freqIndex];
     commands->appendCommand(new VnaCommandSetFreq(arrFreq[freqIndex]));
     commands->appendCommand(new VnaCommandStartSamplingAndCalculate());
     commands->appendCommand(new VnaCommandGetCalculated(10));
