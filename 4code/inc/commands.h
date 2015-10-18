@@ -1,4 +1,5 @@
-
+#ifndef _COMMANDS_H_
+#define _COMMANDS_H_
 typedef enum USB_COMMANDS
 {
     COMMAND_BAD = -1,
@@ -15,3 +16,5 @@ typedef enum USB_COMMANDS
 	COMMAND_CS4272_READ_REG = 10,
     COMMAND_EMPTY_ANSVER = 11,
 } USB_COMMANDS;
+
+#endif//_COMMANDS_H_

@@ -7,5 +7,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+    setlocale(LC_NUMERIC,"en_US.UTF-8");
+
     return a.exec();
 }

@@ -11,5 +11,6 @@
         <file>icons/red_orb.png</file>
         <file>icons/blue_play.png</file>
         <file>icons/blue_stop.png</file>
+        <file>icons/save.png</file>
     </qresource>
 </RCC>

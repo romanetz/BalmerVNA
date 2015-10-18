@@ -16,13 +16,16 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     vnadevice.cpp \
     vnacommands.cpp \
-    qcustomplot/qcustomplot.cpp
+    qcustomplot/qcustomplot.cpp \
+    pugixml/pugixml.cpp
 
 HEADERS  += mainwindow.h \
     vnadevice.h \
     ../4code/inc/commands.h \
     vnacommands.h \
-    qcustomplot/qcustomplot.h
+    qcustomplot/qcustomplot.h \
+    pugixml/pugiconfig.hpp \
+    pugixml/pugixml.hpp
 
 FORMS    +=
 

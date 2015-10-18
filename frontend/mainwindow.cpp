@@ -6,7 +6,8 @@
 #include <QComboBox>
 
 #include "vnadevice.h"
-#include "vnacommands.h"
+
+#include "pugixml/pugixml.hpp"
 
 
 MainWindow* mainWindow = nullptr;
@@ -73,6 +74,9 @@ void MainWindow::createActions()
 
     stopSamplingAct = new QAction(QIcon(":/icons/blue_stop.png"), tr("Stop sampling"), this );
     connect(stopSamplingAct, SIGNAL(triggered()), this, SLOT(onStopSampling()));
+
+    saveAct = new QAction(QIcon(":/icons/save.png"), tr("Save hard data"), this );
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(onSave()));
 }
 
 void MainWindow::createToolbar()
@@ -90,6 +94,7 @@ void MainWindow::createToolbar()
     mainToolBar->addWidget(comboRxTx);
     mainToolBar->addAction(startSamplingAct);
     mainToolBar->addAction(stopSamplingAct);
+    mainToolBar->addAction(saveAct);
 }
 
 void MainWindow::createCustomPlot()
@@ -188,17 +193,22 @@ void MainWindow::onEndSampling()
     setBisy(false);
 }
 
+bool MainWindow::isTx()
+{
+    return comboRxTx->currentData().toBool();
+}
+
 void MainWindow::onRxTxIndexChanged(int index)
 {
     (void)index;
-    bool tx = comboRxTx->currentData().toBool();
-    commands->appendCommand(new VnaCommandSetTx(tx));
+    commands->appendCommand(new VnaCommandSetTx(isTx()));
 }
 
 void MainWindow::onStartSampling()
 {
     arrFreq.resize(300);
     arrFreqM.resize(arrFreq.size());
+    arrData.resize(arrFreq.size());
     arrAmplithudeI.resize(arrFreq.size());
     arrAmplithudeQ.resize(arrFreq.size());
     arrPhase.resize(arrFreq.size());
@@ -257,6 +267,8 @@ void MainWindow::onReceiveHard()
     }
 
     const HardSamplingData& data = commands->hardData();
+    arrData[freqIndex] = data;
+
     double Iamplitude, Ifi;
     double Qamplitude, Qfi;
     calcFi(data.i_csin, data.i_ccos, Iamplitude, Ifi);
@@ -299,4 +311,37 @@ void MainWindow::onReceiveHard()
 
     customPlot->rescaleAxes();
     customPlot->replot();
+}
+
+void MainWindow::onSave()
+{
+    saveData("hard.xml");
+}
+
+void MainWindow::saveData(const QString& fileName)
+{
+    pugi::xml_document doc;
+    pugi::xml_node root_node = doc.append_child("root");
+
+    root_node.append_attribute("tx").set_value(isTx());
+
+    pugi::xml_node data_node = root_node.append_child("data");
+    for(int i=0; i<arrFreq.size(); i++)
+    {
+        pugi::xml_node h_node = data_node.append_child("h");
+        const HardSamplingData& h = arrData[i];
+        h_node.append_attribute("freq").set_value(h.freq);
+        h_node.append_attribute("q_cconst").set_value(h.q_cconst);
+        h_node.append_attribute("q_csin").set_value(h.q_csin);
+        h_node.append_attribute("q_ccos").set_value(h.q_ccos);
+        h_node.append_attribute("q_sqr").set_value(h.q_sqr);
+        h_node.append_attribute("i_cconst").set_value(h.i_cconst);
+        h_node.append_attribute("i_csin").set_value(h.i_csin);
+        h_node.append_attribute("i_ccos").set_value(h.i_ccos);
+        h_node.append_attribute("i_sqr").set_value(h.i_sqr);
+    }
+
+
+
+    doc.save_file(fileName.toUtf8().constData());
 }

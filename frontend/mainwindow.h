@@ -5,6 +5,7 @@
 #include <QSerialPort>
 
 #include "qcustomplot/qcustomplot.h"
+#include "vnacommands.h"
 
 class QAction;
 class QToolBar;
@@ -36,6 +37,8 @@ public slots:
     void onStopSampling();
 
     void onReceiveHard();
+
+    void onSave();
 private:
     void createActions();
     void createToolbar();
@@ -45,6 +48,11 @@ private:
     void setBisy(bool bisy);
 
     void startNextSample();
+
+    void saveData(const QString& fileName);
+
+    //Сейчас девайс сэмплирует tx данные (иначе rx)
+    bool isTx();
 private:
 
     VnaDevice* device;
@@ -60,6 +68,7 @@ private:
     QAction* refreshAct;
     QAction* startSamplingAct;
     QAction* stopSamplingAct;
+    QAction* saveAct;
 
     QLabel* statusConnect;
     QLabel* statusBisy;
@@ -70,6 +79,7 @@ private:
     QPixmap pix_green_orb;
 
     QVector<double> arrFreq;
+    QVector<HardSamplingData> arrData;
     QVector<double> arrFreqM;
     QVector<double> arrAmplithudeI;
     QVector<double> arrAmplithudeQ;

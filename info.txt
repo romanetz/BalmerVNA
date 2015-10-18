@@ -499,3 +499,11 @@ http://habrahabr.ru/post/248729/
 	две шкалы для амплитуды и фазы
 - http://docs.kicad-pcb.org/en/getting_started_in_kicad.html
   http://www.kicadlib.org/
+
+- нарисовать платку на 
+	AD834 
+
+- промерять фильтры
+	10.7Мгц
+	450 КГц
+
