@@ -178,6 +178,7 @@ void MainWindow::onRefresh()
         x[i] = i;
         yI[i] = commands->arrayI()[i];
         yQ[i] = commands->arrayQ()[i];
+        //yI[i] = yQ[i] = commands->arrayI()[i];
     }
 
     customPlot->graph(0)->setData(x, yI);
@@ -315,7 +316,7 @@ void MainWindow::onReceiveHard()
 
 void MainWindow::onSave()
 {
-    saveData("hard.xml");
+    saveData("/home/balmer/radio/stm32/projects/BalmerVNA/script/hard.xml");
 }
 
 void MainWindow::saveData(const QString& fileName)
@@ -330,6 +331,7 @@ void MainWindow::saveData(const QString& fileName)
     {
         pugi::xml_node h_node = data_node.append_child("h");
         const HardSamplingData& h = arrData[i];
+        h_node.append_attribute("F").set_value(arrFreq[i]);
         h_node.append_attribute("freq").set_value(h.freq);
         h_node.append_attribute("q_cconst").set_value(h.q_cconst);
         h_node.append_attribute("q_csin").set_value(h.q_csin);
