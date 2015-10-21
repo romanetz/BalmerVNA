@@ -25,7 +25,7 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
     default:
         USBAdd8(command);
         //USBAdd8(size);
-        USBAdd(data, size);
+        USBAdd((uint8_t*)data, size);
         USBSend();
         break;
     case COMMAND_PING:
@@ -116,8 +116,14 @@ void PacketReceive(volatile uint8_t* data, uint32_t size)
         break;
     case COMMAND_START_SAMPLING_AND_CALCULATE:
         {
-            JobStartSampling();
+            bool ok = JobState()==JOB_NONE || JobState()==JOB_CALCULATING_COMPLETE;
+            if(ok)
+            {
+                JobStartSampling();
+            }
+
             USBAdd8(command);
+            USBAdd8(ok);
             USBSend();
         }
         break;

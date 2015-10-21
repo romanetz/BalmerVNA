@@ -30,11 +30,26 @@ def readXmlData(fileName):
 
 def plotRaw(xdata, ydata):
 	fig, ax = plt.subplots()
-	ax.set_xlabel('Frequency (Hz)')
+	ax.set_xlabel('Frequency (MHz)')
+	for i in range(len(xdata)):
+		xdata[i] *= 1e-6
 	#ax.set_xscale('log')
 	#ax.set_yscale('log')
 	ax.set_ylabel('Y')
 	ax.plot(xdata, ydata)
+	plt.show()
+	pass
+
+def plotRaw2(xdata, ydata1, ydata2):
+	fig, ax = plt.subplots()
+	ax.set_xlabel('Frequency (MHz)')
+	for i in range(len(xdata)):
+		xdata[i] *= 1e-6
+	#ax.set_xscale('log')
+	#ax.set_yscale('log')
+	ax.set_ylabel('Y')
+	ax.plot(xdata, ydata1, color='red')
+	ax.plot(xdata, ydata2, color='blue')
 	plt.show()
 	pass
 
@@ -55,10 +70,45 @@ def getOutFromData(data):
 	return (amplitude, fi)
 
 
-data = readXmlData('hard.xml')
+def stdGraph():
+	data = readXmlData('hard_tx.xml')
+	arr_freq = getFreqFromData(data)
+	(arr_amplitude, arr_phase) = getOutFromData(data)
+	plotRaw(arr_freq, arr_amplitude)
+	#plotRaw(arr_freq, arr_phase)
+	pass
 
-arr_freq = getFreqFromData(data)
-(arr_amplitude, arr_phase) = getOutFromData(data)
+def twoGraph():
+	data1 = readXmlData('xml/10_7_no_res_tx.xml')
+	data2 = readXmlData('xml/10_7_out300om_tx.xml')
+	arr_freq = getFreqFromData(data1)
+	(arr_amplitude1, arr_phase1) = getOutFromData(data1)
+	(arr_amplitude2, arr_phase2) = getOutFromData(data2)
 
-#plotRaw(arr_freq, arr_amplitude)
-plotRaw(arr_freq, arr_phase)
+	for i in range(len(arr_amplitude2)):
+		arr_amplitude2[i] *= 4.5
+
+	plotRaw2(arr_freq, arr_amplitude1, arr_amplitude2)
+	pass
+
+def twoGraph100grad():
+	data1 = readXmlData('xml/10_7_out300om_tx.xml')
+	data2 = readXmlData('xml/10_7_out300om_100grad_tx.xml')
+	arr_freq = getFreqFromData(data1)
+	(arr_amplitude1, arr_phase1) = getOutFromData(data1)
+	(arr_amplitude2, arr_phase2) = getOutFromData(data2)
+
+	delta_phase = []
+	for i in range(len(arr_amplitude2)):
+		df = (arr_phase1[i]-arr_phase2[i])
+		if df > math.pi:
+			df -= 2*math.pi
+		delta_phase.append(df*180./math.pi)
+
+	plotRaw2(arr_freq, arr_amplitude1, arr_amplitude2)
+	#plotRaw(arr_freq, delta_phase)
+	pass
+
+#stdGraph()
+twoGraph()
+#twoGraph100grad()

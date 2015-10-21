@@ -216,7 +216,8 @@ void MainWindow::onStartSampling()
 
     for(int i=0; i<arrFreq.size(); i++)
     {
-        arrFreq[i] = 1e6+i*30e6/arrFreq.size();
+        //arrFreq[i] = 1e6+i*30e6/arrFreq.size();
+        arrFreq[i] = 10.2e6+i*1e6/arrFreq.size();
         arrFreqM[i] = arrFreq[i]*1e-6;
         arrAmplithudeI[i] = 0;
         arrAmplithudeQ[i] = 0;
@@ -316,7 +317,9 @@ void MainWindow::onReceiveHard()
 
 void MainWindow::onSave()
 {
-    saveData("/home/balmer/radio/stm32/projects/BalmerVNA/script/hard.xml");
+    QString folder = "/home/balmer/radio/stm32/projects/BalmerVNA/script/";
+    QString name = isTx()?"hard_tx.xml":"hard_rx.xml";
+    saveData(folder+name);
 }
 
 void MainWindow::saveData(const QString& fileName)

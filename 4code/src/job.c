@@ -8,6 +8,11 @@
 
 static JOB_STATE g_state = JOB_NONE;
 
+//Ожидаем WAIT_TIME_US микросекунд, прежде чем начать сэмплирование.
+#define WAIT_TIME_US 1000
+
+static uint16_t g_start_wait_time;
+
 static float result_freq = 0;
 static float result_q_cconst = 0;
 static float result_q_csin = 0;
@@ -33,7 +38,17 @@ void JobSetState(JOB_STATE state)
 
 void JobQuant()
 {
-	if(g_state==JOB_SAMPLING)
+    if(g_state==JOB_WAIT_BEFORE_SAMPLING)
+    {
+        uint16_t delta_us = TimeUs()-g_start_wait_time;
+        if(delta_us>WAIT_TIME_US)
+        {
+            g_state = JOB_SAMPLING;
+            SamplingStart();
+        }
+    }
+
+    if(g_state==JOB_SAMPLING)
 	{
 		if(SamplingCompleted())
 		{
@@ -101,6 +116,6 @@ void JobSendCalculated()
 
 void JobStartSampling()
 {
-	g_state = JOB_SAMPLING;	
-	SamplingStart();
+    g_state = JOB_WAIT_BEFORE_SAMPLING;
+    g_start_wait_time = TimeUs();
 }

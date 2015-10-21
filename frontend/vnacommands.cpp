@@ -485,7 +485,7 @@ void VnaCommandSetTx::onPacket(uint8_t* cdata, int csize)
 
 VnaCommandStartSamplingAndCalculate::VnaCommandStartSamplingAndCalculate()
 {
-    _waitTime = 10;
+    _waitTime = 1;
 }
 
 void VnaCommandStartSamplingAndCalculate::start()
@@ -496,9 +496,10 @@ void VnaCommandStartSamplingAndCalculate::start()
 
 void VnaCommandStartSamplingAndCalculate::onPacket(uint8_t* cdata, int csize)
 {
-    (void)cdata;
-    (void)csize;
-    //qDebug() << "StartSamplingAndCalculate";
+    Q_ASSERT(csize==1);
+    bool ok = cdata[0]?true:false;
+    Q_ASSERT(ok);
+    //qDebug() << "StartSamplingAndCalculate=" << ok;
 }
 
 VnaCommandGetCalculated::VnaCommandGetCalculated(int retryCount)
