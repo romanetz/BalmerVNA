@@ -122,14 +122,20 @@ def calcRx(U3, R2, R3, R4, R5, vcc=1.):
 	# (R2+R5)*I2 + R5/R3*U3 = vcc
 	
 	#I2 оказалось независимой??????
-	I2 = (vcc - R5/R3*U3) / (R2+R5)
+	I3 = U3/R3
+	I2 = (vcc - R5*I3) / (R2+R5)
 	# I1*R1 = I1R1 = U1 новая переменная (для линейности)
 	U1 = R2*I2 + U3
-	I1 = (vcc + R4/R3*U3 - U1)/R4
+	I1 = (vcc + R4*I3 - U1)/R4
 	R1 = U1/I1
 	I4 = I1-U3/R3
 	U4 = R4*I4
-	return {'R1' : R1, 'U1' : U1, 'I1': I1, 'I2' : I2, 'U1+U4' : U1+U4}
+	U2 = R2*I2
+	
+	I5 = I2+I3
+	U5 = R5*I5
+	return {'R1' : R1, 'U1' : U1, 'I1': I1, 'I2' : I2, 'U1+U4' : U1+U4, 'U2' : U2,
+			'R2' : U2/I2, 'U5': U5, 'U2+U5': U2+U5}
 	
 R1 = 5j
 R2 = 50
@@ -154,7 +160,7 @@ def plot():
 		#Uxarr.append(U3)
 		Uxarr.append(out['U1'])
 		out1 = calcRx(U3, R2, R3, R4, R5)
-		U15arr.append(out1['U1+U4'])
+		U15arr.append(out1['U2+U5'])
 		pass
 		
 	fig, ax = plt.subplots()
