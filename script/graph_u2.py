@@ -76,7 +76,13 @@ def calcUx(R1, R2, R3, R4, R5, vcc=1.):
 			"I4="+formatComplex(I4),
 			"I5="+formatComplex(I5))
 		print("Rsum=", Rsum)
-	return {"Rsum": Rsum, "U1": U1, "U3": U3}
+	if False:
+		#print("U1+U4=", U1+U4)
+		#print("U2+U5=", U2+U5)
+		#print("U3=", U3, "U2-U1", U2-U1)
+		print("I2=", I2)
+
+	return {"Rsum": Rsum, "U1": U1, "U3": U3, "I1": I1, "I2": I2, "I3" : I3}
 
 def calcRx(U3, R2, R3, R4, R5, vcc=1.):
 	'''
@@ -125,30 +131,23 @@ def calcRx(U3, R2, R3, R4, R5, vcc=1.):
 	I3 = U3/R3
 	I2 = (vcc - R5*I3) / (R2+R5)
 	# I1*R1 = I1R1 = U1 новая переменная (для линейности)
-	U1 = R2*I2 + U3
+	U1 = R2*I2 - U3
 	I1 = (vcc + R4*I3 - U1)/R4
 	R1 = U1/I1
-	I4 = I1-U3/R3
-	U4 = R4*I4
-	U2 = R2*I2
-	
-	I5 = I2+I3
-	U5 = R5*I5
-	return {'R1' : R1, 'U1' : U1, 'I1': I1, 'I2' : I2, 'U1+U4' : U1+U4, 'U2' : U2,
-			'R2' : U2/I2, 'U5': U5, 'U2+U5': U2+U5}
+	return {'R1' : R1, 'U1' : U1}
 	
 R1 = 5j
 R2 = 50
-R3 = 50
+R3 = 82 #50
 R4 = 50
 R5 = 50
 out = calcUx(R1, R2, R3, R4, R5)
 
 def plot():
 	R1arr = []
-	for i in range(100):
+	for i in range(0, 100, 4):
 		R1arr.append(i*0.01)
-	for i in range(1, 100):
+	for i in range(1, 100, 4):
 		R1arr.append(i*1.)
 		
 	Uxarr = []
@@ -157,10 +156,11 @@ def plot():
 		R1 = R1arr[i]
 		out = calcUx(R1, R2, R3, R4, R5)
 		U3 = out['U3']
-		#Uxarr.append(U3)
-		Uxarr.append(out['U1'])
-		out1 = calcRx(U3, R2, R3, R4, R5)
-		U15arr.append(out1['U2+U5'])
+		Uxarr.append(U3)
+		#Uxarr.append(out['U1'])
+		out1 = calcRx(U3+0.01, R2, R3, R4, R5)
+		#Uxarr.append(out['U4'])
+		U15arr.append(out1['U1'])
 		pass
 		
 	fig, ax = plt.subplots()
@@ -171,8 +171,8 @@ def plot():
 	#ax.set_yscale('log')
 	ax.set_xlabel('R (Om)')
 	ax.set_ylabel('U (Volts)')
-	#ax.plot(R1arr, Uxarr, color='blue')
-	ax.plot(R1arr, U15arr, color='blue')
+	ax.plot(R1arr, Uxarr, color='blue')
+	ax.plot(R1arr, U15arr, color='red')
 	
 	#ax.plot([0,100], [0,0], color='black')
 	#ax.plot([50, 50], [-0.1, +0.35], '--', color="#FF8000")

@@ -216,8 +216,8 @@ void MainWindow::onStartSampling()
 
     for(int i=0; i<arrFreq.size(); i++)
     {
-        //arrFreq[i] = 1e6+i*30e6/arrFreq.size();
-        arrFreq[i] = 10.2e6+i*1e6/arrFreq.size();
+        arrFreq[i] = 1e6+i*30e6/arrFreq.size();
+        //arrFreq[i] = 10.2e6+i*1e6/arrFreq.size();
         arrFreqM[i] = arrFreq[i]*1e-6;
         arrAmplithudeI[i] = 0;
         arrAmplithudeQ[i] = 0;
