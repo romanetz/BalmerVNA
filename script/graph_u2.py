@@ -36,16 +36,6 @@ def calcUx(R1, R2, R3, R4, R5, vcc=1.):
 	# U2+U5 = vcc
 	
 	# приведем к каноническому виду
-	# U1 - R1*I1 = 0
-	# U2 - R2*I2 = 0
-	# U3 - R3*I3 = 0
-	# U4 - R4*I4 = 0
-	# U5 - R5*I5 = 0
-	# U1 - U2 + U3 = 0
-	# -I1 + I3 + I4 = 0 
-	# I2 + I3 - I5 = 0
-	# U1+U4 = vcc
-	# U2+U5 = vcc
 	a = np.array([
 	#U1, U2, U3, U4, U5, I1, I2, I3, I4, I5
 	[ 1,  0,  0,  0,  0,-R1,  0,  0,  0,  0], # U1 - R1*I1 = 0
@@ -87,20 +77,59 @@ def calcUx(R1, R2, R3, R4, R5, vcc=1.):
 			"I5="+formatComplex(I5))
 		print("Rsum=", Rsum)
 	return {"Rsum": Rsum, "U1": U1, "U3": U3}
+
+def calcRx(U3, R2, R3, R4, R5, vcc=1.):
+	'''
+	Все параметры как в calcUx, но R1 - неизвестно, вместо него известно U3
+	'''
+	# U1 = R1*I1
+	# U2 = R2*I2
+	# U3 = (U2-U1)
+	# U3 = R3*I3
+	# U4 = R4*I4
+	# U5 = R5*I5
+	# I4 = I1-I3
+	# I5 = I2+I3
+	# U1+U4 = vcc
+	# U2+U5 = vcc
 	
-
-def plotRaw(xdata, ydata):
-	fig, ax = plt.subplots()
-	ax.set_xlabel('Frequency (MHz)')
-	for i in range(len(xdata)):
-		xdata[i] *= 1e-6
-	#ax.set_xscale('log')
-	#ax.set_yscale('log')
-	ax.set_ylabel('Y')
-	ax.plot(xdata, ydata)
-	plt.show()
-	pass
-
+	#избавимся от U1, U2
+	# U3 = (R2*I2-R1*I1)
+	# U3 = R3*I3
+	# U4 = R4*I4
+	# U5 = R5*I5
+	# I4 = I1-I3
+	# I5 = I2+I3
+	# R1*I1+U4 = vcc
+	# R2*I2+U5 = vcc
+	
+	#избавимся от I3, U4, U5
+	# U3 = (R2*I2-R1*I1)
+	# I4 = I1-U3/R3
+	# I5 = I2+U3/R3
+	# R1*I1+R4*I4 = vcc
+	# R2*I2+R5*I5 = vcc
+	
+	#избавимся от I4, I5
+	#остались неизвестные I1, I2, R1
+	# U3 = (R2*I2-R1*I1)
+	# R1*I1+R4*(I1-U3/R3) = vcc
+	# R2*I2+R5*(I2+U3/R3) = vcc
+	
+	# перегруппируем I1, I2
+	# -R1*I1 + R2*I2 = U3
+	# (R1+R4)*I1 - R4/R3*U3 = vcc
+	# (R2+R5)*I2 + R5/R3*U3 = vcc
+	
+	#I2 оказалось независимой??????
+	I2 = (vcc - R5/R3*U3) / (R2+R5)
+	# I1*R1 = I1R1 = U1 новая переменная (для линейности)
+	U1 = R2*I2 + U3
+	I1 = (vcc + R4/R3*U3 - U1)/R4
+	R1 = U1/I1
+	I4 = I1-U3/R3
+	U4 = R4*I4
+	return {'R1' : R1, 'U1' : U1, 'I1': I1, 'I2' : I2, 'U1+U4' : U1+U4}
 	
 R1 = 5j
 R2 = 50
@@ -108,4 +137,40 @@ R3 = 50
 R4 = 50
 R5 = 50
 out = calcUx(R1, R2, R3, R4, R5)
-print(out["Rsum"])
+
+def plot():
+	R1arr = []
+	for i in range(100):
+		R1arr.append(i*0.01)
+	for i in range(1, 100):
+		R1arr.append(i*1.)
+		
+	Uxarr = []
+	U15arr = []
+	for i in range(len(R1arr)):
+		R1 = R1arr[i]
+		out = calcUx(R1, R2, R3, R4, R5)
+		U3 = out['U3']
+		#Uxarr.append(U3)
+		Uxarr.append(out['U1'])
+		out1 = calcRx(U3, R2, R3, R4, R5)
+		U15arr.append(out1['U1+U4'])
+		pass
+		
+	fig, ax = plt.subplots()
+	#ax.set_xlabel('Frequency (MHz)')
+	#for i in range(len(xdata)):
+	#	xdata[i] *= 1e-6
+	#ax.set_xscale('log')
+	#ax.set_yscale('log')
+	ax.set_xlabel('R (Om)')
+	ax.set_ylabel('U (Volts)')
+	#ax.plot(R1arr, Uxarr, color='blue')
+	ax.plot(R1arr, U15arr, color='blue')
+	
+	#ax.plot([0,100], [0,0], color='black')
+	#ax.plot([50, 50], [-0.1, +0.35], '--', color="#FF8000")
+	plt.show()
+	pass
+
+plot()
