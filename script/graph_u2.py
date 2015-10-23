@@ -132,16 +132,69 @@ def calcRx(U3, R2, R3, R4, R5, vcc=1.):
 	I2 = (vcc - R5*I3) / (R2+R5)
 	# I1*R1 = I1R1 = U1 новая переменная (для линейности)
 	U1 = R2*I2 - U3
-	I1 = (vcc + R4*I3 - U1)/R4
+	I1 = I3 + (vcc - U1)/R4
 	R1 = U1/I1
+
 	return {'R1' : R1, 'U1' : U1}
 	
-R1 = 5j
-R2 = 50
-R3 = 82 #50
+def calcUxBig(R1, R2, R3, R4, R5, R6, R7, vcc=1.):
+	'''
+	Расчитываем напряжение и суммарное сопротивление элементов
+	Схема такая.
+	*----[R1]---*----[R4]---*---*---[R7]---vcc
+	|			|           |   |           
+	gnd			R3          |   R6
+	|			|           |   |
+	*----[R2]---*----[R5]---*  gnd
+	'''
+	Rsum = calcUx(R1, R2, R3, R4, R5)["Rsum"]
+	Rs6 = 1./(1/Rsum+1/R6)
+	vcc1 = vcc*Rs6/(Rs6+R7)
+	out = calcUx(R1, R2, R3, R4, R5, vcc1)
+	out['vcc1'] = vcc1
+	return out
+
+def calcRxBig(U3, R2, R3, R4, R5, R6, R7, vcc=1.):
+	'''
+	Все параметры как в calcUx, но R1 - неизвестно, вместо него известно U3
+	calcRx vcc переименовываем в vcc1
+	'''
+	# (I4+I5)+vcc1/R6 = (vcc-vcc1)/R7
+	#(I4+I5) = (I1+I2)
+	# I2 = (vcc1 - R5*I3) / (R2+R5) = vcc1/(R2+R5)+C0
+	I3 = U3/R3
+	C0 = - R5*I3 / (R2+R5)
+	# I1 = I3 + (vcc1 - (R2*I2 - U3))/R4 = I3 + (vcc1 + U3 - R2*I2)/R4
+	# I1 = I3 + (vcc1 + U3 - R2*(vcc1/(R2+R5)+C0))/R4 
+	# I1 = vcc1*(1-R2/(R2+R5))/R4 + I3 + (U3 - R2*C0)/R4 
+	C1 = (1-R2/(R2+R5))/R4
+	C2 = I3 + (U3 - R2*C0)/R4
+	# I1 = vcc1*C1+C2
+	# I1+I2 = vcc1*(C1+1/(R2+R5)) + C2 + C0
+	C3 = (C1+1/(R2+R5))
+	# I1+I2 = vcc1*C3 + C2 + C0
+	# I1+I2 + vcc1*(C3 + 1/R6 + 1/R7) + C2 + C0 -vcc/R7
+
+	a = (C3 + 1/R6 + 1/R7)
+	b = C2 + C0 -vcc/R7
+	vcc1 = -b / a
+
+	out = calcRx(U3, R2, R3, R4, R5, vcc1)
+	out['vcc1'] = vcc1
+	return out
+
+
+R1 = 0
+R2 = R21 #50
+R3 = 82
 R4 = 50
 R5 = 50
+R6 = 270
+R7 = 18
 out = calcUx(R1, R2, R3, R4, R5)
+Rsum = out['Rsum']
+Rs = 1/(1/Rsum + 1/R6) 
+print(Rs/(Rs+R7))
 
 def plot():
 	R1arr = []
@@ -154,13 +207,16 @@ def plot():
 	U15arr = []
 	for i in range(len(R1arr)):
 		R1 = R1arr[i]
-		out = calcUx(R1, R2, R3, R4, R5)
+		#out = calcUx(R1, R2, R3, R4, R5)
+		vcc = 1.
+		out = calcUxBig(R1, R2, R3, R4, R5, R6, R7, vcc)
 		U3 = out['U3']
-		Uxarr.append(U3)
-		#Uxarr.append(out['U1'])
-		out1 = calcRx(U3+0.01, R2, R3, R4, R5)
-		#Uxarr.append(out['U4'])
-		U15arr.append(out1['U1'])
+		out1 = calcRxBig(U3, R2, R3, R4, R5, R6, R7, vcc)
+		Uxarr.append(out['vcc1'])
+		#Uxarr.append(out['U3'])
+		#out1 = calcRx(U3, R2, R3, R4, R5)
+		#U15arr.append(out['U1'])
+		U15arr.append(out1['vcc1'])
 		pass
 		
 	fig, ax = plt.subplots()
