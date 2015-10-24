@@ -198,9 +198,9 @@ print(Rs/(Rs+R7))
 
 def plot():
 	R1arr = []
-	for i in range(0, 100, 4):
+	for i in range(0, 100):
 		R1arr.append(i*0.01)
-	for i in range(1, 100, 4):
+	for i in range(1, 300):
 		R1arr.append(i*1.)
 		
 	Uxarr = []
@@ -212,11 +212,11 @@ def plot():
 		out = calcUxBig(R1, R2, R3, R4, R5, R6, R7, vcc)
 		U3 = out['U3']
 		out1 = calcRxBig(U3, R2, R3, R4, R5, R6, R7, vcc)
-		Uxarr.append(out['vcc1'])
+		Uxarr.append(out['U3'])
 		#Uxarr.append(out['U3'])
 		#out1 = calcRx(U3, R2, R3, R4, R5)
 		#U15arr.append(out['U1'])
-		U15arr.append(out1['vcc1'])
+		U15arr.append(out1['U1'])
 		pass
 		
 	fig, ax = plt.subplots()

@@ -8,6 +8,7 @@
 #include "vnadevice.h"
 
 #include "pugixml/pugixml.hpp"
+#include "device/vnautils.h"
 
 
 MainWindow* mainWindow = nullptr;
@@ -124,6 +125,8 @@ void MainWindow::createCustomPlot()
     // set axes ranges, so we see all data:
     customPlot->xAxis->setRange(-1, 1);
     customPlot->yAxis->setRange(0, 1);
+
+    customPlot->xAxis->setScaleType(QCPAxis::stLogarithmic);
     //customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
 
 
@@ -207,17 +210,28 @@ void MainWindow::onRxTxIndexChanged(int index)
 
 void MainWindow::onStartSampling()
 {
-    arrFreq.resize(300);
+    if(0)
+    {
+        arrFreq.resize(300);
+        for(int i=0; i<arrFreq.size(); i++)
+        {
+            arrFreq[i] = 1e6+i*30e6/arrFreq.size();
+            //arrFreq[i] = 10.2e6+i*1e6/arrFreq.size();
+        }
+    } else
+    {
+        arrFreq = makeClaibrationFrequencies();
+    }
+
     arrFreqM.resize(arrFreq.size());
     arrData.resize(arrFreq.size());
     arrAmplithudeI.resize(arrFreq.size());
     arrAmplithudeQ.resize(arrFreq.size());
     arrPhase.resize(arrFreq.size());
 
+
     for(int i=0; i<arrFreq.size(); i++)
     {
-        arrFreq[i] = 1e6+i*30e6/arrFreq.size();
-        //arrFreq[i] = 10.2e6+i*1e6/arrFreq.size();
         arrFreqM[i] = arrFreq[i]*1e-6;
         arrAmplithudeI[i] = 0;
         arrAmplithudeQ[i] = 0;
