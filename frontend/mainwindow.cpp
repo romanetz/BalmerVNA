@@ -102,6 +102,7 @@ void MainWindow::createCustomPlot()
 {
     customPlot = new QCustomPlot(this);
     customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+    customPlot->axisRect()->setRangeZoom(Qt::Vertical);
 
     QVector<double> x(101), y(101); // initialize with entries 0..100
     QVector<double> y2(101);
@@ -215,8 +216,9 @@ void MainWindow::onStartSampling()
         arrFreq.resize(300);
         for(int i=0; i<arrFreq.size(); i++)
         {
-            arrFreq[i] = 1e6+i*30e6/arrFreq.size();
+            //arrFreq[i] = 1e6+i*30e6/arrFreq.size();
             //arrFreq[i] = 10.2e6+i*1e6/arrFreq.size();
+            arrFreq[i] = 7.995e6+i*0.01e6/arrFreq.size();
         }
     } else
     {

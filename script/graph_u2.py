@@ -7,6 +7,16 @@ import matplotlib.pyplot as plt
 from z_math import *
 import numpy as np
 
+R477 = 470+47
+R1 = 0
+R2 = 1./(1/49.9+1/R477)
+R3 = 82
+R4 = 50
+R5 = 50
+R6 = 270
+R7 = 18
+
+
 def formatComplex(c):
 	if abs(c.imag)<1e-5:
 		return "%.4f"%c.real
@@ -135,7 +145,7 @@ def calcRx(U3, R2, R3, R4, R5, vcc=1.):
 	I1 = I3 + (vcc - U1)/R4
 	R1 = U1/I1
 
-	return {'R1' : R1, 'U1' : U1}
+	return {'R1' : R1, 'U1' : U1, 'I1' : I1}
 	
 def calcUxBig(R1, R2, R3, R4, R5, R6, R7, vcc=1.):
 	'''
@@ -183,40 +193,62 @@ def calcRxBig(U3, R2, R3, R4, R5, R6, R7, vcc=1.):
 	out['vcc1'] = vcc1
 	return out
 
+def calcUxZ(Z):
+	R1 = Z*R477/(Z+R477)
+	out = calcUxBig(R1, R2, R3, R4, R5, R6, R7)
+	return out['U3']
 
-R1 = 0
-R2 = R21 #50
-R3 = 82
-R4 = 50
-R5 = 50
-R6 = 270
-R7 = 18
-out = calcUx(R1, R2, R3, R4, R5)
-Rsum = out['Rsum']
-Rs = 1/(1/Rsum + 1/R6) 
-print(Rs/(Rs+R7))
+def calcRxUI(U3):
+	'''
+	Функция, которая выдает (U,I) уже  на щупах.
+	Вычитает проводимость резистора R477
+	Z = U/I
+	'''
+	out = calcRxBig(U3, R2, R3, R4, R5, R6, R7)
+	R1 = out['R1']
+	U1 = out['U1']
+	I1 = out['I1']
+	I477 = U1/R477
+	I1 -= I477
+	#1/R1=1/Z+1/R477
+	#1/Z = 1/R1-1/R477
+	#1/Z = (R477-R1)/(R477*R1)
+	#Z = R477*R1/(R477-R1)
+	#Z = U1/I1
+	# Z = U1/(I1-I477) = U1 / (I1 - U1/R477) = U1*R477/(I1*R477-U1) = U1/I1*R477/(R477-U1/I1)
+	return (U1,I1)
+
 
 def plot():
 	R1arr = []
 	for i in range(0, 100):
 		R1arr.append(i*0.01)
-	for i in range(1, 300):
+	for i in range(1, 100):
 		R1arr.append(i*1.)
 		
 	Uxarr = []
 	U15arr = []
+	'''
 	for i in range(len(R1arr)):
 		R1 = R1arr[i]
 		#out = calcUx(R1, R2, R3, R4, R5)
 		vcc = 1.
-		out = calcUxBig(R1, R2, R3, R4, R5, R6, R7, vcc)
+		#out = calcUxBig(R1, R2, R3, R4, R5, R6, R7, vcc)
 		U3 = out['U3']
 		out1 = calcRxBig(U3, R2, R3, R4, R5, R6, R7, vcc)
+		#Uxarr.append(out['U1'])
 		Uxarr.append(out['U3'])
-		#Uxarr.append(out['U3'])
 		#out1 = calcRx(U3, R2, R3, R4, R5)
 		#U15arr.append(out['U1'])
 		U15arr.append(out1['U1'])
+		pass
+	'''
+	for i in range(len(R1arr)):
+		R1 = R1arr[i]
+		U3 = calcUxZ(R1)
+		Z = calcRxZ(U3)
+		Uxarr.append(R1)
+		U15arr.append(Z)
 		pass
 		
 	fig, ax = plt.subplots()
@@ -235,4 +267,14 @@ def plot():
 	plt.show()
 	pass
 
-plot()
+def main():
+	Z = 0
+	print("Z = ", Z, "U3=", calcUxZ(Z))
+	Z = 50
+	print("Z = ", Z, "U3=", abs(calcUxZ(Z)))
+	Z = 1e6
+	print("Z = ", Z, "U3=", calcUxZ(Z))
+	plot()
+
+if __name__ == "__main__":
+	main()
