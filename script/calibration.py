@@ -53,6 +53,13 @@ def ZtoPhase(Zarr):
 		Aarr.append(cmath.phase(z))
 	return Aarr
 
+def checkEqualFreq(freq1, freq2):
+	assert(len(freq1)==len(freq2))
+	for i in range(len(freq1)):
+		df = abs(freq1[i]-freq2[i])/freq1[i]
+		assert(df<1e-4)
+	pass
+
 class Calibration:
 	'''
 	Пока сделаем простейшую калибровку.
@@ -60,30 +67,26 @@ class Calibration:
 	'''
 	def __init__(self):
 		self.Zstd = 49.9
-		data_open = readXmlData('calibration/rx_open.xml')
-		(self.freq, self.U_open) = getZFromData(data_open)
+		(self.freq, self.U_open) = readXmlZ('calibration/rx_open.xml')
 
-		data_short = readXmlData('calibration/rx_short.xml')
-		(freq, self.U_short) = getZFromData(data_short)
-		self.checkEqualFreq(freq)
+		(freq, self.U_short) = readXmlZ('calibration/rx_short.xml')
+		checkEqualFreq(self.freq, freq)
 
-		data_50Om = readXmlData('calibration/rx_49_9Om.xml')
-		(freq, self.U_50Om) = getZFromData(data_50Om)
-		self.checkEqualFreq(freq)
+		(freq, self.U_50Om) = readXmlZ('calibration/rx_49_9Om.xml')
+		checkEqualFreq(self.freq, freq)
 
 		self.U_max = calcUxZ(0)
 		self.U_min = calcUxZ(1e6)
-		print(self.U_short[0], self.U_open[0])
+		#print(self.U_short[0], self.U_open[0])
+
+		(freq, self.U_tx_trans) = readXmlZ('calibration/tx_transmission.xml')
+		checkEqualFreq(self.freq, freq)
+		(freq, self.U_tx_open) = readXmlZ('calibration/tx_open.xml')
+		checkEqualFreq(self.freq, freq)
 
 		self.checkSortFreq()
 		pass
 
-	def checkEqualFreq(self, freq):
-		assert(len(self.freq)==len(freq))		
-		for i in range(len(self.freq)):
-			df = abs(self.freq[i]-freq[i])/self.freq[i]
-			assert(df<1e-4)
-		pass
 	def checkSortFreq(self):
 
 		for i in range(1, len(self.freq)):
@@ -195,6 +198,8 @@ class Calibration:
 		#пока интерполяции нет, возвращаем ближайшее нижнее.
 		return (self.U_open[idx], self.U_short[idx], self.U_50Om[idx])
 
+	def txCalculateUI(self, U):
+		return (U-self.U_tx_open[0])/(self.U_tx_trans[0]-self.U_tx_open[0])
 
 def main():
 	cal = Calibration()
