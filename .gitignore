@@ -1,7 +1,10 @@
 4code/linker.map
+4code/output/
 circuit/*.b#?
 circuit/*.s#?
-4code/output/
+build/
+script/tmp_graph/
+script/xml/
 
 *.pyc
 
@@ -10,4 +13,4 @@ circuit/*.s#?
 *.txt~
 *.includes~
 
-build/
+frontend/frontend.pro.user
