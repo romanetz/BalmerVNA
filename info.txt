@@ -562,3 +562,20 @@ http://habrahabr.ru/post/248729/
 	load V2 = I2*Zstd
 	V1 = A*I2*Zstd - B*I2
 	I1 = C*I2*Zstd - D*I2
+
+- приблизительные напряжения по тракту
+	rx out = 150 mV
+
+	dds = 250 mV
+	u1 in = 40 mV
+	u1 out = 60 mV
+	ref out = 2.44 V
+
+	u2 in = 25 mV
+	u2 out = 20 mV
+	rx out = 855 mV
+
+	tx in = 100 mV
+	u3 in = 30 mV
+	u3 out = 100 mV
+	tx out = 1 V
