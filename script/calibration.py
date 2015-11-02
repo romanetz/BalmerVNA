@@ -198,8 +198,24 @@ class Calibration:
 		#пока интерполяции нет, возвращаем ближайшее нижнее.
 		return (self.U_open[idx], self.U_short[idx], self.U_50Om[idx])
 
+	def txFindAndInterpolate(self, freq):
+		'''
+		Предполагем, что массив freq отсотирован.
+		Ищем калибровочные напряжения и интерполируем их.
+		'''
+		idx = bisect.bisect_left(self.freq, freq)
+		assert(idx>=0 and idx<len(self.freq))
+
+		#пока интерполяции нет, возвращаем ближайшее нижнее.
+		return (self.U_tx_open[idx], self.U_tx_trans[idx])
+		
 	def txCalculateUI(self, U):
 		return (U-self.U_tx_open[0])/(self.U_tx_trans[0]-self.U_tx_open[0])
+		
+	def txCalculateUIf(self, U, freq):
+		(U_tx_open, U_tx_trans) = self.txFindAndInterpolate(freq)
+		#return (U-U_tx_open)/(U_tx_trans-U_tx_open)
+		return U/U_tx_trans
 
 def main():
 	cal = Calibration()

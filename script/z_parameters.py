@@ -68,8 +68,12 @@ Transmision калибровка.
 	(Rm+R0)/V1 = R0/Vtx
 	Rm = R0*(V1/Vtx-1)
 	
-	если V1 будет изменяться от 0 до 1 и V2 будет изменяться от 0 до 1, то может и прокатит.
+	(Rm+R0)*Vtx = R0*V1
+	Rm*Vtx = R0*(V1-Vtx)
 	
+	Rm = R0*(V1-Vtx)/Vtx = R0*(V1/Vtx-1)
+	
+	если V1 будет изменяться от 0 до 1 и V2 будет изменяться от 0 до 1, то может и прокатит.
 '''
 
 import numpy as np
@@ -106,5 +110,3 @@ class ABCD:
 		]);
 		pass
 
-class SParameters:
-	
