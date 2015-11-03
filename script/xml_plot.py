@@ -260,13 +260,18 @@ def UGraph():
 
 def ZGraphTx():
 	cal = Calibration()
-	(freq, Ux) = readXmlZ('calibration/tx_ser_49_9Om.xml')
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_10_Om.xml')
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_100_Om.xml')
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_470_pF.xml')
-	#(freq, Ux) = readXmlZ('calibration/tx_transmission.xml')
+	#(freq, Ux) = readXmlZ('calibration/tx_ser_49_9Om.xml')
+	#(freq, Urx) = readXmlZ('calibration/rx_ser_49_9Om.xml')
 	
+	#(freq, Ux) = readXmlZ('calibration/tx_ser_10_Om.xml')
 	#(freq, Urx) = readXmlZ('calibration/rx_ser_10_Om.xml')
+	
+	#(freq, Ux) = readXmlZ('calibration/tx_ser_100_Om.xml')
+	#(freq, Urx) = readXmlZ('calibration/rx_ser_100_Om.xml')
+	
+	#(freq, Ux) = readXmlZ('calibration/tx_ser_470_pF.xml')
+	
+	(freq, Ux) = readXmlZ('calibration/tx_transmission.xml')
 	(freq, Urx) = readXmlZ('calibration/rx_transmission.xml')
 
 	Zarr = []
@@ -274,14 +279,41 @@ def ZGraphTx():
 	#for i in range(5):
 		U = cal.txCalculateUI(Ux[i])
 		Uf = cal.txCalculateUIf(Ux[i], freq[i])
-		Ur = cal.calculateUI(Urx[i])[0]/cal.calculateUI(Urx[0])[0]
-		print(Ur, Uf)
-		Rm = 50*(Ur-Uf)/Uf
-		#Zarr.append(Ux[i])
+		Ur = cal.calculateUI(Urx[i])[0]
+		Rm = 50*(Ur-U)/U
+		print(Ur, Uf, "Rm="+str(Rm))
+		#Zarr.append(U)
 		#Zarr.append(Ur)
+		#Zarr.append(Ux[i])
 		Zarr.append(Rm)
 	plotZ(freq, Zarr, "10 Om")
 	pass
+	
+def Z0tx():
+	cal = Calibration()
+	#(freq, Ux) = readXmlZ('calibration/tx_ser_49_9Om.xml')
+	#(freq, Urx) = readXmlZ('calibration/rx_ser_49_9Om.xml')
+	
+	#(freq, Ux) = readXmlZ('calibration/tx_ser_10_Om.xml')
+	#(freq, Urx) = readXmlZ('calibration/rx_ser_10_Om.xml')
+	
+	(freq, Ux) = readXmlZ('calibration/tx_ser_100_Om.xml')
+	(freq, Urx) = readXmlZ('calibration/rx_ser_100_Om.xml')
+	
+	#(freq, Ux) = readXmlZ('calibration/tx_ser_100_Om.xml')
+	#(freq, Ux) = readXmlZ('calibration/tx_ser_470_pF.xml')
+	#(freq, Ux) = readXmlZ('calibration/tx_transmission.xml')
+	
+	#(freq, Urx) = readXmlZ('calibration/rx_transmission.xml')
+	
+	i = 0
+
+	U = cal.txCalculateUI(Ux[i])
+	Uf = cal.txCalculateUIf(Ux[i], freq[i])
+	Ur = cal.calculateUI(Urx[i])[0]
+	Rm = 50*(Ur-U)/U
+	print(Ur, Uf, "Rm="+str(Rm))
+	
 
 #stdGraph()
 #twoGraph()
@@ -291,4 +323,5 @@ def ZGraphTx():
 ZGraphTx()
 #UGraph()
 #ZGraph4()
+#Z0tx()
 

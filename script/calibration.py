@@ -83,6 +83,8 @@ class Calibration:
 		checkEqualFreq(self.freq, freq)
 		(freq, self.U_tx_open) = readXmlZ('calibration/tx_open.xml')
 		checkEqualFreq(self.freq, freq)
+		(freq, self.U_rx_trans) = readXmlZ('calibration/rx_transmission.xml')
+		checkEqualFreq(self.freq, freq)
 
 		self.checkSortFreq()
 		pass
@@ -207,15 +209,19 @@ class Calibration:
 		assert(idx>=0 and idx<len(self.freq))
 
 		#пока интерполяции нет, возвращаем ближайшее нижнее.
-		return (self.U_tx_open[idx], self.U_tx_trans[idx])
+		return (self.U_tx_open[idx], self.U_tx_trans[idx], self.U_rx_trans[idx])
 		
 	def txCalculateUI(self, U):
-		return (U-self.U_tx_open[0])/(self.U_tx_trans[0]-self.U_tx_open[0])
+		#return (U-self.U_tx_open[0])/(self.U_tx_trans[0]-self.U_tx_open[0])
+		(Urx, Irx) = self.calculateUI(self.U_rx_trans[0])
+		return (U-self.U_tx_open[0])/(self.U_tx_trans[0]-self.U_tx_open[0])*Urx
+		
 		
 	def txCalculateUIf(self, U, freq):
-		(U_tx_open, U_tx_trans) = self.txFindAndInterpolate(freq)
+		(U_tx_open, U_tx_trans, U_rx_trans) = self.txFindAndInterpolate(freq)
+		(Urx,Irx) = self.calculateUI(U_rx_trans)
 		#return (U-U_tx_open)/(U_tx_trans-U_tx_open)
-		return U/U_tx_trans
+		return U/U_tx_trans*Urx
 
 def main():
 	cal = Calibration()
