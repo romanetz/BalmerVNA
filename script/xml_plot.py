@@ -16,7 +16,7 @@ def plotRaw(xdata, ydata):
 	ax.set_xlabel('Frequency (MHz)')
 	for i in range(len(xdata)):
 		xdata[i] *= 1e-6
-	ax.set_xscale('log')
+	#ax.set_xscale('log')
 	#ax.set_yscale('log')
 	ax.set_ylabel('Y')
 	ax.plot(xdata, ydata)
@@ -260,59 +260,38 @@ def UGraph():
 
 def ZGraphTx():
 	cal = Calibration()
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_49_9Om.xml')
-	#(freq, Urx) = readXmlZ('calibration/rx_ser_49_9Om.xml')
-	
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_10_Om.xml')
+	#(freq, Utx) = readXmlZ('calibration/tx_ser_10_Om.xml')
 	#(freq, Urx) = readXmlZ('calibration/rx_ser_10_Om.xml')
 	
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_100_Om.xml')
+	(freq, Utx) = readXmlZ('calibration/tx_ser_49_9Om.xml')
+	(freq, Urx) = readXmlZ('calibration/rx_ser_49_9Om.xml')
+	
+	#(freq, Utx) = readXmlZ('calibration/tx_ser_100_Om.xml')
 	#(freq, Urx) = readXmlZ('calibration/rx_ser_100_Om.xml')
 	
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_470_pF.xml')
+	#(freq, Utx) = readXmlZ('calibration/tx_ser_470_pF.xml')
 	
-	(freq, Ux) = readXmlZ('calibration/tx_transmission.xml')
-	(freq, Urx) = readXmlZ('calibration/rx_transmission.xml')
+	#(freq, Utx) = readXmlZ('calibration/tx_transmission.xml')
+	#(freq, Urx) = readXmlZ('calibration/rx_transmission.xml')
 
 	Zarr = []
 	for i in range(len(freq)):
 	#for i in range(5):
-		U = cal.txCalculateUI(Ux[i])
-		Uf = cal.txCalculateUIf(Ux[i], freq[i])
+		U = cal.txCalculateUI(Utx[i])
+		Uf = cal.txCalculateUIf(Utx[i], freq[i])
 		Ur = cal.calculateUI(Urx[i])[0]
 		Rm = 50*(Ur-U)/U
-		print(Ur, Uf, "Rm="+str(Rm))
+		#Rm = 50*(Ur-Uf)/Uf
+		#print(Ur, Uf, "Rm="+str(Rm))
 		#Zarr.append(U)
 		#Zarr.append(Ur)
-		#Zarr.append(Ux[i])
 		Zarr.append(Rm)
-	plotZ(freq, Zarr, "10 Om")
+		
+	#plotZ(freq, Zarr, "10 Om")
+	#Rarr = [ abs(z) for z in Zarr]
+	Rarr = [ cmath.phase(z)*180/math.pi for z in Zarr]
+	plotRaw(freq, Rarr)
 	pass
-	
-def Z0tx():
-	cal = Calibration()
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_49_9Om.xml')
-	#(freq, Urx) = readXmlZ('calibration/rx_ser_49_9Om.xml')
-	
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_10_Om.xml')
-	#(freq, Urx) = readXmlZ('calibration/rx_ser_10_Om.xml')
-	
-	(freq, Ux) = readXmlZ('calibration/tx_ser_100_Om.xml')
-	(freq, Urx) = readXmlZ('calibration/rx_ser_100_Om.xml')
-	
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_100_Om.xml')
-	#(freq, Ux) = readXmlZ('calibration/tx_ser_470_pF.xml')
-	#(freq, Ux) = readXmlZ('calibration/tx_transmission.xml')
-	
-	#(freq, Urx) = readXmlZ('calibration/rx_transmission.xml')
-	
-	i = 0
-
-	U = cal.txCalculateUI(Ux[i])
-	Uf = cal.txCalculateUIf(Ux[i], freq[i])
-	Ur = cal.calculateUI(Urx[i])[0]
-	Rm = 50*(Ur-U)/U
-	print(Ur, Uf, "Rm="+str(Rm))
 	
 
 #stdGraph()
@@ -323,5 +302,4 @@ def Z0tx():
 ZGraphTx()
 #UGraph()
 #ZGraph4()
-#Z0tx()
 

@@ -74,6 +74,32 @@ Transmision калибровка.
 	Rm = R0*(V1-Vtx)/Vtx = R0*(V1/Vtx-1)
 	
 	если V1 будет изменяться от 0 до 1 и V2 будет изменяться от 0 до 1, то может и прокатит.
+	
+Пускай у нас будет
+	Vrx, Vtx и ABCD матрица, которая включает в себя всю информацию.
+	V1 = A*V2 - B*I2
+	I1 = C*V2 - D*I2
+	
+	V1 = Vrx, I1 = Irx
+	V2 = Vtx, I2 = Vtx/R0
+
+	Vrx = A*Vtx - B*Vtx/R0
+	Irx = C*Vtx - D*Vtx/R0
+	
+	Vrx = Vtx*(A - B/R0)
+	Irx = Vtx*(C - D/R0)
+	
+	Пускай Vtx = Vrx*K
+	K = коэффициэнт передачи от rx к tx.
+	
+Матрица передачи кабеля.
+	[ch    Z0*sh]
+	[sh/Z0 ch   ]
+	
+	ch = cos(fi)*a, sh = sin(fi)*a
+	fi - сдвиги фазы по всей длинне кабеля.
+	a - 
+	
 '''
 
 import numpy as np
