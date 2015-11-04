@@ -292,14 +292,41 @@ def ZGraphTx():
 	Rarr = [ cmath.phase(z)*180/math.pi for z in Zarr]
 	plotRaw(freq, Rarr)
 	pass
-	
+
+def graphG():
+	cal = CalibrationSOLT()
+	Ux1 = None
+	#(freq, Ux) = readXmlZ('calibration/rx_open.xml')
+	#(freq, Ux) = readXmlZ('calibration/rx_short.xml')
+	#(freq, Ux) = readXmlZ('calibration/rx_10Om.xml')
+	#(freq, Ux) = readXmlZ('calibration/rx_49_9Om.xml')
+	#(freq, Ux) = readXmlZ('calibration/rx_100Om.xml')
+	#(freq, Ux) = readXmlZ('calibration/rx_470pF.xml')
+	#(freq, Ux) = readXmlZ('calibration/rx_transmission.xml')
+	(freq, Ux) = readXmlZ('calibration/rx_ser_10_Om.xml')
+	Garr = []
+	Zarr = []
+
+	for i in range(len(freq)):
+		G = cal.calculateG(Ux[i], freq[i])
+		Z = cal.GtoZ(G)
+		Garr.append(G)
+		Zarr.append(Z)
+			
+		
+	#plotZ(freq, Garr, "10 Om")
+	plotZ(freq, Zarr, "Z 10 Om")
+	pass
+
 
 #stdGraph()
 #twoGraph()
 #twoGraph100grad()
 
 #ZGraph()
-ZGraphTx()
+#ZGraphTx()
 #UGraph()
 #ZGraph4()
+
+graphG()
 

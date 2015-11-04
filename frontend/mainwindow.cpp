@@ -127,7 +127,7 @@ void MainWindow::createCustomPlot()
     customPlot->xAxis->setRange(-1, 1);
     customPlot->yAxis->setRange(0, 1);
 
-    customPlot->xAxis->setScaleType(QCPAxis::stLogarithmic);
+    //customPlot->xAxis->setScaleType(QCPAxis::stLogarithmic);
     //customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
 
 
@@ -175,13 +175,15 @@ void MainWindow::onCloseSerial()
 
 void MainWindow::onRefresh()
 {
+    commands->appendCommand(new VnaCommandSetFreq(10000, 511));
     int count = commands->samplingBufferSize();
     QVector<double> x(count), yI(count), yQ(count);
+    double mul = 1.0/0x7FFFFFFF;
     for(int i=0; i<count; i++)
     {
         x[i] = i;
-        yI[i] = commands->arrayI()[i];
-        yQ[i] = commands->arrayQ()[i];
+        yI[i] = commands->arrayI()[i]*mul;
+        yQ[i] = commands->arrayQ()[i]*mul;
         //yI[i] = yQ[i] = commands->arrayI()[i];
     }
 

@@ -98,11 +98,14 @@ Transmision калибровка.
 	
 	ch = cos(fi)*a, sh = sin(fi)*a
 	fi - сдвиги фазы по всей длинне кабеля.
-	a - 
-	
+
+	Zrx = ABCDdut*ABCDtx*Z0	
 '''
 
+import cmath
+import math
 import numpy as np
+import matplotlib.pyplot as plt
 
 class ABCD:
 	'''
@@ -136,3 +139,83 @@ class ABCD:
 		]);
 		pass
 
+	def setTransmission(self, gl, Z0):
+		'''
+		gl = l*gamma
+		l = length
+		gamma = a + j*b
+		a - attenuation constant
+		b - phase constant
+		Z0 - characteristic impedance
+		'''
+		ch = cmath.cosh(gl)
+		sh = cmath.sinh(gl)
+		self.a = np.array(
+		[ [ch, sh*Z0],
+		  [sh/Z0, ch]
+		]);
+		pass
+	def dot(self, v):
+		return np.dot(self.a, v)
+		
+	def dotAbcd(self, abcd2):
+		out = ABCD()
+		out.a = np.dot(self.a, abcd2.a)
+		return out
+
+
+def testR():
+	v = np.array([1, 1])
+	abcd = ABCD()
+	#abcd.setSeriesResistor(1)
+	abcd.setShuntConductor(1)
+	v1 = abcd.dot(v)
+	print(v1)
+
+def testTr():
+	Z0 = 50.
+	v = np.array([1, 1/(Z0+10)])
+	abcd = ABCD()
+	#abcd.setSeriesResistor(1)
+
+	xdata = []
+	ydata = []
+	count = 100
+	for i in range(count):
+		fi = i*math.pi/(count-1)
+		abcd.setTransmission(fi*1j, Z0)
+		v1 = abcd.dot(v)
+		z1 = v1[0]/v1[1]
+		#print(v1, 'z=', abs(z1))
+		xdata.append(z1.real)
+		ydata.append(z1.imag)
+
+
+	fig, ax = plt.subplots()
+	ax.set_aspect('equal')
+	ax.plot(xdata, ydata)
+	plt.show()
+	pass
+
+def testZser():
+	Z0 = 50.
+	abcdTx = ABCD()
+	abcdTx.setTransmission(1j, Z0)
+	abcdRx = ABCD()
+	abcdRx.setTransmission(.5j, Z0)
+
+	abcdDut = ABCD()
+	abcdDut.setSeriesResistor(10)
+
+	abcdDutTx = abcdDut.dotAbcd(abcdTx)
+	abcdRxDutTx = abcdRx.dotAbcd(abcdDutTx)
+	print(abcdRxDutTx.a)
+
+	abcdRxTx = abcdRx.dotAbcd(abcdTx)
+	abcdDutRxTx = abcdDut.dotAbcd(abcdRxTx)
+	print(abcdDutRxTx.a)
+
+	pass
+
+#testTr()
+testZser()

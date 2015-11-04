@@ -7,6 +7,9 @@ from graph_u2 import calcUxZ, calcRxUI
 
 Rmax = 1000 # 500 Om - этом максимальные цифры которые отображаем
 
+class Params:
+	pass
+
 def readXmlData(fileName):
 	tree = ET.parse(fileName)
 	root = tree.getroot()
@@ -90,7 +93,6 @@ class Calibration:
 		pass
 
 	def checkSortFreq(self):
-
 		for i in range(1, len(self.freq)):
 			assert(self.freq[i-1]<self.freq[i])
 		pass
@@ -222,6 +224,114 @@ class Calibration:
 		(Urx,Irx) = self.calculateUI(U_rx_trans)
 		#return (U-U_tx_open)/(U_tx_trans-U_tx_open)
 		return U/U_tx_trans*Urx
+
+class CalibrationSOLT:
+	'''
+		Калибровка в терминах S параметров
+		Обозначения взят из Rytting_NAModels.pdf
+		G - измеренная отраженная волна.
+	'''
+	def __init__(self):
+		self.Zstd = 49.9
+		(self.freq, self.U_open) = readXmlZ('calibration/rx_open.xml')
+
+		(freq, self.U_short) = readXmlZ('calibration/rx_short.xml')
+		checkEqualFreq(self.freq, freq)
+
+		(freq, self.U_50Om) = readXmlZ('calibration/rx_49_9Om.xml')
+		checkEqualFreq(self.freq, freq)
+
+		self.U_max = calcUxZ(0)
+		self.U_min = calcUxZ(1e6)
+		#print(self.U_short[0], self.U_open[0])
+
+		(freq, self.U_tx_trans) = readXmlZ('calibration/tx_transmission.xml')
+		checkEqualFreq(self.freq, freq)
+		(freq, self.U_tx_open) = readXmlZ('calibration/tx_open.xml')
+		checkEqualFreq(self.freq, freq)
+		(freq, self.U_rx_trans) = readXmlZ('calibration/rx_transmission.xml')
+		checkEqualFreq(self.freq, freq)
+
+		self.checkSortFreq()
+		pass
+
+	def checkSortFreq(self):
+		for i in range(1, len(self.freq)):
+			assert(self.freq[i-1]<self.freq[i])
+		pass
+
+	def FindAndInterpolate(self, freq):
+		'''
+		Предполагем, что массив freq отсотирован.
+		Ищем калибровочные напряжения и интерполируем их.
+		'''
+		idx = bisect.bisect_left(self.freq, freq)
+		assert(idx>=0 and idx<len(self.freq))
+
+		#пока интерполяции нет, возвращаем ближайшее нижнее.
+		return (self.U_open[idx], self.U_short[idx], self.U_50Om[idx])
+
+	def calcErx(self, freq):
+		'''
+		Вычисляем выражение.
+		Gm - измеренное отраженное.
+		G - реальное отраженное.
+		Связь такая:
+		Gm = (e00-De*G)/(1-e11*G)
+		De = e00*e11-(e10*e01)
+		(e10*e01) - это один параметр, т.к. они всегда умноженной парой встречаются.
+		Вычисляем для трех независимых уравнений.
+		e00 + G*Gm*e11 - G*De = Gm
+
+		Open G=1
+			e00 + Gm_open*e11 - De = Gm_open
+		Short G=-1
+			e00 - Gm_short*e11 + De = Gm_sort
+		Load Z=50 G=0
+			e00 = Gm_load
+		------------
+			e00 + Gm_open*e11 - De = Gm_open
+			e00 - Gm_short*e11 + De = Gm_sort
+			Складываем
+			2*e00 + (Gm_open-Gm_short)*e11 = Gm_open+Gm_sort
+
+			e11 = (Gm_open+Gm_sort - 2*e00)/(Gm_open-Gm_short)
+
+			De = Gm_sort-e00+Gm_short*e11
+		'''
+
+		(Gm_open, Gm_short, Gm_load) = self.FindAndInterpolate(freq)
+
+		e00 = Gm_load
+		e11 = (Gm_open+Gm_short-2*e00)/(Gm_open-Gm_short)
+		De = Gm_short-e00+Gm_short*e11
+		e10_01 = e00*e11 - De
+
+		params = Params()
+		params.e00 = e00
+		params.e11 = e11
+		params.De = De
+		params.e10_01 = e10_01
+		return params
+
+	def calculateG(self, Gm, freq):
+		p = self.calcErx(freq)
+		G = (Gm - p.e00)/(Gm*p.e11-p.De)
+		return G
+
+	def GtoZ(self, G):
+		'''
+		G = (Z-Z0)/(Z+Z0)
+		G*Z+G*Z0 = Z-Z0
+		G*Z-Z = -G*Z0-Z0
+		(G-1)*Z = -(G+1)*Z0
+		Z = Z0 * (1+G)/(1-G)
+		'''
+		if abs(1-G)<1e-5:
+			G = 0
+
+		return self.Zstd * (1+G)/(1-G)
+
 
 def main():
 	cal = Calibration()
