@@ -260,7 +260,7 @@ class CalibrationSOLT:
 			assert(self.freq[i-1]<self.freq[i])
 		pass
 
-	def FindAndInterpolate(self, freq):
+	def FindAndInterpolateRx(self, freq):
 		'''
 		Предполагем, что массив freq отсотирован.
 		Ищем калибровочные напряжения и интерполируем их.
@@ -270,6 +270,17 @@ class CalibrationSOLT:
 
 		#пока интерполяции нет, возвращаем ближайшее нижнее.
 		return (self.U_open[idx], self.U_short[idx], self.U_50Om[idx])
+
+	def FindAndInterpolateTx(self, freq):
+		'''
+		Предполагем, что массив freq отсотирован.
+		Ищем калибровочные напряжения и интерполируем их.
+		'''
+		idx = bisect.bisect_left(self.freq, freq)
+		assert(idx>=0 and idx<len(self.freq))
+
+		#пока интерполяции нет, возвращаем ближайшее нижнее.
+		return (self.U_tx_trans[idx], self.U_tx_open[idx], self.U_rx_trans[idx])
 
 	def calcErx(self, freq):
 		'''
@@ -300,7 +311,7 @@ class CalibrationSOLT:
 			De = Gm_sort-e00+Gm_short*e11
 		'''
 
-		(Gm_open, Gm_short, Gm_load) = self.FindAndInterpolate(freq)
+		(Gm_open, Gm_short, Gm_load) = self.FindAndInterpolateRx(freq)
 
 		e00 = Gm_load
 		e11 = (Gm_open+Gm_short-2*e00)/(Gm_open-Gm_short)
@@ -314,7 +325,29 @@ class CalibrationSOLT:
 		params.e10_01 = e10_01
 		return params
 
+	def calcEtx(self, freq):
+		'''
+			S21m_trans - напряжение когда вход и выход замкнуты через щупы (все напряжение от входа поступает в выход)
+			S21m_open - напряжение, когда на щупы ничего не подавется (нужно вход и выход замкнуть 50 ом заглушками)
+			Gm_tans - напряжение на соответствующее U_tx_trans
+ 		'''
+		p = self.calcErx(freq)
+		(S21m_trans, S21m_open, Gm_tans) = self.FindAndInterpolateTx(freq)
+
+		G_trans = (Gm_tans - p.e00)/(Gm_tans*p.e11-p.De)
+		p.e30 = S21m_open
+		p.e22 = G_trans
+		p.e10_32 = (S21m_trans-p.e30)*(1-p.e11*p.e22)
+
+		#print("e30=", p.e30, "e22=", p.e22, "e10_32=",p.e10_32)
+		#print("e11=", abs(p.e11), "e22=", abs(p.e22), "e10_32=", abs(p.e10_32))
+		return p
+
 	def calculateG(self, Gm, freq):
+		'''
+		Вычисляем коэффициэнт отражения для rx порта 
+		учитывая щупы и коэффициэнт усиления усилителя.
+		'''
 		p = self.calcErx(freq)
 		G = (Gm - p.e00)/(Gm*p.e11-p.De)
 		return G
@@ -331,6 +364,71 @@ class CalibrationSOLT:
 			G = 0
 
 		return self.Zstd * (1+G)/(1-G)
+
+	def iterateS11_S21(self, p, S11m, S21m):
+		S11 = 1
+		S21 = 0
+		e00 = p.e00
+		e11 = p.e11
+		e22 = p.e22
+		e30 = p.e30
+		e10_32 = p.e10_32
+		e10_01 = p.e10_01
+
+
+		for i in range(5):
+			S11 = ((S11m-e00)*(1-e11*e22*S21*S21)-(e10_01)*(e22*S21*S21))/((e10_01)*(1-e22*S11)+(S11m-e00)*(e11+e22+e11*e22*S11))
+			S21 = (S21m-e30)*(1-(e11+e22+e11*e22*S11)*S11)/((e10_32) + (S21m-e30)*e11*e22*S21)
+			print("S11=", S11, "S21=", S21)
+
+		return (S11, S21)
+
+
+	def calculateS11_S21(self, Urx, Utx, freq):
+		'''
+		Исходные уравнения.
+		Ds = S11*S22 - S21*S12
+		S11m = e00 + (e10*e01)*(S11 - e22*Ds)/(1-e11*S11-e22*S22+e11*e22*Ds)
+		S21m = e30 + (e10*e32)*S21/(1-e11*S11-e22*S22+e11*e22*Ds)
+
+		предположим, что у нас reciprocal четырехполюсник S12 = S21
+		предположим, что у нас симметричный четырехполюсник S11 = S22
+		Ds = S11*S11 - S21*S21
+		S11m = e00 + (e10*e01)*(S11 - e22*Ds)/(1-e11*S11-e22*S11+e11*e22*Ds)
+		S21m = e30 + (e10*e32)*S21/(1-e11*S11-e22*S11+e11*e22*Ds)
+
+		Попробуем решить "методом простых итераций"
+		DV = (1-e11*S11-e22*S11+e11*e22*Ds)
+		DV = (1-(e11+e22)*S11+e11*e22*Ds)
+		DV = (1-(e11+e22)*S11+e11*e22*(S11*S11-S21*S21))
+		DV = (1-(e11+e22+e11*e22*S11)*S11-e11*e22*S21*S21)
+
+		(S11m-e00) =  (e10*e01)*(S11 - e22*Ds)/DV
+		(S21m-e30) =  (e10*e32)*S21/DV
+
+		(S11m-e00)*DV =  (e10*e01)*(S11 - e22*Ds)
+		(S21m-e30)*DV =  (e10*e32)*S21
+
+		(S11m-e00)*DV =  (e10*e01)*(S11 - e22*Ds)
+		(S21m-e30)*DV =  (e10*e32)*S21
+
+		(S11m-e00)*(1-(e11+e22+e11*e22*S11)*S11-e11*e22*S21*S21) =  (e10*e01)*(S11 - e22*S11*S11 + e22S21*S21)
+		(S21m-e30)*(1-(e11+e22+e11*e22*S11)*S11-e11*e22*S21*S21) =  (e10*e32)*S21
+
+		(S11m-e00)*(1-e11*e22*S21*S21) =  (e10*e01)*((1-e22*S11)*S11 + e22*S21*S21)+(S11m-e00)*(e11+e22+e11*e22*S11)*S11
+		(S21m-e30)*(1-(e11+e22+e11*e22*S11)*S11) =  (e10*e32)*S21 + (S21m-e30)*(e11*e22*S21*S21)
+
+		(S11m-e00)*(1-e11*e22*S21*S21)-(e10*e01)*(e22*S21*S21) =  (e10*e01)*((1-e22*S11)*S11)+(S11m-e00)*(e11+e22+e11*e22*S11)*S11
+		(S21m-e30)*(1-(e11+e22+e11*e22*S11)*S11) =  ((e10*e32) + (S21m-e30)*e11*e22*S21)*S21
+
+		(S11m-e00)*(1-e11*e22*S21*S21)-(e10*e01)*(e22*S21*S21) =  ((e10*e01)*(1-e22*S11)+(S11m-e00)*(e11+e22+e11*e22*S11))*S11
+
+		(S11m-e00)*(1-e11*e22*S21*S21)-(e10*e01)*(e22*S21*S21) =  ((e10*e01)*(1-e22*S11)+(S11m-e00)*(e11+e22+e11*e22*S11))*S11		
+		(S21m-e30)*(1-(e11+e22+e11*e22*S11)*S11)/((e10*e32) + (S21m-e30)*e11*e22*S21) = S21
+		'''
+
+		p = self.calcEtx(freq)
+		return self.iterateS11_S21(p, Urx, Utx)
 
 
 def main():

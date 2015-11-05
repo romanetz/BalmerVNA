@@ -63,12 +63,17 @@ def plotZ(xdata, ydata, title = None):
 	plt.show()
 	pass
 	
-def plotZxy(zdata, zdata1 = None):
+def plotZxy(zdata, zdata1 = None, title=None):
 
 	fig = plt.figure()
 	ax = fig.add_subplot(111, aspect='equal')
 	ax.set_xlabel('Real')
 	ax.set_ylabel('Imag')
+	if title:
+		ax.set_title(title)
+
+	ax.set_xlim(-1, +1)
+	ax.set_ylim(-1, +1)
 	#ax.set_xscale('log')
 	#ax.set_yscale('log')
 	(xdata, ydata) = splitComplexArray(zdata)
@@ -303,21 +308,76 @@ def graphG():
 	#(freq, Ux) = readXmlZ('calibration/rx_100Om.xml')
 	#(freq, Ux) = readXmlZ('calibration/rx_470pF.xml')
 	#(freq, Ux) = readXmlZ('calibration/rx_transmission.xml')
-	(freq, Ux) = readXmlZ('calibration/rx_ser_10_Om.xml')
+	(freq, Urx) = readXmlZ('calibration/rx_ser_10_Om.xml')
+	(freq, Utx) = readXmlZ('calibration/tx_ser_10_Om.xml')
 	Garr = []
 	Zarr = []
 
 	for i in range(len(freq)):
-		G = cal.calculateG(Ux[i], freq[i])
+		G = cal.calculateG(Urx[i], freq[i])
 		Z = cal.GtoZ(G)
+		cal.calcEtx(freq[i])
 		Garr.append(G)
 		Zarr.append(Z)
+		print("F=", freq[i])
+		cal.calculateS11_S21(Urx[i], Utx[i], freq[i])
 			
 		
 	#plotZ(freq, Garr, "10 Om")
-	plotZ(freq, Zarr, "Z 10 Om")
+	#plotZ(freq, Zarr, "Z 10 Om")
+
 	pass
 
+def graphS11_S21():
+	cal = CalibrationSOLT()
+	Ux1 = None
+
+	title = '100 Om'
+
+	#(freq, Urx) = readXmlZ('calibration/rx_ser_10_Om.xml')
+	#(freq, Utx) = readXmlZ('calibration/tx_ser_10_Om.xml')
+	#(freq, Urx) = readXmlZ('calibration/rx_ser_49_9Om.xml')
+	#(freq, Utx) = readXmlZ('calibration/tx_ser_49_9Om.xml')
+	(freq, Urx) = readXmlZ('calibration/rx_ser_100_Om.xml')
+	(freq, Utx) = readXmlZ('calibration/tx_ser_100_Om.xml')
+	#(freq, Urx) = readXmlZ('calibration/rx_ser_470_pF.xml')
+	#(freq, Utx) = readXmlZ('calibration/tx_ser_470_pF.xml')
+
+	S11arr = []
+	S21arr = []
+
+	for i in range(len(freq)):
+		print("F=", freq[i])
+		(S11,S21) = cal.calculateS11_S21(Urx[i], Utx[i], freq[i])
+		S11arr.append(S11)
+		S21arr.append(S21)
+		
+	fig = plt.figure()
+	ax11 = fig.add_subplot(211)
+	ax21 = fig.add_subplot(212)
+	ax11.set_title(title)
+	ax11.set_xlabel('Frequency (MHz)')
+	ax21.set_xlabel('Frequency (MHz)')
+	ax11.set_ylabel('S11')
+	ax21.set_ylabel('S21')
+
+	fmhz = [f*1e-6 for f in freq]
+	ydata11re = [s11.real for s11 in S11arr]
+	ydata11im = [s11.imag for s11 in S11arr]
+	ydata21re = [s21.real for s21 in S21arr]
+	ydata21im = [s21.imag for s21 in S21arr]
+
+	ax11.plot(fmhz, ydata11re, color='red')
+	ax11.plot(fmhz, ydata11im, color='blue')
+
+	ax21.plot(fmhz, ydata21re, color='red')
+	ax21.plot(fmhz, ydata21im, color='blue')
+
+	plotZxy(S11arr, S21arr, title=title)
+	#ax11.plot(ydata11re, ydata11im, color='blue')
+	#ax21.plot(ydata21re, ydata21im, color='blue')
+	plt.show()
+	pass
 
 #stdGraph()
 #twoGraph()
@@ -328,5 +388,6 @@ def graphG():
 #UGraph()
 #ZGraph4()
 
-graphG()
+#graphG()
 
+graphS11_S21()
