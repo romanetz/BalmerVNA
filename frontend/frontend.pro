@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     qcustomplot/qcustomplot.cpp \
     pugixml/pugixml.cpp \
     device/vnautils.cpp \
-    dialogs/dialogselectfrequency.cpp
+    dialogs/dialogselectfrequency.cpp \
+    project.cpp
 
 HEADERS  += mainwindow.h \
     vnadevice.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     pugixml/pugiconfig.hpp \
     pugixml/pugixml.hpp \
     device/vnautils.h \
-    dialogs/dialogselectfrequency.h
+    dialogs/dialogselectfrequency.h \
+    project.h
 
 FORMS    +=
 

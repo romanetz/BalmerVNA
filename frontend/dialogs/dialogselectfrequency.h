@@ -8,12 +8,14 @@ class QComboBox;
 class QDoubleSpinBox;
 class QSpinBox;
 
+
 class DialogSelectFrequency : public QDialog
 {
     Q_OBJECT
 public:
     explicit DialogSelectFrequency(QWidget *parent = 0);
 
+    ~DialogSelectFrequency();
 signals:
 
 public slots:
