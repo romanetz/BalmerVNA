@@ -332,16 +332,14 @@ def graphS11_S21():
 	cal = CalibrationSOLT()
 	Ux1 = None
 
-	title = '100 Om'
+	title = '470 pF'
+	#name = '10_Om'
+	name = '49_9Om'
+	#name = '100_Om'
+	#name = '470_pF'
 
-	#(freq, Urx) = readXmlZ('calibration/rx_ser_10_Om.xml')
-	#(freq, Utx) = readXmlZ('calibration/tx_ser_10_Om.xml')
-	#(freq, Urx) = readXmlZ('calibration/rx_ser_49_9Om.xml')
-	#(freq, Utx) = readXmlZ('calibration/tx_ser_49_9Om.xml')
-	(freq, Urx) = readXmlZ('calibration/rx_ser_100_Om.xml')
-	(freq, Utx) = readXmlZ('calibration/tx_ser_100_Om.xml')
-	#(freq, Urx) = readXmlZ('calibration/rx_ser_470_pF.xml')
-	#(freq, Utx) = readXmlZ('calibration/tx_ser_470_pF.xml')
+	(freq, Urx) = readXmlZ('calibration/rx_ser_'+name+'.xml')
+	(freq, Utx) = readXmlZ('calibration/tx_ser_'+name+'.xml')
 
 	S11arr = []
 	S21arr = []
@@ -373,9 +371,7 @@ def graphS11_S21():
 	ax21.plot(fmhz, ydata21re, color='red')
 	ax21.plot(fmhz, ydata21im, color='blue')
 
-	plotZxy(S11arr, S21arr, title=title)
-	#ax11.plot(ydata11re, ydata11im, color='blue')
-	#ax21.plot(ydata21re, ydata21im, color='blue')
+	#plotZxy(S11arr, S21arr, title=title)
 	plt.show()
 	pass
 

@@ -39,6 +39,8 @@ public slots:
     void onReceiveHard();
 
     void onSave();
+
+    void onSettings();
 private:
     void createActions();
     void createToolbar();

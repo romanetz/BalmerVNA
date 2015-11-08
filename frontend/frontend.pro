@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     vnacommands.cpp \
     qcustomplot/qcustomplot.cpp \
     pugixml/pugixml.cpp \
-    device/vnautils.cpp
+    device/vnautils.cpp \
+    dialogs/dialogselectfrequency.cpp
 
 HEADERS  += mainwindow.h \
     vnadevice.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
     pugixml/pugiconfig.hpp \
     pugixml/pugixml.hpp \
-    device/vnautils.h
+    device/vnautils.h \
+    dialogs/dialogselectfrequency.h
 
 FORMS    +=
 

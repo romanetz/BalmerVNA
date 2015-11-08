@@ -10,6 +10,7 @@
 #include "pugixml/pugixml.hpp"
 #include "device/vnautils.h"
 
+#include "dialogs/dialogselectfrequency.h"
 
 MainWindow* mainWindow = nullptr;
 
@@ -63,6 +64,7 @@ void MainWindow::createActions()
     connect(connectAct, SIGNAL(triggered()), this, SLOT(openSerialPort()));
 
     settingsAct = new QAction(QIcon(":/icons/settings.png"), tr("Settings"), this );
+    connect(settingsAct, SIGNAL(triggered()), this, SLOT(onSettings()));
 
     writeTestAct = new QAction(QIcon(":/icons/file_send.png"), tr("Write test data"), this );
     connect(writeTestAct, SIGNAL(triggered()), this, SLOT(writeTestData()));
@@ -367,4 +369,10 @@ void MainWindow::saveData(const QString& fileName)
 
 
     doc.save_file(fileName.toUtf8().constData());
+}
+
+void MainWindow::onSettings()
+{
+    DialogSelectFrequency dialog;
+    dialog.exec();
 }
